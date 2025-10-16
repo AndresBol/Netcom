@@ -1,14 +1,14 @@
 use netcom;
 
 -- Drop tables if they exist.
-DROP TABLE IF EXISTS ticket_attachments;
+DROP TABLE IF EXISTS ticket_attachment;
 DROP TABLE IF EXISTS timeline;
 DROP TABLE IF EXISTS ticket;
 DROP TABLE IF EXISTS user_ticket;
 DROP TABLE IF EXISTS user_special_field;
 DROP TABLE IF EXISTS special_field;
 DROP TABLE IF EXISTS sla;
-DROP TABLE IF EXISTS ticket_labels;
+DROP TABLE IF EXISTS ticket_label;
 DROP TABLE IF EXISTS priority;
 DROP TABLE IF EXISTS status;
 DROP TABLE IF EXISTS category;
@@ -56,13 +56,13 @@ CREATE TABLE priority (
     is_active TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB;
 
--- Create ticket_labels table (holds labels for tickets)
-CREATE TABLE ticket_labels (
+-- Create ticket_label table (holds labels for tickets)
+CREATE TABLE ticket_label (
     id INT AUTO_INCREMENT PRIMARY KEY,
     category_id INT NOT NULL,
     name VARCHAR(150) NOT NULL,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
-    CONSTRAINT fk_ticket_labels_category FOREIGN KEY (category_id) REFERENCES category(id)
+    CONSTRAINT fk_ticket_label_category FOREIGN KEY (category_id) REFERENCES category(id)
         ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -88,7 +88,7 @@ CREATE TABLE ticket (
         ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT fk_ticket_priority FOREIGN KEY (priority_id) REFERENCES priority(id)
         ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT fk_ticket_label FOREIGN KEY (label_id) REFERENCES ticket_labels(id)
+    CONSTRAINT fk_ticket_label FOREIGN KEY (label_id) REFERENCES ticket_label(id)
         ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -160,13 +160,13 @@ CREATE TABLE timeline (
         ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- Create ticket_attachments table (files attached to timeline entries)
-CREATE TABLE ticket_attachments (
+-- Create ticket_attachment table (files attached to timeline entries)
+CREATE TABLE ticket_attachment (
     id INT AUTO_INCREMENT PRIMARY KEY,
     timeline_id INT NOT NULL,
     file VARCHAR(255) NOT NULL,
     extension VARCHAR(20) NOT NULL,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
-    CONSTRAINT fk_ticket_attachments_timeline FOREIGN KEY (timeline_id) REFERENCES timeline(id)
+    CONSTRAINT fk_ticket_attachment_timeline FOREIGN KEY (timeline_id) REFERENCES timeline(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
