@@ -5,6 +5,7 @@ import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import { Home } from "./components/home";
+import { NewTicket } from "./views/ticket/new-ticket";
 const router = createBrowserRouter([
   {
     element: <App />,
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/ticket/new",
+        element: <NewTicket />,
       },
     ],
   },
