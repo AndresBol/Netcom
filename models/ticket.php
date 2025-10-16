@@ -1,5 +1,5 @@
 <?php
-class Ticket
+class TicketModel
 {
     public $enlace;
     public function __construct()
@@ -77,7 +77,7 @@ class Ticket
     }
 
     /*Insert */
-    public function insert($objeto) {
+    public function insert($object) {
         try {
             //sql query
             $vSql = "Insert into ticket (
@@ -94,17 +94,17 @@ class Ticket
             created_on, 
             is_active
             ) Values (
-            '$objeto->status_id', 
-            '$objeto->category_id', 
-            '$objeto->priority_id', 
-            '$objeto->label_id', 
-            '$objeto->title', 
-            '$objeto->description', 
-            '$objeto->notification_status', 
-            '$objeto->notified_on', 
-            '$objeto->rating', 
-            '$objeto->comment', 
-            '$objeto->created_on', 
+            '$object->status_id', 
+            '$object->category_id', 
+            '$object->priority_id', 
+            '$object->label_id', 
+            '$object->title', 
+            '$object->description', 
+            '$object->notification_status', 
+            '$object->notified_on', 
+            '$object->rating', 
+            '$object->comment', 
+            '$object->created_on', 
             1);";
             //query execution
             $vResultado = $this->enlace->executeSQL_DML( $vSql);
@@ -115,28 +115,28 @@ class Ticket
         }
     }
     /*Update */
-    public function update($objeto) {
+    public function update($object) {
         try {
             //sql query
 			$vSql = "Update ticket SET 
-            status_id ='$objeto->status_id', 
-            category_id ='$objeto->category_id',
-            priority_id ='$objeto->priority_id', 
-            label_id ='$objeto->label_id', 
-            title ='$objeto->title', 
-            description ='$objeto->description', 
-            notification_status ='$objeto->notification_status', 
-            notified_on ='$objeto->notified_on', 
-            rating ='$objeto->rating', 
-            comment ='$objeto->comment', 
-            created_on ='$objeto->created_on' 
+            status_id ='$object->status_id', 
+            category_id ='$object->category_id',
+            priority_id ='$object->priority_id', 
+            label_id ='$object->label_id', 
+            title ='$object->title', 
+            description ='$object->description', 
+            notification_status ='$object->notification_status', 
+            notified_on ='$object->notified_on', 
+            rating ='$object->rating', 
+            comment ='$object->comment', 
+            created_on ='$object->created_on' 
             Where 
-            id=$objeto->id;";
+            id=$object->id;";
 			
             //query execution
 			$vResultado = $this->enlace->executeSQL_DML( $vSql);
 			//return the object
-            return $this->get($objeto->id);
+            return $this->get($object->id);
 		} catch (Exception $e) {
             handleException($e);
         }

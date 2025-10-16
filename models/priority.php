@@ -1,5 +1,5 @@
 <?php
-class Priority
+class PriorityModel
 {
     public $enlace;
     public function __construct()
@@ -37,10 +37,10 @@ class Priority
         }
     }
     /*Insert */
-    public function insert($objeto) {
+    public function insert($object) {
         try {
             //sql query
-            $vSql = "Insert into priority (name, is_active) Values ('$objeto->name', 1);";
+            $vSql = "Insert into priority (name, is_active) Values ('$object->name', 1);";
             //query execution
             $vResultado = $this->enlace->executeSQL_DML( $vSql);
             //return the object
@@ -50,15 +50,15 @@ class Priority
         }
     }
     /*Update */
-    public function update($objeto) {
+    public function update($object) {
         try {
             //sql query
-			$vSql = "Update priority SET name ='$objeto->name' Where id=$objeto->id;";
+			$vSql = "Update priority SET name ='$object->name' Where id=$object->id;";
 			
             //query execution
 			$vResultado = $this->enlace->executeSQL_DML( $vSql);
 			//return the object
-            return $this->get($objeto->id);
+            return $this->get($object->id);
 		} catch (Exception $e) {
             handleException($e);
         }

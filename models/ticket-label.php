@@ -1,5 +1,5 @@
 <?php
-class TicketLabel
+class TicketLabelModel
 {
     public $enlace;
     public function __construct()
@@ -37,10 +37,10 @@ class TicketLabel
         }
     }
     /*Insert */
-    public function insert($objeto) {
+    public function insert($object) {
         try {
             //sql query
-            $vSql = "Insert into ticket_label (category_id, name, is_active) Values ('$objeto->category_id', '$objeto->name', 1);";
+            $vSql = "Insert into ticket_label (category_id, name, is_active) Values ('$object->category_id', '$object->name', 1);";
             //query execution
             $vResultado = $this->enlace->executeSQL_DML( $vSql);
             //return the object
@@ -50,15 +50,15 @@ class TicketLabel
         }
     }
     /*Update */
-    public function update($objeto) {
+    public function update($object) {
         try {
             //sql query
-			$vSql = "Update ticket_label SET category_id ='$objeto->category_id', name ='$objeto->name' Where id=$objeto->id;";
+			$vSql = "Update ticket_label SET category_id ='$object->category_id', name ='$object->name' Where id=$object->id;";
 			
             //query execution
 			$vResultado = $this->enlace->executeSQL_DML( $vSql);
 			//return the object
-            return $this->get($objeto->id);
+            return $this->get($object->id);
 		} catch (Exception $e) {
             handleException($e);
         }
