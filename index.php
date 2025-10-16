@@ -17,17 +17,19 @@ require_once "controllers/core/Request.php";
 require_once "controllers/core/Response.php";
 
 /***--- Agregar todos los modelos*/
-require_once "models/ActorModel.php";
-require_once "models/DirectorModel.php";
-require_once "models/GenreModel.php";
-require_once "models/MovieModel.php";
+require_once "models/category.php";
+require_once "models/priority.php";
+require_once "models/status.php";
+require_once "models/ticket-label.php";
+require_once "models/ticket.php";
 
 
 /***--- Agregar todos los controladores*/
-require_once "controllers/ActorController.php";
-require_once "controllers/DirectorController.php";
-require_once "controllers/GenreController.php";
-require_once "controllers/MovieController.php";
+require_once "controllers/category.php";
+require_once "controllers/priority.php";
+require_once "controllers/status.php";
+require_once "controllers/ticket-label.php";
+require_once "controllers/ticket.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";
