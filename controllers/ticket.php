@@ -59,24 +59,32 @@ class ticket
             handleException($e);
         }
     }
-    public function post($object)
+    public function post()
     {
         try {
+            $request = new Request();
             $response = new Response();
+
+            $inputJson = $request->getJSON();
+
             $ticket = new TicketModel();
-            $result = $ticket->insert($object);
+            $result = $ticket->insert($inputJson);
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {
             handleException($e);
         }
     }
-    public function put($object)
+    public function put()
     {
         try {
+            $request = new Request();
             $response = new Response();
+
+            $inputJson = $request->getJSON();
+
             $ticket = new TicketModel();
-            $result = $ticket->update($object);
+            $result = $ticket->update($inputJson);
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {
