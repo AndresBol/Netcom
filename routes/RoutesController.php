@@ -129,7 +129,7 @@ class RoutesController
                                             echo json_encode($json, http_response_code($json["status"]));
                                         }
                                     } else {
-                                        $response->create();
+                                        $response->post();
                                     }
                                     break;
 
@@ -148,7 +148,7 @@ class RoutesController
                                             echo json_encode($json, http_response_code($json["status"]));
                                         }
                                     } else {
-                                        $response->update();
+                                        $response->put();
                                     }
                                     break;
 

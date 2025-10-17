@@ -79,6 +79,18 @@ class TicketModel
     /*Insert */
     public function insert($object) {
         try {
+            // Validate the object
+            if ($object === null) {
+                throw new Exception("Object cannot be null");
+            }
+            
+            // Validate required fields
+            if (!isset($object->status_id) || !isset($object->category_id) || 
+                !isset($object->priority_id) || !isset($object->label_id) || 
+                !isset($object->title) || !isset($object->description)) {
+                throw new Exception("Missing required fields");
+            }
+            
             //sql query
             $vSql = "Insert into ticket (
             status_id, 
@@ -107,9 +119,9 @@ class TicketModel
             '$object->created_on', 
             1);";
             //query execution
-            $vResultado = $this->enlace->executeSQL_DML( $vSql);
+            $vResultado = $this->enlace->executeSQL_DML_last( $vSql);
             //return the object
-            return $this->get($this->enlace->getLastInsertId());
+            return $this->get($vResultado);
         } catch (Exception $e) {
             handleException($e);
         }
@@ -117,6 +129,11 @@ class TicketModel
     /*Update */
     public function update($object) {
         try {
+            // Validate the object
+            if ($object === null) {
+                throw new Exception("Object cannot be null");
+            }
+            
             //sql query
 			$vSql = "Update ticket SET 
             status_id ='$object->status_id', 

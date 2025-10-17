@@ -39,12 +39,22 @@ class TicketLabelModel
     /*Insert */
     public function insert($object) {
         try {
+            // Validate the object
+            if ($object === null) {
+                throw new Exception("Object cannot be null");
+            }
+
+            // Validate required fields
+            if (!isset($object->category_id) || !isset($object->name)) {
+                throw new Exception("Missing required fields");
+            }
+
             //sql query
             $vSql = "Insert into ticket_label (category_id, name, is_active) Values ('$object->category_id', '$object->name', 1);";
             //query execution
-            $vResultado = $this->enlace->executeSQL_DML( $vSql);
+            $vResultado = $this->enlace->executeSQL_DML_last( $vSql);
             //return the object
-            return $this->get($this->enlace->getLastInsertId());
+            return $this->get($vResultado);
         } catch (Exception $e) {
             handleException($e);
         }
@@ -52,6 +62,11 @@ class TicketLabelModel
     /*Update */
     public function update($object) {
         try {
+            // Validate the object
+            if ($object === null) {
+                throw new Exception("Object cannot be null");
+            }
+
             //sql query
 			$vSql = "Update ticket_label SET category_id ='$object->category_id', name ='$object->name' Where id=$object->id;";
 			

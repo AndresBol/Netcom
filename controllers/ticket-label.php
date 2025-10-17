@@ -26,24 +26,32 @@ class ticket_label
             handleException($e);
         }
     }
-    public function post($object)
+    public function post()
     {
         try {
+            $request = new Request();
             $response = new Response();
+
+            $inputJson = $request->getJSON();
+
             $ticketLabel = new TicketLabelModel();
-            $result = $ticketLabel->insert($object);
+            $result = $ticketLabel->insert($inputJson);
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {
             handleException($e);
         }
     }
-    public function put($object)
+    public function put()
     {
         try {
+            $request = new Request();
             $response = new Response();
+
+            $inputJson = $request->getJSON();
+
             $ticketLabel = new TicketLabelModel();
-            $result = $ticketLabel->update($object);
+            $result = $ticketLabel->update($inputJson);
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {

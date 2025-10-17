@@ -26,24 +26,32 @@ class category
             handleException($e);
         }
     }
-    public function post($object)
+    public function post()
     {
         try {
+            $request = new Request();
             $response = new Response();
+
+            $inputJson = $request->getJSON();
+
             $category = new CategoryModel();
-            $result = $category->insert($object);
+            $result = $category->insert($inputJson);
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {
             handleException($e);
         }
     }
-    public function put($object)
+    public function put()
     {
         try {
+            $request = new Request();
             $response = new Response();
+
+            $inputJson = $request->getJSON();
+
             $category = new CategoryModel();
-            $result = $category->update($object);
+            $result = $category->update($inputJson);
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {
