@@ -2,19 +2,65 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+
+async function handleCreateTicket(ticket) {
+  await axios
+    .post("http://localhost:81/netcom/ticket", ticket)
+    .then((response) => {
+      // Handle successful response
+      console.log("Ticket created:", response.data);
+      toast.success("Ticket created!");
+    })
+    .catch((error) => {
+      // Handle errors
+      console.error("Error creating ticket:", error);
+    });
+}
 
 export function NewTicket() {
-  const [status_id, setStatus_id] = useState(1);
-  const [category_id, setCategory_id] = useState(1);
-  const [priority_id, setPriority_id] = useState(1);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [notification_status, setNotification_status] = useState("");
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
-  const notified_on = new Date();
-  const created_on = new Date();
+  const [ticket, setTicket] = useState({
+    status_id: 1,
+    category_id: 1,
+    priority_id: 1,
+    label_id: 1,
+    title: "",
+    description: "",
+    notification_status: "",
+    notified_on: new Date(),
+    created_on: new Date(),
+    rating: 0,
+    comment: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      await handleCreateTicket(ticket);
+      setTicket({
+        status_id: 1,
+        category_id: 1,
+        priority_id: 1,
+        label_id: 1,
+        title: "",
+        description: "",
+        notification_status: "",
+        notified_on: new Date(),
+        created_on: new Date(),
+        rating: 0,
+        comment: "",
+      });
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -36,76 +82,89 @@ export function NewTicket() {
         id="status_id"
         label="StatusId"
         variant="outlined"
-        value={status_id}
+        value={ticket.status_id}
         onChange={(event) => {
-          setStatus_id(event.target.value);
+          setTicket({ ...ticket, status_id: event.target.value });
         }}
       />
       <TextField
         id="category_id"
         label="CategoryId"
         variant="outlined"
-        value={category_id}
+        value={ticket.category_id}
         onChange={(event) => {
-          setCategory_id(event.target.value);
+          setTicket({ ...ticket, category_id: event.target.value });
         }}
       />
       <TextField
         id="priority_id"
         label="PriorityId"
         variant="outlined"
-        value={priority_id}
+        value={ticket.priority_id}
         onChange={(event) => {
-          setPriority_id(event.target.value);
+          setTicket({ ...ticket, priority_id: event.target.value });
         }}
       />
       <TextField
-        id="title_id"
-        label="TitleId"
+        id="label_id"
+        label="LabelId"
         variant="outlined"
-        value={title}
+        value={ticket.label_id}
         onChange={(event) => {
-          setTitle(event.target.value);
+          setTicket({ ...ticket, label_id: event.target.value });
+        }}
+      />
+      <TextField
+        id="title"
+        label="Title"
+        variant="outlined"
+        value={ticket.title}
+        onChange={(event) => {
+          setTicket({ ...ticket, title: event.target.value });
         }}
       />
       <TextField
         id="description_id"
         label="DescriptionId"
         variant="outlined"
-        value={description}
+        value={ticket.description}
         onChange={(event) => {
-          setDescription(event.target.value);
+          setTicket({ ...ticket, description: event.target.value });
         }}
       />
       <TextField
         id="notification_status"
         label="NotificationStatus"
         variant="outlined"
-        value={notification_status}
+        value={ticket.notification_status}
         onChange={(event) => {
-          setNotification_status(event.target.value);
+          setTicket({ ...ticket, notification_status: event.target.value });
         }}
       />
       <TextField
         id="rating"
         label="Rating"
         variant="outlined"
-        value={rating}
+        value={ticket.rating}
         onChange={(event) => {
-          setRating(event.target.value);
+          setTicket({ ...ticket, rating: event.target.value });
         }}
       />
       <TextField
         id="comment"
         label="Comment"
         variant="outlined"
-        value={comment}
+        value={ticket.comment}
         onChange={(event) => {
-          setComment(event.target.value);
+          setTicket({ ...ticket, comment: event.target.value });
         }}
       />
-      <Button href="/ticket/new" variant="contained">
-        Create Ticket
+      <Button variant="contained" onClick={handleSubmit}>
+        {loading ? (
+          <CircularProgress color="white" size={25} />
+        ) : (
+          "Create Ticket"
+        )}
       </Button>
     </>
   );
