@@ -2,15 +2,18 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
-function handleCreateTicket(ticket) {
-  axios
+async function handleCreateTicket(ticket) {
+  await axios
     .post("http://localhost:81/netcom/ticket", ticket)
     .then((response) => {
       // Handle successful response
-      alert("Ticket created:", response.data);
+      console.log("Ticket created:", response.data);
+      toast.success("Ticket created!");
     })
     .catch((error) => {
       // Handle errors
@@ -32,6 +35,32 @@ export function NewTicket() {
     rating: 0,
     comment: "",
   });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      await handleCreateTicket(ticket);
+      setTicket({
+        status_id: 1,
+        category_id: 1,
+        priority_id: 1,
+        label_id: 1,
+        title: "",
+        description: "",
+        notification_status: "",
+        notified_on: new Date(),
+        created_on: new Date(),
+        rating: 0,
+        comment: "",
+      });
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -130,8 +159,12 @@ export function NewTicket() {
           setTicket({ ...ticket, comment: event.target.value });
         }}
       />
-      <Button variant="contained" onClick={handleCreateTicket(ticket)}>
-        Create Ticket
+      <Button variant="contained" onClick={handleSubmit}>
+        {loading ? (
+          <CircularProgress color="white" size={25} />
+        ) : (
+          "Create Ticket"
+        )}
       </Button>
     </>
   );
