@@ -113,10 +113,10 @@ class TicketModel
             '$object->title', 
             '$object->description', 
             '$object->notification_status', 
-            '$object->notified_on', 
+            NOW(), 
             '$object->rating', 
             '$object->comment', 
-            '$object->created_on', 
+            NOW(), 
             1);";
             //query execution
             $vResultado = $this->enlace->executeSQL_DML_last( $vSql);
@@ -135,7 +135,7 @@ class TicketModel
             }
             
             //sql query
-			$vSql = "Update ticket SET 
+            $vSql = "Update ticket SET 
             status_id ='$object->status_id', 
             category_id ='$object->category_id',
             priority_id ='$object->priority_id', 
@@ -143,10 +143,9 @@ class TicketModel
             title ='$object->title', 
             description ='$object->description', 
             notification_status ='$object->notification_status', 
-            notified_on ='$object->notified_on', 
+            notified_on = NOW(), 
             rating ='$object->rating', 
-            comment ='$object->comment', 
-            created_on ='$object->created_on' 
+            comment ='$object->comment' 
             Where 
             id=$object->id;";
 			

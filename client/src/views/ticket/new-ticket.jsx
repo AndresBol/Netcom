@@ -4,57 +4,37 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useState } from "react";
-import axios from "axios";
+import TicketService from "../../services/ticket";
+import { useTicketForm } from "../../validations/ticket";
+import { Controller } from "react-hook-form";
 import toast from "react-hot-toast";
 
-async function handleCreateTicket(ticket) {
-  await axios
-    .post("http://localhost:81/netcom/ticket", ticket)
-    .then((response) => {
-      // Handle successful response
-      console.log("Ticket created:", response.data);
-      toast.success("Ticket created!");
-    })
-    .catch((error) => {
-      // Handle errors
-      console.error("Error creating ticket:", error);
-    });
-}
-
 export function NewTicket() {
-  const [ticket, setTicket] = useState({
-    status_id: 1,
-    category_id: 1,
-    priority_id: 1,
-    label_id: 1,
-    title: "",
-    description: "",
-    notification_status: "",
-    notified_on: new Date(),
-    created_on: new Date(),
-    rating: 0,
-    comment: "",
-  });
-
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useTicketForm();
+
+  const onError = (errors, e) => {
+    console.log(errors, e);
+    toast.error("Please fix the errors in the form.");
+  };
+
+  const onSubmit = async (DataForm) => {
     setLoading(true);
     try {
-      await handleCreateTicket(ticket);
-      setTicket({
-        status_id: 1,
-        category_id: 1,
-        priority_id: 1,
-        label_id: 1,
-        title: "",
-        description: "",
-        notification_status: "",
-        notified_on: new Date(),
-        created_on: new Date(),
-        rating: 0,
-        comment: "",
-      });
+      //Insert ticket on DB via API
+      await TicketService.insert(DataForm)
+        .then((response) => {
+          console.log("Ticket created:", response.data);
+          toast.success("Ticket created!");
+        })
+        .catch((error) => {
+          console.error("Error creating ticket:", error);
+        });
     } catch (error) {
       console.error("Error creating ticket:", error);
     } finally {
@@ -63,7 +43,7 @@ export function NewTicket() {
   };
 
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
       <Container sx={{ p: 2 }} maxWidth="sm">
         <Typography
           component="h1"
@@ -78,94 +58,146 @@ export function NewTicket() {
           Please fill out the following form to create a new ticket.
         </Typography>
       </Container>
-      <TextField
-        id="status_id"
-        label="StatusId"
-        variant="outlined"
-        value={ticket.status_id}
-        onChange={(event) => {
-          setTicket({ ...ticket, status_id: event.target.value });
-        }}
+
+      <Controller
+        name="status_id"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            id="status_id"
+            label="StatusId"
+            variant="outlined"
+            error={Boolean(errors.status_id)}
+            helperText={errors.status_id ? errors.status_id.message : " "}
+          />
+        )}
       />
-      <TextField
-        id="category_id"
-        label="CategoryId"
-        variant="outlined"
-        value={ticket.category_id}
-        onChange={(event) => {
-          setTicket({ ...ticket, category_id: event.target.value });
-        }}
+      <Controller
+        name="category_id"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            id="category_id"
+            label="CategoryId"
+            variant="outlined"
+            error={Boolean(errors.category_id)}
+            helperText={errors.category_id ? errors.category_id.message : " "}
+          />
+        )}
       />
-      <TextField
-        id="priority_id"
-        label="PriorityId"
-        variant="outlined"
-        value={ticket.priority_id}
-        onChange={(event) => {
-          setTicket({ ...ticket, priority_id: event.target.value });
-        }}
+      <Controller
+        name="priority_id"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            id="priority_id"
+            label="PriorityId"
+            variant="outlined"
+            error={Boolean(errors.priority_id)}
+            helperText={errors.priority_id ? errors.priority_id.message : " "}
+          />
+        )}
       />
-      <TextField
-        id="label_id"
-        label="LabelId"
-        variant="outlined"
-        value={ticket.label_id}
-        onChange={(event) => {
-          setTicket({ ...ticket, label_id: event.target.value });
-        }}
+
+      <Controller
+        name="label_id"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            id="label_id"
+            label="LabelId"
+            variant="outlined"
+            error={Boolean(errors.label_id)}
+            helperText={errors.label_id ? errors.label_id.message : " "}
+          />
+        )}
       />
-      <TextField
-        id="title"
-        label="Title"
-        variant="outlined"
-        value={ticket.title}
-        onChange={(event) => {
-          setTicket({ ...ticket, title: event.target.value });
-        }}
+
+      <Controller
+        name="title"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            id="title"
+            label="Title"
+            variant="outlined"
+            error={Boolean(errors.title)}
+            helperText={errors.title ? errors.title.message : " "}
+          />
+        )}
       />
-      <TextField
-        id="description_id"
-        label="DescriptionId"
-        variant="outlined"
-        value={ticket.description}
-        onChange={(event) => {
-          setTicket({ ...ticket, description: event.target.value });
-        }}
+      <Controller
+        name="description"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            id="description"
+            label="Description"
+            variant="outlined"
+            error={Boolean(errors.description)}
+            helperText={errors.description ? errors.description.message : " "}
+          />
+        )}
       />
-      <TextField
-        id="notification_status"
-        label="NotificationStatus"
-        variant="outlined"
-        value={ticket.notification_status}
-        onChange={(event) => {
-          setTicket({ ...ticket, notification_status: event.target.value });
-        }}
+      <Controller
+        name="notification_status"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            id="notification_status"
+            label="NotificationStatus"
+            variant="outlined"
+            error={Boolean(errors.notification_status)}
+            helperText={
+              errors.notification_status
+                ? errors.notification_status.message
+                : " "
+            }
+          />
+        )}
       />
-      <TextField
-        id="rating"
-        label="Rating"
-        variant="outlined"
-        value={ticket.rating}
-        onChange={(event) => {
-          setTicket({ ...ticket, rating: event.target.value });
-        }}
+      <Controller
+        name="rating"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            id="rating"
+            label="Rating"
+            variant="outlined"
+            error={Boolean(errors.rating)}
+            helperText={errors.rating ? errors.rating.message : " "}
+          />
+        )}
       />
-      <TextField
-        id="comment"
-        label="Comment"
-        variant="outlined"
-        value={ticket.comment}
-        onChange={(event) => {
-          setTicket({ ...ticket, comment: event.target.value });
-        }}
+      <Controller
+        name="comment"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            id="comment"
+            label="Comment"
+            variant="outlined"
+            error={Boolean(errors.comment)}
+            helperText={errors.comment ? errors.comment.message : " "}
+          />
+        )}
       />
-      <Button variant="contained" onClick={handleSubmit}>
+      <Button type="submit" variant="contained">
         {loading ? (
           <CircularProgress color="white" size={25} />
         ) : (
           "Create Ticket"
         )}
       </Button>
-    </>
+    </form>
   );
 }
