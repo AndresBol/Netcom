@@ -4,8 +4,8 @@ class TicketService {
   getAll() {
     return axios.get(BASE_URL);
   }
-  getById(ticketId) {
-    return axios.get(BASE_URL + '/' + ticketId);
+  getById(id) {
+    return axios.get(BASE_URL + '/' + id);
   }
   getByCategory(categoryId) {
     return axios.get(BASE_URL + '/getAllTicketsByCategory/' + categoryId);
@@ -19,8 +19,8 @@ class TicketService {
   update(ticket){
     return axios.put(BASE_URL, ticket)
   }
-  delete(ticketId){
-    return axios.delete(BASE_URL + '/' + ticketId);
+  delete(id){
+    return axios.delete(BASE_URL + '/' + id);
   }
 }
 
