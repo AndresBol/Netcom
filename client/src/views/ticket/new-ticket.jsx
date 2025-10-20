@@ -3,14 +3,40 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TicketService from "../../services/ticket";
+import CategoryService from "../../services/category";
+import PriorityService from "../../services/priority";
 import { useTicketForm } from "../../validations/ticket";
 import { Controller } from "react-hook-form";
 import toast from "react-hot-toast";
+import { Select } from "../../components/select";
 
 export function NewTicket() {
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [priorities, setPriorities] = useState([]);
+
+  const fetchModels = async () => {
+    //Fetch Categories
+    const response = await CategoryService.getAll();
+    setCategories(response.data);
+
+    //Fetch Priorities
+    const priorityResponse = await PriorityService.getAll();
+    setPriorities(priorityResponse.data);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    try {
+      fetchModels();
+    } catch (error) {
+      console.error("Error fetching models:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const {
     control,
@@ -77,28 +103,14 @@ export function NewTicket() {
         name="category_id"
         control={control}
         render={({ field }) => (
-          <TextField
-            {...field}
-            id="category_id"
-            label="CategoryId"
-            variant="outlined"
-            error={Boolean(errors.category_id)}
-            helperText={errors.category_id ? errors.category_id.message : " "}
-          />
+          <Select field={field} data={categories} model="Categories" />
         )}
       />
       <Controller
         name="priority_id"
         control={control}
         render={({ field }) => (
-          <TextField
-            {...field}
-            id="priority_id"
-            label="PriorityId"
-            variant="outlined"
-            error={Boolean(errors.priority_id)}
-            helperText={errors.priority_id ? errors.priority_id.message : " "}
-          />
+          <Select field={field} data={priorities} model="Priorities" />
         )}
       />
 
