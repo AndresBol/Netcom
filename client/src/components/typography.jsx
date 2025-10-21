@@ -6,6 +6,7 @@ export function Base({
   variant,
   bold = false,
   color = "text.secondary",
+  alignment = "start",
 }) {
   const content =
     typeof children === "string"
@@ -27,7 +28,7 @@ export function Base({
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "start",
+        justifyContent: alignment,
         gap: 1,
       }}
     >
@@ -38,8 +39,13 @@ export function Base({
 
 // Factory function
 const createTypographyComponent = (variant) => {
-  return ({ children, bold = false, color = "text.secondary" }) => (
-    <Base variant={variant} bold={bold} color={color}>
+  return ({
+    children,
+    bold = false,
+    color = "text.secondary",
+    alignment = "start",
+  }) => (
+    <Base variant={variant} bold={bold} color={color} alignment={alignment}>
       {children}
     </Base>
   );

@@ -43,6 +43,9 @@ function TicketKanbanItem(ticket) {
               <br />
             </Body>
           )}
+          <SubTitle bold alignment="end">
+            {ticket.status_name}
+          </SubTitle>
         </CardContent>
         <CardActions sx={styles.ActionsContainer}>
           <Body>
