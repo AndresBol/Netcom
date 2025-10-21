@@ -22,6 +22,10 @@ export function Home() {
       <Button href="/ticket/new" variant="contained">
         Create Ticket
       </Button>
+
+        <Button href="/ticket/1" variant="outlined" color="secondary">
+        Detail Ticket
+      </Button>
     </Container>
   );
 }

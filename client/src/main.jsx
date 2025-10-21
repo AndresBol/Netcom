@@ -6,6 +6,9 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import { Home } from "./components/home";
 import { NewTicket } from "./views/ticket/new-ticket";
+import { TicketDetail } from "./views/ticket/ticket-detail";
+
+
 const router = createBrowserRouter([
   {
     element: <App />,
@@ -17,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: "/ticket/new",
         element: <NewTicket />,
+      },
+        {
+        path: "/ticket/:id",
+        element: <TicketDetail/>,
       },
     ],
   },
