@@ -6,6 +6,8 @@ import App from "./App";
 import { Home } from "./components/home";
 import { NewTicket } from "./views/ticket/new-ticket";
 import { TicketIndex } from "./views/ticket/index";
+import { TicketDetail } from "./views/ticket/ticket";
+
 const router = createBrowserRouter([
   {
     element: <App />,
@@ -21,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: "/ticket/index",
         element: <TicketIndex />,
+      },
+      {
+        path: "/ticket/:id",
+        element: <TicketDetail />,
       },
     ],
   },
