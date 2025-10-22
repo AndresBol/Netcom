@@ -5,6 +5,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import { Home } from "./components/home";
 import { NewTicket } from "./views/ticket/new-ticket";
+import { TicketDetailView} from "./views/ticket/ticket-detail-view";
 import { TicketIndex } from "./views/ticket/index";
 import { TicketDetail } from "./views/ticket/ticket";
 
@@ -20,6 +21,12 @@ const router = createBrowserRouter([
         path: "/ticket/new",
         element: <NewTicket />,
       },
+
+        {
+        path: "/ticket/:id",
+        element: <TicketDetailView/>,
+      },
+
       {
         path: "/ticket/index",
         element: <TicketIndex />,
@@ -28,6 +35,7 @@ const router = createBrowserRouter([
         path: "/ticket/:id",
         element: <TicketDetail />,
       },
+
     ],
   },
 ]);

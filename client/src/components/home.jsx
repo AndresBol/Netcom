@@ -34,6 +34,7 @@ export function Home() {
       <Button href="/ticket/index" variant="contained">
         View Tickets
       </Button>
+
     </Container>
   );
 }
