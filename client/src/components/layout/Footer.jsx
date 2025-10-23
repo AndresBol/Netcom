@@ -10,24 +10,20 @@ export function Footer() {
         width: "100%",
         height: "4.5rem",
         backgroundColor: "primary.main",
-        paddingTop: "1rem",
-        paddingBottom: "1rem",
+        zIndex: 1200,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       {/* Comentario */}
       <Container>
-        <Grid container rowSpacing={1}>
-          <Grid item xs={12}>
-            <Typography align="center" color="white" variant="subtitle1">
-              ISW-613
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography align="center" color="secondary.main" variant="body1">
-              {`${new Date().getFullYear()}`}
-            </Typography>
-          </Grid>
-        </Grid>
+        <Typography align="center" color="white" variant="subtitle1">
+          ISW-613
+        </Typography>
+        <Typography align="center" color="secondary.main" variant="body1">
+          {`${new Date().getFullYear()}`}
+        </Typography>
       </Container>
     </Toolbar>
   );

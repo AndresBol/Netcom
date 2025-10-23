@@ -47,7 +47,7 @@ export const useTicketForm = () => useForm({
     'label_id':1,
     'title':'',
     'description':'',
-    'notification_status':'',
+    'notification_status':'Pending',
     'rating':0,
     'comment':'',
   },
