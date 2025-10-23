@@ -7,6 +7,7 @@ import { Home } from "./components/home";
 import { NewTicket } from "./views/ticket/new-ticket";
 import { TicketIndex } from "./views/ticket/index";
 import { TicketDetail } from "./views/ticket/ticket";
+import { CategoryIndex } from "./views/category/categoryindex";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,11 @@ const router = createBrowserRouter([
       {
         path: "/ticket/:id",
         element: <TicketDetail />,
+      },
+
+         {
+        path: "/category/index",
+        element: <CategoryIndex/>,
       },
     ],
   },
