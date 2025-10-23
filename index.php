@@ -22,6 +22,10 @@ require_once "models/priority.php";
 require_once "models/status.php";
 require_once "models/ticket-label.php";
 require_once "models/ticket.php";
+require_once "models/user.php";
+require_once "models/role.php";
+require_once "models/special-field.php";
+require_once "models/user-special-field.php";
 
 
 /***--- Agregar todos los controladores*/
@@ -30,6 +34,9 @@ require_once "controllers/priority.php";
 require_once "controllers/status.php";
 require_once "controllers/ticket-label.php";
 require_once "controllers/ticket.php";
+require_once "controllers/user.php";
+require_once "controllers/role.php";
+require_once "controllers/special-field.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";
