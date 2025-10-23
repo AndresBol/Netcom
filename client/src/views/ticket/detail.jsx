@@ -13,12 +13,12 @@ import {
   Divider,
   Chip,
 } from "@mui/material";
-import TicketService from "../../services/ticket";
-import StatusService from "../../services/status";
-import CategoryService from "../../services/category";
-import PriorityService from "../../services/priority";
-import TicketLabelService from "../../services/ticket-label";
-export function TicketDetailView() {
+import TicketService from "../../services/ticket.js";
+import StatusService from "../../services/status.js";
+import CategoryService from "../../services/category.js";
+import PriorityService from "../../services/priority.js";
+import TicketLabelService from "../../services/ticket-label.js";
+export function TicketDetail() {
   const { id } = useParams();
   const ticketId = id ? parseInt(id) : 1;
 
@@ -97,25 +97,25 @@ export function TicketDetailView() {
           align="center"
           sx={{ fontWeight: 700, mb: 2, color: "primary.main" }}
         >
-          Ticket - {ticket.id} - {ticket.title}
+          Ticket #{ticket.id} | {ticket.title}
         </Typography>
 
         <Card variant="outlined" sx={{ borderRadius: 2 }}>
           <CardContent>
-            <Grid container spacing={3}  justifyContent="center" sx={{ mb: 2 }}>
+            <Grid container spacing={3} justifyContent="center" sx={{ mb: 2 }}>
               <Grid item>
-
-                <Typography variant= "subtitle2" sx={{mb:1}}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
                   Status:
                 </Typography>
                 <Chip
                   label={getName(statuses, ticket.status_id)}
                   color="primary"
+                  sx={{ color: "white" }}
                 />
               </Grid>
 
               <Grid item>
-                <Typography variant= "subtitle2" sx={{mb:1}}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
                   Priority:
                 </Typography>
                 <Chip
@@ -125,7 +125,7 @@ export function TicketDetailView() {
               </Grid>
 
               <Grid item>
-                <Typography variant= "subtitle2" sx={{mb:1}}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
                   Category:
                 </Typography>
                 <Chip
@@ -133,17 +133,17 @@ export function TicketDetailView() {
                   color="secondary"
                 />
               </Grid>
-
-              <Grid item>
-
-                <Typography variant= "subtitle2" sx={{mb:1}}>
-                  Label:
-                </Typography>
-                <Chip
-                  label={getName(labels, ticket.label_id)}
-                  color="success"
-                />
-              </Grid>
+              {ticket.label_id && (
+                <Grid item>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    Label:
+                  </Typography>
+                  <Chip
+                    label={getName(labels, ticket.label_id)}
+                    color="success"
+                  />
+                </Grid>
+              )}
             </Grid>
 
             <Divider sx={{ my: 2 }} />
@@ -174,7 +174,8 @@ export function TicketDetailView() {
               Crated At:
             </Typography>
             <Typography variant="body2">
-              {formatDateUS(ticket.created_on)} {formatTimeUS(ticket.created_on)}
+              {formatDateUS(ticket.created_on)}{" "}
+              {formatTimeUS(ticket.created_on)}
             </Typography>
           </CardContent>
         </Card>

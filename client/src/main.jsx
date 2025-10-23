@@ -4,11 +4,10 @@ import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import { Home } from "./components/home";
-import { NewTicket } from "./views/ticket/new-ticket";
-import { TicketDetailView} from "./views/ticket/ticket-detail-view";
+import { NewTicket } from "./views/ticket/new";
 import { TicketIndex } from "./views/ticket/index";
-import { TicketDetail } from "./views/ticket/ticket";
-import { CategoryIndex } from "./views/category/categoryindex";
+import { TicketDetail } from "./views/ticket/detail";
+import { CategoryIndex } from "./views/category";
 
 const router = createBrowserRouter([
   {
@@ -23,25 +22,20 @@ const router = createBrowserRouter([
         element: <NewTicket />,
       },
 
-        {
+      {
         path: "/ticket/:id",
-        element: <TicketDetailView/>,
+        element: <TicketDetail />,
       },
 
       {
         path: "/ticket/index",
         element: <TicketIndex />,
       },
+
       {
-        path: "/ticket/:id",
-        element: <TicketDetail />,
-      },
-
-         {
         path: "/category/index",
-        element: <CategoryIndex/>,
+        element: <CategoryIndex />,
       },
-
     ],
   },
 ]);
