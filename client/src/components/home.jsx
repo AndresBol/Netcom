@@ -6,7 +6,16 @@ import Button from "@mui/material/Button";
 
 export function Home() {
   return (
-    <Container sx={{ p: 2 }} maxWidth="sm">
+    <Container
+      sx={{
+        p: 2,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 2,
+      }}
+      maxWidth="sm"
+    >
       <Typography
         component="h1"
         variant="h2"
@@ -22,9 +31,8 @@ export function Home() {
       <Button href="/ticket/new" variant="contained">
         Create Ticket
       </Button>
-
-        <Button href="/ticket/1" variant="outlined" color="secondary">
-        Detail Ticket
+      <Button href="/ticket/index" variant="contained">
+        View Tickets
       </Button>
     </Container>
   );

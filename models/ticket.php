@@ -9,8 +9,19 @@ class TicketModel
     /*List */
     public function all(){
         try {
-            //sql query
-			$vSql = "SELECT * FROM ticket where is_active=1;";
+            //sql query with JOINs to get related names
+			$vSql = "SELECT 
+                t.*,
+                s.name as status_name,
+                c.name as category_name,
+                p.name as priority_name,
+                tl.name as label_name
+            FROM ticket t
+            LEFT JOIN status s ON t.status_id = s.id
+            LEFT JOIN category c ON t.category_id = c.id
+            LEFT JOIN priority p ON t.priority_id = p.id
+            LEFT JOIN ticket_label tl ON t.label_id = tl.id
+            WHERE t.is_active = 1;";
 			
             //query execution
 			$vResultado = $this->enlace->ExecuteSQL ($vSql);
@@ -25,8 +36,19 @@ class TicketModel
     public function get($id)
     {
         try {
-            //sql query
-			$vSql = "SELECT * FROM ticket where id=$id;";
+            //sql query with JOINs to get related names
+			$vSql = "SELECT 
+                t.*,
+                s.name as status_name,
+                c.name as category_name,
+                p.name as priority_name,
+                tl.name as label_name
+            FROM ticket t
+            LEFT JOIN status s ON t.status_id = s.id
+            LEFT JOIN category c ON t.category_id = c.id
+            LEFT JOIN priority p ON t.priority_id = p.id
+            LEFT JOIN ticket_label tl ON t.label_id = tl.id
+            WHERE t.id = $id;";
 			
             //query execution
 			$vResultado = $this->enlace->ExecuteSQL ( $vSql);
@@ -39,8 +61,19 @@ class TicketModel
     /*Get all tickets by category */
     public function getAllTicketsByCategory($categoryId) {
         try {
-            //sql query
-            $vSql = "SELECT * FROM ticket WHERE category_id = $categoryId AND is_active = 1;";
+            //sql query with JOINs to get related names
+            $vSql = "SELECT 
+                t.*,
+                s.name as status_name,
+                c.name as category_name,
+                p.name as priority_name,
+                tl.name as label_name
+            FROM ticket t
+            LEFT JOIN status s ON t.status_id = s.id
+            LEFT JOIN category c ON t.category_id = c.id
+            LEFT JOIN priority p ON t.priority_id = p.id
+            LEFT JOIN ticket_label tl ON t.label_id = tl.id
+            WHERE t.category_id = $categoryId AND t.is_active = 1;";
             //query execution
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             //return the object
@@ -52,8 +85,19 @@ class TicketModel
     /*Get all tickets by priority */
     public function getAllTicketsByPriority($priorityId) {
         try {
-            //sql query
-            $vSql = "SELECT * FROM ticket WHERE priority_id = $priorityId AND is_active = 1;";
+            //sql query with JOINs to get related names
+            $vSql = "SELECT 
+                t.*,
+                s.name as status_name,
+                c.name as category_name,
+                p.name as priority_name,
+                tl.name as label_name
+            FROM ticket t
+            LEFT JOIN status s ON t.status_id = s.id
+            LEFT JOIN category c ON t.category_id = c.id
+            LEFT JOIN priority p ON t.priority_id = p.id
+            LEFT JOIN ticket_label tl ON t.label_id = tl.id
+            WHERE t.priority_id = $priorityId AND t.is_active = 1;";
             //query execution
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             //return the object
@@ -65,8 +109,19 @@ class TicketModel
     /*Get all tickets by status */
     public function getAllTicketsByStatus($statusId) {
         try {
-            //sql query
-            $vSql = "SELECT * FROM ticket WHERE status_id = $statusId AND is_active = 1;";
+            //sql query with JOINs to get related names
+            $vSql = "SELECT 
+                t.*,
+                s.name as status_name,
+                c.name as category_name,
+                p.name as priority_name,
+                tl.name as label_name
+            FROM ticket t
+            LEFT JOIN status s ON t.status_id = s.id
+            LEFT JOIN category c ON t.category_id = c.id
+            LEFT JOIN priority p ON t.priority_id = p.id
+            LEFT JOIN ticket_label tl ON t.label_id = tl.id
+            WHERE t.status_id = $statusId AND t.is_active = 1;";
             //query execution
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             //return the object
