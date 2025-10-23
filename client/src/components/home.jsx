@@ -1,7 +1,6 @@
 import React from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 
 export function Home() {
@@ -28,6 +27,9 @@ export function Home() {
       <Typography variant="h5" align="center" color="text.secondary">
         Descubre y alquila tus películas favoritas por días.
       </Typography>
+      <Button href="/user/index" variant="contained">
+        View Users
+      </Button>
       <Button href="/ticket/new" variant="contained">
         Create Ticket
       </Button>
@@ -38,8 +40,6 @@ export function Home() {
       <Button href="/category/index" variant="contained">
         View Categories
       </Button>
-
-
     </Container>
   );
 }
