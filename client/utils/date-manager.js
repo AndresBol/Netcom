@@ -11,3 +11,17 @@ export function formatTime(value) {
     hour12: false,
   });
 }
+
+export function formatDateUS(value) {
+  if (!value) return "";
+  return new Date(value).toLocaleDateString("en-US");
+}
+
+export function formatTimeUS(value) {
+  if (!value) return "";
+  return new Date(value).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
