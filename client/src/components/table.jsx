@@ -281,7 +281,7 @@ export default function Table({
         data={data}
         onFilterApply={handleFilterApply}
         currentFilters={filters}
-        dialogTitle="Filter Table"
+        dialogTitle={`Filter ${tableTitle}`}
       />
       <EnhancedTableToolbar
         tableTitle={tableTitle}

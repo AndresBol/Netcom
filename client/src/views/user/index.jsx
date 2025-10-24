@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import UserService from "@services/user";
 import Table from "@components/table";
 import { Loading } from "@components/loading";
+import { useNavigate } from "react-router-dom";
 
 export function UserIndex() {
   const [loading, setLoading] = useState(true);
@@ -13,6 +14,8 @@ export function UserIndex() {
     { label: "Email", fieldName: "email", fieldType: "string" },
     { label: "Role", fieldName: "role_name", fieldType: "string" },
   ];
+
+  const navigate = useNavigate();
 
   const fetchModels = async () => {
     //Fetch Users
@@ -38,17 +41,13 @@ export function UserIndex() {
 
   if (loading) return <Loading />;
 
-  function handleRowClick(rowData) {
-    console.log("Row clicked:", rowData);
-  }
-
   return (
     <View styles={styles.MainView}>
       <Title1>Available Users</Title1>
       <Table
         headTitles={tableHeadTitles}
         data={users}
-        onRowClick={handleRowClick}
+        onRowClick={(user) => navigate(`/user/${user.id}`)}
         tableTitle="User List"
       />
     </View>
