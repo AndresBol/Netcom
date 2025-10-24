@@ -15,17 +15,6 @@ import Box from "@mui/material/Box";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-/**
- * Generic Filter Dialog Component
- * @param {boolean} open - Whether the dialog is open
- * @param {function} onClose - Callback when dialog closes
- * @param {array} items - Array of items to filter by, each item should have: label, fieldName, fieldType (optional)
- * @param {array} data - Array of data rows to extract unique values from
- * @param {function} onFilterApply - Callback with selected filters
- * @param {object} currentFilters - Current active filters
- * @param {string} dialogTitle - Title of the dialog (default: "Filter Table")
- * @param {string} excludeFieldType - Field type to exclude from filter options (default: "one2many")
- */
 export default function FilterDialog({
   open,
   onClose,
