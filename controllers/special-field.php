@@ -1,13 +1,13 @@
 <?php
-class specialField
+class special_field
 {
     public function index()
     {
         try {
             $response = new Response();
             //Obtain the Model listing
-            $specialField = new SpecialFieldModel();
-            $result = $specialField->all();
+            $special_field = new SpecialFieldModel();
+            $result = $special_field->all();
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {
@@ -18,8 +18,8 @@ class specialField
     {
         try {
             $response = new Response();
-            $specialField = new SpecialFieldModel();
-            $result = $specialField->get($id);
+            $special_field = new SpecialFieldModel();
+            $result = $special_field->get($id);
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {
@@ -29,8 +29,8 @@ class specialField
     public function getAllSpecialFieldsByCategory($categoryId) {
         try {
             $response = new Response();
-            $specialField = new SpecialFieldModel();
-            $result = $specialField->getAllSpecialFieldsByCategory($categoryId);
+            $special_field = new SpecialFieldModel();
+            $result = $special_field->getAllSpecialFieldsByCategory($categoryId);
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {
@@ -45,8 +45,8 @@ class specialField
 
             $inputJson = $request->getJSON();
 
-            $specialField = new SpecialFieldModel();
-            $result = $specialField->insert($inputJson);
+            $special_field = new SpecialFieldModel();
+            $result = $special_field->insert($inputJson);
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {
@@ -61,8 +61,8 @@ class specialField
 
             $inputJson = $request->getJSON();
 
-            $specialField = new SpecialFieldModel();
-            $result = $specialField->update($inputJson);
+            $special_field = new SpecialFieldModel();
+            $result = $special_field->update($inputJson);
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {
@@ -73,8 +73,8 @@ class specialField
     {
         try {
             $response = new Response();
-            $specialField = new SpecialFieldModel();
-            $result = $specialField->delete($id);
+            $special_field = new SpecialFieldModel();
+            $result = $special_field->delete($id);
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {

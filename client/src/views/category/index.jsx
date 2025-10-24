@@ -1,21 +1,18 @@
 import { View } from "../../components/view";
-import { Title1 } from "../../components/typography";
 import { useEffect, useState } from "react";
 import CategoryService from "../../services/category";
 import { Loading } from "../../components/loading";
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Table from "../../components/table";
 
 export function CategoryIndex() {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
+  const tableHeadTitles = [
+    { label: "ID", fieldName: "id", fieldType: "number" },
+    { label: "Name", fieldName: "name", fieldType: "string" },
+  ];
+
   const navigate = useNavigate();
 
   const fetchModels = async () => {
@@ -44,40 +41,12 @@ export function CategoryIndex() {
 
   return (
     <View styles={styles.MainView}>
-      <Title1>Available Categories</Title1>
-
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <strong>ID</strong>
-            </TableCell>
-            <TableCell>
-              {" "}
-              <strong>Category Name</strong>
-            </TableCell>
-            <TableCell>
-              <strong>Action</strong>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {categories.map((cat) => (
-            <TableRow key={cat.id}>
-              <TableCell>{cat.id}</TableCell>
-              <TableCell>{cat.name}</TableCell>
-              <TableCell>
-                <Button
-                  variant="contained"
-                  onClick={() => navigate(`/categories/edit/${cat.id}`)}
-                >
-                  View Detail
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <Table
+        headTitles={tableHeadTitles}
+        data={categories}
+        onRowClick={(cat) => navigate(`/categories/edit/${cat.id}`)}
+        tableTitle="Available Categories"
+      />
     </View>
   );
 }
