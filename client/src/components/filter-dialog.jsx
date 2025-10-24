@@ -148,10 +148,12 @@ export default function FilterDialog({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClearFilters} color="warning">
+        <Button onClick={handleClearFilters} color="error">
           Clear Filters
         </Button>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose} color="black">
+          Cancel
+        </Button>
         <Button onClick={handleApplyFilters} variant="contained">
           Apply Filters
         </Button>
