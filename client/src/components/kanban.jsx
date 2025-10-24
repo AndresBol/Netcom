@@ -5,7 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import { Body, SubTitle } from "./typography.jsx";
 import { View } from "./view.jsx";
-import { formatDate, formatTime } from "../../utils/date-manager.js";
+import { formatDate, formatTime } from "@utils/date-manager";
 import TodayIcon from "@mui/icons-material/Today";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import { useNavigate } from "react-router-dom";
@@ -50,11 +50,11 @@ function TicketKanbanItem(ticket) {
         <CardActions sx={styles.ActionsContainer}>
           <Body>
             <TodayIcon />
-            {formatDate(ticket.created_on)}
+            {formatDate(ticket.created_on, "en-US")}
           </Body>
           <Body>
             <QueryBuilderIcon />
-            {formatTime(ticket.created_on)}
+            {formatTime(ticket.created_on, "en-US")}
           </Body>
         </CardActions>
       </CardActionArea>

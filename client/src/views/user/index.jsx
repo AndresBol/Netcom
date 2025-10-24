@@ -1,9 +1,9 @@
-import { Title1 } from "../../components/typography";
-import { View } from "../../components/view";
+import { Title1 } from "@components/typography";
+import { View } from "@components/view";
 import { useEffect, useState } from "react";
-import UserService from "../../services/user";
-import Table from "../../components/table";
-import { Loading } from "../../components/loading";
+import UserService from "@services/user";
+import Table from "@components/table";
+import { Loading } from "@components/loading";
 
 export function UserIndex() {
   const [loading, setLoading] = useState(true);

@@ -1,15 +1,14 @@
-import { View } from "../../components/view";
+import { View } from "@components/view";
 import { useEffect, useState } from "react";
-import CategoryService from "../../services/category";
-import { Loading } from "../../components/loading";
+import CategoryService from "@services/category";
+import { Loading } from "@components/loading";
 import { useNavigate } from "react-router-dom";
-import Table from "../../components/table";
+import Table from "@components/table";
 
 export function CategoryIndex() {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const tableHeadTitles = [
-    { label: "ID", fieldName: "id", fieldType: "number" },
     { label: "Name", fieldName: "name", fieldType: "string" },
   ];
 

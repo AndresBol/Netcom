@@ -12,11 +12,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import AddIcon from "@mui/icons-material/Add";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Collapse from "@mui/material/Collapse";
+import FilterDialog from "./filter-dialog";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -84,7 +85,11 @@ function EnhancedTableHead(props) {
   );
 }
 
-function EnhancedTableToolbar({ tableTitle, onCreateBtnClick }) {
+function EnhancedTableToolbar({
+  tableTitle,
+  onFilterBtnClick,
+  hasActiveFilters,
+}) {
   return (
     <Toolbar
       sx={[
@@ -102,9 +107,12 @@ function EnhancedTableToolbar({ tableTitle, onCreateBtnClick }) {
       >
         {tableTitle}
       </Typography>
-      <Tooltip title="Create Record">
-        <IconButton onClick={onCreateBtnClick}>
-          <AddIcon />
+      <Tooltip title="Filter list">
+        <IconButton
+          onClick={onFilterBtnClick}
+          color={hasActiveFilters ? "primary" : "default"}
+        >
+          <FilterListIcon />
         </IconButton>
       </Tooltip>
     </Toolbar>
@@ -183,15 +191,16 @@ export default function Table({
   headTitles,
   tableTitle,
   onRowClick,
-  onCreateBtnClick,
   hasPagination = true,
   dense = false,
 }) {
   const headCells = generateHeadCells(headTitles);
   const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("");
+  const [orderBy, setOrderBy] = React.useState("name");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
+  const [filterDialogOpen, setFilterDialogOpen] = React.useState(false);
+  const [filters, setFilters] = React.useState({});
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -208,6 +217,15 @@ export default function Table({
     setPage(0);
   };
 
+  const handleFilterBtnClick = () => {
+    setFilterDialogOpen(true);
+  };
+
+  const handleFilterApply = (newFilters) => {
+    setFilters(newFilters);
+    setPage(0); // Reset to first page when filters change
+  };
+
   // Get the fieldName from headTitles based on the headCell id
   const getFieldNameFromId = (headCellId) => {
     const headTitle = headTitles.find(
@@ -216,13 +234,30 @@ export default function Table({
     return headTitle?.fieldName || headCellId;
   };
 
+  // Apply filters to data
+  const filteredData = React.useMemo(() => {
+    if (Object.keys(filters).length === 0) {
+      return data;
+    }
+
+    return data.filter((row) => {
+      for (const [fieldName, allowedValues] of Object.entries(filters)) {
+        const rowValue = String(row[fieldName] || "");
+        if (!allowedValues.includes(rowValue)) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }, [data, filters]);
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredData.length) : 0;
 
   const visibleRows = React.useMemo(() => {
     const fieldName = getFieldNameFromId(orderBy);
-    return [...data]
+    return [...filteredData]
       .sort((a, b) => {
         const aValue = a[fieldName];
         const bValue = b[fieldName];
@@ -235,13 +270,23 @@ export default function Table({
         return 0;
       })
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  }, [order, orderBy, page, rowsPerPage, data]);
+  }, [order, orderBy, page, rowsPerPage, filteredData]);
 
   return (
     <>
+      <FilterDialog
+        open={filterDialogOpen}
+        onClose={() => setFilterDialogOpen(false)}
+        items={headTitles}
+        data={data}
+        onFilterApply={handleFilterApply}
+        currentFilters={filters}
+        dialogTitle="Filter Table"
+      />
       <EnhancedTableToolbar
         tableTitle={tableTitle}
-        onCreateBtnClick={onCreateBtnClick}
+        onFilterBtnClick={handleFilterBtnClick}
+        hasActiveFilters={Object.keys(filters).length > 0}
       />
       <TableContainer>
         <TableMUI
@@ -284,7 +329,7 @@ export default function Table({
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={data.length}
+          count={filteredData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

@@ -9,6 +9,16 @@
         "moduleResolution": "node",
         "target": "ESNext",
         "jsx": "preserve",
+        "baseUrl": ".",
+        "paths": {
+            "@components/*": ["src/components/*"],
+            "@services/*": ["src/services/*"],
+            "@themes/*": ["src/themes/*"],
+            "@validations/*": ["src/validations/*"],
+            "@views/*": ["src/views/*"],
+            "@utils/*": ["src/utils/*"],
+            "@assets/*": ["src/assets/*"]
+        }
     },
     "exclude": [
         "node_modules",
