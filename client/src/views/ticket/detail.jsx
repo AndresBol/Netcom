@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { formatDateUS, formatTimeUS } from "../../../utils/date-manager.js";
+import { formatDate, formatTime } from "@utils/date-manager";
 
 import {
   Card,
@@ -13,11 +13,11 @@ import {
   Divider,
   Chip,
 } from "@mui/material";
-import TicketService from "../../services/ticket.js";
-import StatusService from "../../services/status.js";
-import CategoryService from "../../services/category.js";
-import PriorityService from "../../services/priority.js";
-import TicketLabelService from "../../services/ticket-label.js";
+import TicketService from "@services/ticket";
+import StatusService from "@services/status";
+import CategoryService from "@services/category";
+import PriorityService from "@services/priority";
+import TicketLabelService from "@services/ticket-label";
 export function TicketDetail() {
   const { id } = useParams();
   const ticketId = id ? parseInt(id) : 1;
@@ -174,8 +174,8 @@ export function TicketDetail() {
               Crated At:
             </Typography>
             <Typography variant="body2">
-              {formatDateUS(ticket.created_on)}{" "}
-              {formatTimeUS(ticket.created_on)}
+              {formatDate(ticket.created_on, "en-US")}{" "}
+              {formatTime(ticket.created_on, "en-US")}
             </Typography>
           </CardContent>
         </Card>

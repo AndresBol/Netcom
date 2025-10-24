@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
-import error from "../../assets/Error.png";
+import error from "@assets/Error.png";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 export function PageNotFound() {

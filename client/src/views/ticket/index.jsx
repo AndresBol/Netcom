@@ -1,9 +1,9 @@
-import { Title1 } from "../../components/typography";
-import { View } from "../../components/view";
+import { Title1 } from "@components/typography";
+import { View } from "@components/view";
 import { useEffect, useState } from "react";
-import TicketService from "../../services/ticket";
-import { Kanban } from "../../components/kanban";
-import { Loading } from "../../components/loading";
+import TicketService from "@services/ticket";
+import { Kanban } from "@components/kanban";
+import { Loading } from "@components/loading";
 
 export function TicketIndex() {
   const [loading, setLoading] = useState(true);

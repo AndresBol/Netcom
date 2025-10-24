@@ -5,14 +5,14 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Grid, Paper, Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import TicketService from "../../services/ticket";
-import CategoryService from "../../services/category";
-import PriorityService from "../../services/priority";
-import TicketLabelService from "../../services/ticket-label";
-import { useTicketForm } from "../../validations/ticket";
+import TicketService from "@services/ticket";
+import CategoryService from "@services/category";
+import PriorityService from "@services/priority";
+import TicketLabelService from "@services/ticket-label";
+import { useTicketForm } from "@validations/ticket";
 import { Controller } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Select } from "../../components/select";
+import { Select } from "@components/select";
 export function NewTicket() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -110,7 +110,6 @@ export function NewTicket() {
           </Typography>
 
           <Box>
-
             {/* Title */}
             <Grid container justifyContent="center" sx={{ mb: 4 }}>
               <Grid item xs={12} sm={11} md={10} lg={8}>
@@ -137,7 +136,7 @@ export function NewTicket() {
               </Grid>
             </Grid>
 
-            <Grid justifyContent= "center"container spacing={3}>
+            <Grid justifyContent="center" container spacing={3}>
               {/* StatusId field*/}
               <Grid item xs={12} sm={6}>
                 <Controller
