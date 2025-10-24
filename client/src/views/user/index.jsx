@@ -1,30 +1,29 @@
+import { Title1 } from "../../components/typography";
 import { View } from "../../components/view";
 import { useEffect, useState } from "react";
-import CategoryService from "../../services/category";
-import { Loading } from "../../components/loading";
-import { useNavigate } from "react-router-dom";
+import UserService from "../../services/user";
 import Table from "../../components/table";
+import { Loading } from "../../components/loading";
 
-export function CategoryIndex() {
+export function UserIndex() {
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
+  const [users, setUsers] = useState([]);
   const tableHeadTitles = [
-    { label: "ID", fieldName: "id", fieldType: "number" },
     { label: "Name", fieldName: "name", fieldType: "string" },
+    { label: "Email", fieldName: "email", fieldType: "string" },
+    { label: "Role", fieldName: "role_name", fieldType: "string" },
   ];
 
-  const navigate = useNavigate();
-
   const fetchModels = async () => {
-    //Fetch Categories
-    const response = await CategoryService.getAll();
-    setCategories(response.data);
+    //Fetch Users
+    const response = await UserService.getAll();
+    setUsers(response.data);
 
-    console.log("Categories fetched:", response.data);
+    console.log("Users fetched:", response.data);
   };
 
   useEffect(() => {
-    const loadCategories = async () => {
+    const loadUsers = async () => {
       setLoading(true);
       try {
         await fetchModels();
@@ -34,18 +33,23 @@ export function CategoryIndex() {
         setLoading(false);
       }
     };
-    loadCategories();
+    loadUsers();
   }, []);
 
   if (loading) return <Loading />;
 
+  function handleRowClick(rowData) {
+    console.log("Row clicked:", rowData);
+  }
+
   return (
     <View styles={styles.MainView}>
+      <Title1>Available Users</Title1>
       <Table
         headTitles={tableHeadTitles}
-        data={categories}
-        onRowClick={(cat) => navigate(`/categories/edit/${cat.id}`)}
-        tableTitle="Available Categories"
+        data={users}
+        onRowClick={handleRowClick}
+        tableTitle="User List"
       />
     </View>
   );
@@ -57,6 +61,7 @@ const styles = {
     borderWidth: 1,
     borderStyle: "solid",
     borderRadius: 2,
+    bottomShadow: 2,
     p: 2,
   },
 };
