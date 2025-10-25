@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import { Layout } from "./components/layout/Layout";
+import { Layout } from "./views/layout/Layout";
 import { appTheme } from "./themes/theme";
 import { UserProvider } from "./contexts/UserContext";
 

@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import { Home } from "./components/home";
+import { Home } from "./views/home";
 import { NewTicket } from "./views/ticket/new";
 import { TicketIndex } from "./views/ticket/index";
 import { TicketDetail } from "./views/ticket/detail";
