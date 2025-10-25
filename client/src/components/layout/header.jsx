@@ -6,12 +6,19 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import { AuthManager } from "@components/auth-manager";
 
 export default function Header() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar
+          sx={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+          }}
+        >
           <IconButton
             size="large"
             edge="start"
@@ -24,7 +31,7 @@ export default function Header() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Header
           </Typography>
-          <Button color="inherit">Login</Button>
+          <AuthManager />
         </Toolbar>
       </AppBar>
     </Box>

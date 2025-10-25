@@ -17,7 +17,8 @@
             "@validations/*": ["src/validations/*"],
             "@views/*": ["src/views/*"],
             "@utils/*": ["src/utils/*"],
-            "@assets/*": ["src/assets/*"]
+            "@assets/*": ["src/assets/*"],
+            "@contexts/*": ["src/contexts/*"]
         }
     },
     "exclude": [
