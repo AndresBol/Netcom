@@ -5,6 +5,7 @@ import { Loading } from "@components/loading";
 import { useNavigate } from "react-router-dom";
 import Table from "@components/table";
 
+
 export function CategoryIndex() {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
@@ -43,7 +44,7 @@ export function CategoryIndex() {
       <Table
         headTitles={tableHeadTitles}
         data={categories}
-        onRowClick={(cat) => navigate(`/categories/edit/${cat.id}`)}
+        onRowClick={(cat) => navigate(`/category/${cat.id}`)}
         tableTitle="Available Categories"
       />
     </View>

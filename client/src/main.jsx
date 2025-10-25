@@ -10,6 +10,7 @@ import { TicketDetail } from "./views/ticket/detail";
 import { CategoryIndex } from "./views/category";
 import { UserIndex } from "./views/user/index";
 import { UserDetail } from "./views/user/detail";
+import {CategoryDetail} from "./views/category/detail";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,11 @@ const router = createBrowserRouter([
       {
         path: "/ticket/index",
         element: <TicketIndex />,
+      },
+
+      {
+        path:"/category/:id",
+        element:<CategoryDetail/>,
       },
 
       {

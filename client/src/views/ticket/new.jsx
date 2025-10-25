@@ -55,8 +55,11 @@ export function NewTicket() {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useTicketForm();
+
+   const selectedCategory = watch("category_id");
 
   const onError = (errors, e) => {
     console.log(errors, e);
@@ -167,6 +170,7 @@ export function NewTicket() {
                       field={field}
                       data={categories}
                       model="Categories"
+          
                     />
                   )}
                 />
@@ -193,7 +197,8 @@ export function NewTicket() {
                   name="label_id"
                   control={control}
                   render={({ field }) => (
-                    <Select field={field} data={labels} model="Labels" />
+                    <Select field={field} data={labels.filter((l) => l.category_id === selectedCategory)} model="Labels" />
+
                   )}
                 />
               </Grid>
