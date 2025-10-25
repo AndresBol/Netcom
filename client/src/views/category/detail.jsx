@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
 import Table from "@components/table";
 import TicketLabelService from "@services/ticket-label";
 import SpecialFieldService from "@services/special-field";
@@ -8,7 +8,8 @@ import SlaService from "@services/sla";
 import CategoryService from "@services/category";
 import { useParams } from "react-router-dom";
 import { Title1 } from "@components/typography";
-import { View } from "@components/view";
+import { Loading } from "@components/loading";
+import { Divider } from "@mui/material";
 
 export function CategoryDetail() {
   const { id } = useParams();
@@ -60,13 +61,7 @@ export function CategoryDetail() {
     fetchData();
   }, [categoryId]);
 
-  if (loading) {
-    return (
-      <Box textAlign="center" sx={{ mt: 4 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+  if (loading) return <Loading />;
 
   const categoryHeadTitles = [
     [{ label: "Name", fieldName: "name", fieldType: "string" }],
@@ -86,28 +81,30 @@ export function CategoryDetail() {
     ],
   ];
 
-
   return (
     <Box
       sx={{
         display: "flex",
         flex: 1,
         flexDirection: "column",
-        alignItems: "start",
+        alignItems: "stretch",
         justifyContent: "center",
+        gap: 4,
+        paddingBottom: 10,
       }}
     >
       <Title1>{categoryName} Detail</Title1>
-
-      <View
-        styles={{
+      <Divider sx={{ my: 2 }} />
+      <Box
+        sx={{
           display: "flex",
           flexDirection: "row",
           alignItems: "start",
-          justifyContent: "center",
+          justifyContent: "space-between",
+          gap: 4,
         }}
       >
-        <View>
+        <Box>
           <Table
             data={labels}
             headTitles={categoryHeadTitles[0]}
@@ -116,8 +113,8 @@ export function CategoryDetail() {
             hasPagination={false}
             dense={true}
           />
-        </View>
-        <View>
+        </Box>
+        <Box>
           <Table
             data={specialties}
             headTitles={categoryHeadTitles[0]}
@@ -126,18 +123,18 @@ export function CategoryDetail() {
             hasPagination={false}
             dense={true}
           />
-        </View>
-      </View>
-      <View>
-      <Table
-        data={slas}
-        headTitles={categoryHeadTitles[1]}
-        tableTitle={"SLAs"}
-        onRowClick={() => {}}
-        hasPagination={false}
-        dense={true}
-      />
-      </View>
+        </Box>
+      </Box>
+      <Box>
+        <Table
+          data={slas}
+          headTitles={categoryHeadTitles[1]}
+          tableTitle={"SLAs"}
+          onRowClick={() => {}}
+          hasPagination={false}
+          dense={true}
+        />
+      </Box>
     </Box>
   );
 }
