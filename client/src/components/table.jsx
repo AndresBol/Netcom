@@ -18,6 +18,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Collapse from "@mui/material/Collapse";
 import FilterDialog from "./filter-dialog";
+import { formatDate, formatTime } from "@utils/date-manager";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -119,6 +120,17 @@ function EnhancedTableToolbar({
   );
 }
 
+function formatCellData(data, type) {
+  if (data === null || data === undefined) return "";
+
+  switch (type) {
+    case "dateTime":
+      return formatDate(data, "en-US") + " " + formatTime(data, "en-US");
+    default:
+      return data;
+  }
+}
+
 function Row({ data: rowData }) {
   const [open, setOpen] = React.useState(false);
   const hasOne2Many = rowData.headTitles.some(
@@ -158,7 +170,10 @@ function Row({ data: rowData }) {
               component={cellIndex == 0 ? "th" : "td"}
               scope={cellIndex == 0 ? "row" : undefined}
             >
-              {rowData.row[headTitle.fieldName]}
+              {formatCellData(
+                rowData.row[headTitle.fieldName],
+                headTitle.fieldType
+              )}
             </TableCell>
           ))}
       </TableRow>
