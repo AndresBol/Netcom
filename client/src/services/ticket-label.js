@@ -9,6 +9,10 @@ class TicketLabelService {
     return axios.get(BASE_URL + '/' + id);
   }
 
+  getByCategoryId(category_id) {
+    return axios.get(BASE_URL + '/category/' + category_id);
+  }
+
   insert(ticket_label){
     return axios.post(BASE_URL, ticket_label)
   }
