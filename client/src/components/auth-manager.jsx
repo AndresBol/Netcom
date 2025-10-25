@@ -34,12 +34,15 @@ export function AuthManager() {
 
   return (
     <FormControl sx={{ m: 1, minWidth: 90 }}>
-      <InputLabel id="user-label">Log In</InputLabel>
+      <InputLabel id="user-label" color="secondary.main">
+        Log In
+      </InputLabel>
       <Select
         labelId="user-label"
         id="user-select"
         value={loggedUser?.id}
         label="User"
+        color="secondary.main"
         autoWidth
         onChange={(e) => updateUser(e.target.value)}
       >
