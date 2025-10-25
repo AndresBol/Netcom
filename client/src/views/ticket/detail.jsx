@@ -8,7 +8,6 @@ import {
   Paper,
   Typography,
   Grid,
-  CircularProgress,
   Box,
   Divider,
   Chip,
@@ -18,6 +17,10 @@ import StatusService from "@services/status";
 import CategoryService from "@services/category";
 import PriorityService from "@services/priority";
 import TicketLabelService from "@services/ticket-label";
+import TimelineService from "@services/timeline";
+import { Loading } from "@components/loading";
+import Table from "@components/table";
+
 export function TicketDetail() {
   const { id } = useParams();
   const ticketId = id ? parseInt(id) : 1;
@@ -28,12 +31,20 @@ export function TicketDetail() {
   const [priorities, setPriorities] = useState([]);
   const [categories, setCategories] = useState([]);
   const [labels, setLabels] = useState([]);
+  const [timeline, setTimeline] = useState([]);
+
+  const timelineTableHeadTitles = [
+    { label: "Subject", fieldName: "subject", fieldType: "string" },
+    { label: "Description", fieldName: "description", fieldType: "string" },
+    { label: "Date", fieldName: "date", fieldType: "date" },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const ticketRes = await TicketService.getById(ticketId);
         setTicket(ticketRes.data);
+
         const [statusRes, priorityRes, categoryRes, labelRes] =
           await Promise.all([
             StatusService.getAll(),
@@ -45,6 +56,9 @@ export function TicketDetail() {
         setPriorities(priorityRes.data);
         setCategories(categoryRes.data);
         setLabels(labelRes.data);
+
+        const timelineRes = await TimelineService.getAllByTicketId(ticketId);
+        setTimeline(timelineRes.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -54,17 +68,7 @@ export function TicketDetail() {
     fetchData();
   }, [ticketId]);
 
-  if (loading)
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="80vh"
-      >
-        <CircularProgress />
-      </Box>
-    );
+  if (loading) return <Loading />;
   if (!ticket)
     return (
       <Typography variant="h6" color="error" align="center" sx={{ mt: 4 }}>
@@ -78,7 +82,8 @@ export function TicketDetail() {
     <Box
       display="flex"
       justifyContent="center"
-      alignItems="center"
+      alignItems="start"
+      flexDirection="column"
       minHeight="80vh"
       sx={{ backgroundColor: "background.default", p: 2 }}
     >
@@ -180,6 +185,15 @@ export function TicketDetail() {
           </CardContent>
         </Card>
       </Paper>
+      <Divider sx={{ my: 2 }} />
+      <Table
+        data={timeline}
+        headTitles={timelineTableHeadTitles}
+        tableTitle={"Timeline"}
+        onRowClick={() => {}}
+        hasPagination={false}
+        dense={true}
+      />
     </Box>
   );
 }
