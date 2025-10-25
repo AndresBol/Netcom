@@ -3,8 +3,9 @@ import { SubTitle } from "@components/typography";
 import { useParams } from "react-router-dom";
 import Table from "@components/table";
 import { useEffect, useState } from "react";
-import { Box, Typography, Divider, CircularProgress } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import UserService from "@services/user";
+import { Loading } from "@components/loading";
 
 export function UserDetail() {
   const { id } = useParams();
@@ -31,13 +32,7 @@ export function UserDetail() {
     fetchUser();
   }, [userId]);
 
-  if (loading) {
-    return (
-      <Box textAlign="center" sx={{ mt: 4 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+  if (loading) return <Loading />;
 
   if (!user) {
     return (
