@@ -73,7 +73,7 @@ class TimelineModel
             FROM timeline t
             LEFT JOIN user u ON t.user_id = u.id
             WHERE t.ticket_id = $ticketId AND t.is_active = 1
-            ORDER BY t.date DESC;";
+            ORDER BY t.date ASC;";
             
             //query execution
             $vResultado = $this->enlace->ExecuteSQL($vSql);

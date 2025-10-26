@@ -21,7 +21,6 @@ export function Base({
   return (
     <Typography
       variant={variant}
-      gutterBottom
       sx={{
         color: color,
         fontWeight: bold ? "bold" : "normal",

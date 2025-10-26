@@ -36,7 +36,12 @@ export function TicketDetail() {
   const timelineTableHeadTitles = [
     { label: "Subject", fieldName: "subject", fieldType: "string" },
     { label: "Description", fieldName: "description", fieldType: "string" },
-    { label: "Date", fieldName: "date", fieldType: "date" },
+    { label: "Date", fieldName: "date", fieldType: "dateTime" },
+    {
+      label: "Attachments",
+      fieldName: "ticket_attachments",
+      fieldType: "actionButton",
+    },
   ];
 
   useEffect(() => {
@@ -184,16 +189,16 @@ export function TicketDetail() {
             </Typography>
           </CardContent>
         </Card>
+        <Divider sx={{ my: 2 }} />
+        <Table
+          data={timeline}
+          headTitles={timelineTableHeadTitles}
+          tableTitle={"Timeline"}
+          onRowClick={(row) => {}}
+          hasPagination={false}
+          dense={true}
+        />
       </Paper>
-      <Divider sx={{ my: 2 }} />
-      <Table
-        data={timeline}
-        headTitles={timelineTableHeadTitles}
-        tableTitle={"Timeline"}
-        onRowClick={() => {}}
-        hasPagination={false}
-        dense={true}
-      />
     </Box>
   );
 }
