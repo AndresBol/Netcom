@@ -18,6 +18,9 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Collapse from "@mui/material/Collapse";
 import FilterDialog from "./filter-dialog";
+import { formatDate, formatTime } from "@utils/date-manager";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
+import { Body } from "./typography";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -46,16 +49,23 @@ function generateHeadCells(headTitles) {
       id: headtitle.label.toLowerCase().trim().replace(/\s+/g, "_"),
       numeric: headtitle.fieldType === "number",
       disablePadding: false,
-      label: headtitle.label,
+      label: headtitle.fieldType === "actionButton" ? "" : headtitle.label,
     }));
 }
 
 function EnhancedTableHead(props) {
-  const { headCells, order, orderBy, onRequestSort } = props;
+  const { headCells, order, orderBy, onRequestSort, actionButton } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
-
+  if (actionButton) {
+    headCells.push({
+      id: "action_button",
+      numeric: false,
+      disablePadding: false,
+      label: "",
+    });
+  }
   return (
     <TableHead>
       <TableRow>
@@ -119,6 +129,44 @@ function EnhancedTableToolbar({
   );
 }
 
+function formatData(data, type) {
+  if (data === null || data === undefined) return "";
+
+  switch (type) {
+    case "dateTime":
+      return formatDate(data, "en-US") + " " + formatTime(data, "en-US");
+    default:
+      return data;
+  }
+}
+
+function ActionButton({ label, onClick }) {
+  return (
+    <TableCell onClick={onClick}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconButton
+          size="large"
+          edge="start"
+          color="secondary.main"
+          aria-label={label}
+        >
+          <FileOpenIcon />
+        </IconButton>
+        <Body color="secondary.main" bold={true}>
+          {label}
+        </Body>
+      </Box>
+    </TableCell>
+  );
+}
+
 function Row({ data: rowData }) {
   const [open, setOpen] = React.useState(false);
   const hasOne2Many = rowData.headTitles.some(
@@ -151,16 +199,33 @@ function Row({ data: rowData }) {
         )}
         {rowData.headTitles
           .filter((headTitle) => headTitle.fieldType !== "one2many")
-          .map((headTitle, cellIndex) => (
-            <TableCell
-              key={cellIndex}
-              align={headTitle.fieldType === "number" ? "right" : "left"}
-              component={cellIndex == 0 ? "th" : "td"}
-              scope={cellIndex == 0 ? "row" : undefined}
-            >
-              {rowData.row[headTitle.fieldName]}
-            </TableCell>
-          ))}
+          .map((headTitle, cellIndex) =>
+            headTitle.fieldType === "actionButton" &&
+            rowData.row[headTitle.fieldName].length != 0 ? (
+              <ActionButton
+                label={headTitle.label}
+                onClick={rowData.onActionButtonClick}
+              />
+            ) : (
+              <TableCell
+                key={cellIndex}
+                align={headTitle.fieldType === "number" ? "right" : "left"}
+                component={cellIndex == 0 ? "th" : "td"}
+                scope={cellIndex == 0 ? "row" : undefined}
+              >
+                {formatData(
+                  rowData.row[headTitle.fieldName],
+                  headTitle.fieldType
+                )}
+              </TableCell>
+            )
+          )}
+        {rowData.actionButton && rowData.onActionButtonClick && (
+          <ActionButton
+            label={rowData.actionButton}
+            onClick={rowData.onActionButtonClick}
+          />
+        )}
       </TableRow>
       {rowData.headTitles
         .filter((headTitle) => headTitle.fieldType === "one2many")
@@ -193,6 +258,8 @@ export default function Table({
   onRowClick,
   hasPagination = true,
   dense = false,
+  actionButton = null,
+  onActionButtonClick = null,
 }) {
   const headCells = generateHeadCells(headTitles);
   const [order, setOrder] = React.useState("asc");
@@ -299,6 +366,7 @@ export default function Table({
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
+            actionButton={actionButton}
           />
           <TableBody>
             {visibleRows.map((row, index) => {
@@ -309,6 +377,8 @@ export default function Table({
                     headTitles,
                     row,
                     onRowClick: () => onRowClick(row),
+                    actionButton,
+                    onActionButtonClick: () => onActionButtonClick(row),
                   }}
                 />
               );

@@ -27,6 +27,10 @@ require_once "models/user.php";
 require_once "models/role.php";
 require_once "models/special-field.php";
 require_once "models/user-special-field.php";
+require_once "models/ticket-attachment.php";
+require_once "models/timeline.php";
+require_once "models/user_ticket.php";
+
 
 
 /***--- Agregar todos los controladores*/
@@ -39,6 +43,8 @@ require_once "controllers/sla.php";
 require_once "controllers/user.php";
 require_once "controllers/role.php";
 require_once "controllers/special-field.php";
+require_once "controllers/timeline.php";
+require_once "controllers/user-ticket.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";
