@@ -71,7 +71,7 @@ export default function Header() {
                   color="secondary.main"
                   variant="text"
                 >
-                  Technicians
+                  Users
                 </Button>
                 <Button
                   href="/category/index"

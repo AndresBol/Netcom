@@ -265,7 +265,7 @@ export default function Table({
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(15);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [filterDialogOpen, setFilterDialogOpen] = React.useState(false);
   const [filters, setFilters] = React.useState({});
 

@@ -32,14 +32,21 @@ export function complianceResolution(ticket, sla) {
   return diffMin <= sla.resolution_time ? "Compliance" : "No Compliance";
 }
 
-export function remainingTime(ticket, sla) {
-  const now = new Date();
-  const created = new Date(ticket.created_on);
-  const elapsed = (now - created) / (1000 * 60);
-  const remaining = sla.resolution_time - elapsed;
+export function getSlaStatusIcon(created_on, resolution_time) {
+  if (!resolution_time) return "­­⚪ N/A";
 
-  if (remaining <= 0) return "SLA expired";
-  if (remaining < 60) return `${Math.floor(remaining)} remaining min`;
-  if (remaining < 1440) return `${(remaining / 60).toFixed(1)} remaining hrs`;
-  return `${(remaining / 1440).toFixed(1)} remaining days`;
+  const now = new Date();
+  const created = new Date(created_on);
+  const elapsed = (now - created) / (1000 * 60);
+  const remaining = resolution_time - elapsed;
+
+  let remainingTime;
+  if (Math.abs(remaining) < 60) remainingTime = `${Math.abs(Math.floor(remaining))} min`;
+  if (Math.abs(remaining) < 1440 && Math.abs(remaining) > 60) remainingTime = `${Math.abs((remaining / 60).toFixed(1))} hrs`;
+  if (Math.abs(remaining) >= 1440) remainingTime = `${Math.abs((remaining / 1440).toFixed(1))} days`;
+
+    if (remaining <= 0) return "🔴 Expired \n> " + remainingTime + " ago";
+  const warningThreshold = resolution_time * 0.15;
+  if (remaining <= warningThreshold) return "🟡 Near Expiry\n< " + remainingTime;
+  return "🟢 On Time\n< " + remainingTime;
 }

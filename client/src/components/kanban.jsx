@@ -1,14 +1,17 @@
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
-import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import { Body, SubTitle } from "./typography.jsx";
 import { View } from "./view.jsx";
 import { formatDate, formatTime } from "@utils/date-manager";
 import TodayIcon from "@mui/icons-material/Today";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import { useNavigate } from "react-router-dom";
+import { Box } from "@mui/material";
+import { getSlaStatusIcon } from "@utils/sla-manager";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
 
 export function Kanban({ data, model = "basic" }) {
   return (
@@ -31,34 +34,46 @@ function TicketKanbanItem(ticket) {
       sx={styles.CardContainer}
       onClick={() => navigate(`/ticket/${ticket.id}`)}
     >
-      <CardActionArea sx={styles.CardActionArea}>
-        <CardContent>
-          <SubTitle bold>{ticket.title}</SubTitle>
-          <Body>TK - {ticket.id}</Body>
-          <Body>Category: {ticket.category_name}</Body>
-          <Body>Priority: {ticket.priority_name}</Body>
-          {ticket.label_name ? (
-            <Body>Label: {ticket.label_name}</Body>
-          ) : (
-            <Body>
-              <br />
-            </Body>
-          )}
-          <SubTitle bold alignment="end">
-            {ticket.status_name}
+      <CardContent sx={styles.CardContent}>
+        <SubTitle bold>
+          #{ticket.id} {ticket.title}
+        </SubTitle>
+        <Body>Category: {ticket.category_name}</Body>
+        <Body>Priority: {ticket.priority_name}</Body>
+        {ticket.label_name && <Body>Label: {ticket.label_name}</Body>}
+        <Body>
+          <br />
+        </Body>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <SubTitle bold>
+            {ticket.status_name !== "Resolved" ? (
+              getSlaStatusIcon(ticket.created_on, ticket.resolution_time)
+            ) : (
+              <IconButton size="large" edge="start">
+                <TaskAltIcon />
+              </IconButton>
+            )}
           </SubTitle>
-        </CardContent>
-        <CardActions sx={styles.ActionsContainer}>
-          <Body>
-            <TodayIcon />
-            {formatDate(ticket.created_on, "en-US")}
-          </Body>
-          <Body>
-            <QueryBuilderIcon />
-            {formatTime(ticket.created_on, "en-US")}
-          </Body>
-        </CardActions>
-      </CardActionArea>
+          <SubTitle bold>{ticket.status_name}</SubTitle>
+        </Box>
+      </CardContent>
+      <CardActions sx={styles.ActionsContainer}>
+        <Body>
+          <TodayIcon />
+          {formatDate(ticket.created_on, "en-US")}
+        </Body>
+        <Body>
+          <QueryBuilderIcon />
+          {formatTime(ticket.created_on, "en-US")}
+        </Body>
+      </CardActions>
     </Card>
   );
 }
@@ -69,15 +84,13 @@ function KanbanItem(item) {
       sx={styles.CardContainer}
       onClick={() => console.log("Item clicked:", item.id)}
     >
-      <CardActionArea sx={styles.CardActionArea}>
-        <CardContent>
-          <SubTitle bold>{item.title}</SubTitle>
-          <Body>{item.description}</Body>
-        </CardContent>
-        <CardActions sx={styles.ActionsContainer}>
-          <Button size="small">View Details</Button>
-        </CardActions>
-      </CardActionArea>
+      <CardContent sx={styles.CardContent}>
+        <SubTitle bold>{item.title}</SubTitle>
+        <Body>{item.description}</Body>
+      </CardContent>
+      <CardActions sx={styles.ActionsContainer}>
+        <Button size="small">View Details</Button>
+      </CardActions>
     </Card>
   );
 }
@@ -95,13 +108,18 @@ const styles = {
   },
   CardContainer: {
     minWidth: 275,
+    minHeight: 252,
     cursor: "pointer",
-  },
-  CardActionArea: {
-    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    transition: "all 0.3s ease",
     "&:hover": {
-      backgroundColor: "action.selectedHover",
+      transform: "scale(0.98)",
+      backgroundColor: "#f5f5f5",
     },
+  },
+  CardContent: {
+    flex: "1 1 auto",
   },
   ActionsContainer: {
     display: "flex",
@@ -109,5 +127,6 @@ const styles = {
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#f2f2f2",
+    flex: "0 0 auto",
   },
 };

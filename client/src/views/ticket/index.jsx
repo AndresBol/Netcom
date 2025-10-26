@@ -50,7 +50,7 @@ export function TicketIndex() {
         setLoading(false);
       }
     };
-    setIsWeekView(loggedUser?.role_name === "Technician");
+    setIsWeekView(loggedUser?.role_name === "Technician" && viewType !== "all");
     loadTickets();
   }, [loggedUser, viewType]);
 

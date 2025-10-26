@@ -15,12 +15,15 @@ class TicketModel
                 s.name as status_name,
                 c.name as category_name,
                 p.name as priority_name,
-                tl.name as label_name
+                tl.name as label_name,
+                sla.response_time,
+                sla.resolution_time
             FROM ticket t
             LEFT JOIN status s ON t.status_id = s.id
             LEFT JOIN category c ON t.category_id = c.id
             LEFT JOIN priority p ON t.priority_id = p.id
             LEFT JOIN ticket_label tl ON t.label_id = tl.id
+            LEFT JOIN sla ON t.category_id = sla.category_id AND t.priority_id = sla.priority_id
             WHERE t.is_active = 1;";
 			
             //query execution
@@ -42,12 +45,15 @@ class TicketModel
                 s.name as status_name,
                 c.name as category_name,
                 p.name as priority_name,
-                tl.name as label_name
+                tl.name as label_name,
+                sla.response_time,
+                sla.resolution_time
             FROM ticket t
             LEFT JOIN status s ON t.status_id = s.id
             LEFT JOIN category c ON t.category_id = c.id
             LEFT JOIN priority p ON t.priority_id = p.id
             LEFT JOIN ticket_label tl ON t.label_id = tl.id
+            LEFT JOIN sla ON t.category_id = sla.category_id AND t.priority_id = sla.priority_id
             WHERE t.id = $id;";
 			
             //query execution
@@ -67,12 +73,15 @@ class TicketModel
                 s.name as status_name,
                 c.name as category_name,
                 p.name as priority_name,
-                tl.name as label_name
+                tl.name as label_name,
+                sla.response_time,
+                sla.resolution_time
             FROM ticket t
             LEFT JOIN status s ON t.status_id = s.id
             LEFT JOIN category c ON t.category_id = c.id
             LEFT JOIN priority p ON t.priority_id = p.id
             LEFT JOIN ticket_label tl ON t.label_id = tl.id
+            LEFT JOIN sla ON t.category_id = sla.category_id AND t.priority_id = sla.priority_id
             WHERE t.category_id = $categoryId AND t.is_active = 1;";
             //query execution
             $vResultado = $this->enlace->ExecuteSQL($vSql);
@@ -91,12 +100,15 @@ class TicketModel
                 s.name as status_name,
                 c.name as category_name,
                 p.name as priority_name,
-                tl.name as label_name
+                tl.name as label_name,
+                sla.response_time,
+                sla.resolution_time
             FROM ticket t
             LEFT JOIN status s ON t.status_id = s.id
             LEFT JOIN category c ON t.category_id = c.id
             LEFT JOIN priority p ON t.priority_id = p.id
             LEFT JOIN ticket_label tl ON t.label_id = tl.id
+            LEFT JOIN sla ON t.category_id = sla.category_id AND t.priority_id = sla.priority_id
             WHERE t.priority_id = $priorityId AND t.is_active = 1;";
             //query execution
             $vResultado = $this->enlace->ExecuteSQL($vSql);
@@ -115,12 +127,15 @@ class TicketModel
                 s.name as status_name,
                 c.name as category_name,
                 p.name as priority_name,
-                tl.name as label_name
+                tl.name as label_name,
+                sla.response_time,
+                sla.resolution_time
             FROM ticket t
             LEFT JOIN status s ON t.status_id = s.id
             LEFT JOIN category c ON t.category_id = c.id
             LEFT JOIN priority p ON t.priority_id = p.id
             LEFT JOIN ticket_label tl ON t.label_id = tl.id
+            LEFT JOIN sla ON t.category_id = sla.category_id AND t.priority_id = sla.priority_id
             WHERE t.status_id = $statusId AND t.is_active = 1;";
             //query execution
             $vResultado = $this->enlace->ExecuteSQL($vSql);
