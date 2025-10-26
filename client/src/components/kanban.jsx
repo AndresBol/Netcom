@@ -34,6 +34,7 @@ function TicketKanbanItem(ticket) {
       <CardActionArea sx={styles.CardActionArea}>
         <CardContent>
           <SubTitle bold>{ticket.title}</SubTitle>
+          <Body>TK - {ticket.id}</Body>
           <Body>Category: {ticket.category_name}</Body>
           <Body>Priority: {ticket.priority_name}</Body>
           {ticket.label_name ? (

@@ -7,8 +7,10 @@ import IconButton from "@mui/material/IconButton";
 import HomeIcon from "@mui/icons-material/Home";
 import { AuthManager } from "@components/auth-manager";
 import Button from "@mui/material/Button";
+import { useLoggedUser } from "@contexts/UserContext";
 
 export default function Header() {
+  const { loggedUser } = useLoggedUser();
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -51,22 +53,43 @@ export default function Header() {
                 Home
               </Typography>
             </Box>
-            <Button href="/ticket/index" color="secondary.main" variant="text">
-              Tickets
-            </Button>
-            <Button href="/ticket/index" color="secondary.main" variant="text">
-              Assignations
-            </Button>
-            <Button href="/user/index" color="secondary.main" variant="text">
-              Technicians
-            </Button>
-            <Button
-              href="/category/index"
-              color="secondary.main"
-              variant="text"
-            >
-              Categories
-            </Button>
+            {loggedUser?.role_name != "Client" && (
+              <>
+                <Button
+                  href="/ticket/index/all"
+                  color="secondary.main"
+                  variant="text"
+                >
+                  All Tickets
+                </Button>
+              </>
+            )}
+            {loggedUser?.role_name === "Administrator" ? (
+              <>
+                <Button
+                  href="/user/index"
+                  color="secondary.main"
+                  variant="text"
+                >
+                  Technicians
+                </Button>
+                <Button
+                  href="/category/index"
+                  color="secondary.main"
+                  variant="text"
+                >
+                  Categories
+                </Button>
+              </>
+            ) : (
+              <Button
+                href="/ticket/index/by-user"
+                color="secondary.main"
+                variant="text"
+              >
+                My Tickets
+              </Button>
+            )}
           </Box>
           <AuthManager />
         </Toolbar>

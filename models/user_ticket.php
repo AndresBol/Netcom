@@ -11,19 +11,20 @@ class UserTicketModel
     public function getByUserId($userId) {
         try {
             $vSql = "SELECT 
-                ut.id,
+                ut.id as assignation_id,
                 ut.user_id,
-                ut.ticket_id,
+                ut.ticket_id as id,
                 ut.assigned_on,
                 ut.assigned_by,
                 assigned_user.name as assigned_by_name,
-                t.title as ticket_title,
-                t.description as ticket_description,
+                t.title as title,
+                t.description as description,
                 t.status_id,
                 s.name as status_name,
                 t.category_id,
                 c.name as category_name,
                 t.priority_id,
+                t.created_on,
                 p.name as priority_name,
                 t.label_id,
                 tl.name as label_name

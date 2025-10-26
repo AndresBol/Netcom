@@ -52,5 +52,6 @@ const createTypographyComponent = (variant) => {
 
 export const Title1 = createTypographyComponent("h4");
 export const Title2 = createTypographyComponent("h5");
+export const Title3 = createTypographyComponent("h6");
 export const SubTitle = createTypographyComponent("subtitle1");
 export const Body = createTypographyComponent("body1");
