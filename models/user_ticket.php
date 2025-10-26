@@ -27,7 +27,9 @@ class UserTicketModel
                 t.created_on,
                 p.name as priority_name,
                 t.label_id,
-                tl.name as label_name
+                tl.name as label_name,
+                sla.response_time,
+                sla.resolution_time
             FROM user_ticket ut
             INNER JOIN ticket t ON ut.ticket_id = t.id
             LEFT JOIN status s ON t.status_id = s.id
@@ -35,6 +37,7 @@ class UserTicketModel
             LEFT JOIN priority p ON t.priority_id = p.id
             LEFT JOIN ticket_label tl ON t.label_id = tl.id
             LEFT JOIN user assigned_user ON ut.assigned_by = assigned_user.id
+            LEFT JOIN sla ON t.category_id = sla.category_id AND t.priority_id = sla.priority_id
             WHERE ut.user_id = $userId AND ut.is_active = 1 AND t.is_active = 1;";
             
             $vResultado = $this->enlace->ExecuteSQL($vSql);
@@ -99,7 +102,9 @@ class UserTicketModel
                 t.priority_id,
                 p.name as priority_name,
                 t.label_id,
-                tl.name as label_name
+                tl.name as label_name,
+                sla.response_time,
+                sla.resolution_time
             FROM user_ticket ut
             INNER JOIN ticket t ON ut.ticket_id = t.id
             LEFT JOIN status s ON t.status_id = s.id
@@ -107,6 +112,7 @@ class UserTicketModel
             LEFT JOIN priority p ON t.priority_id = p.id
             LEFT JOIN ticket_label tl ON t.label_id = tl.id
             LEFT JOIN user assigned_user ON ut.assigned_by = assigned_user.id
+            LEFT JOIN sla ON t.category_id = sla.category_id AND t.priority_id = sla.priority_id
             WHERE ut.id = $id AND ut.is_active = 1 AND t.is_active = 1;";
             
             $vResultado = $this->enlace->ExecuteSQL($vSql);
