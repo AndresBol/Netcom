@@ -1,35 +1,35 @@
-export function calculateResolutionDays(ticket) {
-  const created = new Date(ticket.created_on);
-  const closed = new Date(ticket.closed_on);
+function calculateRemainingTime(remaining) {
+  if (Math.abs(remaining) < 60) return `${Math.abs(Math.floor(remaining))} min`;
+  if (Math.abs(remaining) < 1440 && Math.abs(remaining) > 60) return `${Math.abs((remaining / 60).toFixed(1))} hrs`;
+  if (Math.abs(remaining) >= 1440) return `${Math.abs((remaining / 1440).toFixed(1))} days`;
+}
+
+export function calculateResolutionDays(created_on, closed_on) {
+  const created = new Date(created_on);
+  const closed = new Date(closed_on);
   return Math.round((closed - created) / (1000 * 60 * 60 * 24));
 }
 
-export function calculateSlaResponse(ticket, sla) {
-  const created = new Date(ticket.created_on);
-  const assigned = new Date(ticket.assigned_on);
+export function calculateSlaResponse(created_on, assigned_on, response_time) {
+  console.log(`Calculating SLA Response: created_on: ${created_on}, assigned_on: ${assigned_on}, response_time: ${response_time}`);
+  const created = new Date(created_on);
+  const assigned = new Date(assigned_on);
   const diffMin = (assigned - created) / (1000 * 60);
-  return diffMin <= sla.response_time;
+  return {
+    isCompliant: diffMin <= response_time ? "✓ Met" : "✗ Not Met",
+    actualTime: calculateRemainingTime(diffMin),
+  };
 }
 
-export function calculateSlaResolution(ticket, sla) {
-  const created = new Date(ticket.created_on);
-  const closed = new Date(ticket.closed_on);
+export function calculateSlaResolution(created_on, closed_on, resolution_time) {
+  console.log(`Calculating SLA Resolution: created_on: ${created_on}, closed_on: ${closed_on}, resolution_time: ${resolution_time}`);
+  const created = new Date(created_on);
+  const closed = new Date(closed_on);
   const diffMin = (closed - created) / (1000 * 60);
-  return diffMin <= sla.resolution_time;
-}
-
-export function complianceResponse(ticket, sla) {
-  const created = new Date(ticket.created_on);
-  const assigned = new Date(ticket.assigned_on);
-  const diffMin = (assigned - created) / (1000 * 60);
-  return diffMin <= sla.response_time ? "Compliance" : "No Compliance";
-}
-
-export function complianceResolution(ticket, sla) {
-  const created = new Date(ticket.created_on);
-  const closed = new Date(ticket.closed_on);
-  const diffMin = (closed - created) / (1000 * 60);
-  return diffMin <= sla.resolution_time ? "Compliance" : "No Compliance";
+  return {
+    isCompliant: diffMin <= resolution_time ? "✓ Met" : "✗ Not Met",
+    actualTime: calculateRemainingTime(diffMin),
+  };
 }
 
 export function getSlaStatusIcon(created_on, resolution_time) {
@@ -40,12 +40,9 @@ export function getSlaStatusIcon(created_on, resolution_time) {
   const elapsed = (now - created) / (1000 * 60);
   const remaining = resolution_time - elapsed;
 
-  let remainingTime;
-  if (Math.abs(remaining) < 60) remainingTime = `${Math.abs(Math.floor(remaining))} min`;
-  if (Math.abs(remaining) < 1440 && Math.abs(remaining) > 60) remainingTime = `${Math.abs((remaining / 60).toFixed(1))} hrs`;
-  if (Math.abs(remaining) >= 1440) remainingTime = `${Math.abs((remaining / 1440).toFixed(1))} days`;
-
-    if (remaining <= 0) return "🔴 Expired \n> " + remainingTime + " ago";
+  let remainingTime = calculateRemainingTime(remaining);
+  
+  if (remaining <= 0) return "🔴 Expired \n> " + remainingTime + " ago";
   const warningThreshold = resolution_time * 0.15;
   if (remaining <= warningThreshold) return "🟡 Near Expiry\n< " + remainingTime;
   return "🟢 On Time\n< " + remainingTime;

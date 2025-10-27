@@ -25,6 +25,18 @@ class user_ticket
             handleException($e);
         }
     }
+    public function getByTicketId($ticketId)
+    {
+        try {
+            $response = new Response();
+            $userTicket = new UserTicketModel();
+            $result = $userTicket->getByTicketId($ticketId);
+            //Give an response
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
     public function post()
     {
         try {

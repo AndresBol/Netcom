@@ -10,6 +10,10 @@ class UserTicketService {
     return axios.get(BASE_URL + '/getByUserId/' + userId);
   }
 
+  getByTicketId(ticketId) {
+    return axios.get(BASE_URL + '/getByTicketId/' + ticketId);
+  }
+
   insert(userTicket) {
     return axios.post(BASE_URL, userTicket);
   }
