@@ -47,7 +47,33 @@ class UserTicketModel
             return [];
         }
     }
-    
+    /*Get all tickets for a user */
+    public function getByTicketId($ticketId) {
+        try {
+            $vSql = "SELECT 
+                ut.id,
+                ut.user_id,
+                ut.assigned_on,
+                ut.assigned_by,
+                user.name as user_name,
+                user_role.name as user_role,
+                assigned_by_user.name as assigned_by_name,
+                assigned_by_role.name as assigned_by_role
+            FROM user_ticket ut
+            LEFT JOIN user ON ut.user_id = user.id
+            LEFT JOIN role user_role ON user.role_id = user_role.id
+            LEFT JOIN user assigned_by_user ON ut.assigned_by = assigned_by_user.id
+            LEFT JOIN role assigned_by_role ON assigned_by_user.role_id = assigned_by_role.id
+            WHERE ut.ticket_id = $ticketId AND ut.is_active = 1;";
+            
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado ? $vResultado : [];
+        } catch (Exception $e) {
+            handleException($e);
+            return [];
+        }
+    }
+
     /*Insert a ticket for a user */
     public function insert($object) {
         try {
