@@ -269,9 +269,7 @@ export function TicketDetail() {
                   </Box>
                 )}
               </Box>
-
               <Divider sx={{ my: 2 }} />
-
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
@@ -292,39 +290,46 @@ export function TicketDetail() {
                 {ticket.description}
               </Typography>
               <br />
-              <Typography
-                variant="subtitle1"
-                color="text.secondary"
-                sx={{ mb: 1 }}
-              >
-                Rating:
-              </Typography>
-              <Rating
-                name="size-large"
-                defaultValue={ticket.rating}
-                size="large"
-                readOnly
-              />
-              <Typography
-                variant="subtitle1"
-                color="text.secondary"
-                sx={{ mb: 1 }}
-              >
-                Comments:
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  whiteSpace: "pre-line",
-                  backgroundColor: "#f9f9f9",
-                  p: 2,
-                  borderRadius: 2,
-                  border: "1px solid #eee",
-                }}
-              >
-                {ticket.comment}
-              </Typography>
-
+              {ticket.rating && ticket.rating != 0 && (
+                <>
+                  <Typography
+                    variant="subtitle1"
+                    color="text.secondary"
+                    sx={{ mb: 1 }}
+                  >
+                    Rating:
+                  </Typography>
+                  <Rating
+                    name="size-large"
+                    defaultValue={ticket.rating}
+                    size="large"
+                    readOnly
+                  />
+                </>
+              )}
+              {ticket.comment && (
+                <>
+                  <Typography
+                    variant="subtitle1"
+                    color="text.secondary"
+                    sx={{ mb: 1 }}
+                  >
+                    Comments:
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      whiteSpace: "pre-line",
+                      backgroundColor: "#f9f9f9",
+                      p: 2,
+                      borderRadius: 2,
+                      border: "1px solid #eee",
+                    }}
+                  >
+                    {ticket.comment}
+                  </Typography>
+                </>
+              )}
               <Divider sx={{ my: 2 }} />
               <Box
                 sx={{
