@@ -6,8 +6,10 @@ import { Title1, Title2, Title3 } from "@components/typography";
 import Button from "@mui/material/Button";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 
+
 export function Home() {
   const { loggedUser } = useLoggedUser();
+ 
   return (
     <View
       styles={{
@@ -48,6 +50,7 @@ export function Home() {
           )}
           <Title2 color="white">Network tickets administration system</Title2>
         </Box>
+
         <Box
           sx={{
             position: "relative",
@@ -79,12 +82,13 @@ export function Home() {
           </Button>
         </Box>
       </Box>
+
       <Title3>Powered by Netcom</Title3>
       <Box
         key={"netcom-logo"}
         component="img"
         src={"/netcom-imagotipo.png"}
-        alt={`Netcom Logo`}
+        alt={""}
         sx={{
           width: "100%",
           maxHeight: 400,
@@ -96,3 +100,4 @@ export function Home() {
     </View>
   );
 }
+

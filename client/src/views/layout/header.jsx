@@ -5,12 +5,31 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import HomeIcon from "@mui/icons-material/Home";
-import { AuthManager } from "@components/auth-manager";
 import Button from "@mui/material/Button";
 import { useLoggedUser } from "@contexts/UserContext";
+import UserService from "@services/user";
+import LoginDialog from "@views/auth/lodingDialog";
 
 export default function Header() {
-  const { loggedUser } = useLoggedUser();
+  const { loggedUser, setLoggedUser } = useLoggedUser();
+  const [openLogin, setOpenLogin] = React.useState(false);
+
+  const handleLogin = () => setOpenLogin(true);
+
+  const handleClose = () => setOpenLogin(false);
+
+  const handleLogout = async () => {
+    try {
+      await UserService.logout();
+      setLoggedUser(null);
+      localStorage.removeItem("loggedUser");
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
+
+  console.log("Usuario logeado:", loggedUser);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -53,47 +72,72 @@ export default function Header() {
                 Home
               </Typography>
             </Box>
-            {loggedUser?.role_name != "Client" && (
+
+            {loggedUser?.role && (
               <>
-                <Button
-                  href="/ticket/index/all"
-                  color="secondary.main"
-                  variant="text"
-                >
-                  All Tickets
-                </Button>
+                {(loggedUser.role === "Client" ||
+                  loggedUser.role === "Technician") && (
+                  <Button
+                    href="/ticket/index/by-user"
+                    color="secondary.main"
+                    variant="text"
+                  >
+                    My Tickets
+                  </Button>
+                )}
+
+                {(loggedUser.role === "Administrator" ||
+                  loggedUser.role === "Technician") && (
+                  <Button
+                    href="/ticket/index/all"
+                    color="secondary.main"
+                    variant="text"
+                  >
+                    All Tickets
+                  </Button>
+                )}
+
+                {loggedUser.role === "Administrator" && (
+                  <>
+                    <Button
+                      href="/user/index"
+                      color="secondary.main"
+                      variant="text"
+                    >
+                      Users
+                    </Button>
+                    <Button
+                      href="/category/index"
+                      color="secondary.main"
+                      variant="text"
+                    >
+                      Categories
+                    </Button>
+                  </>
+                )}
               </>
-            )}
-            {loggedUser?.role_name === "Administrator" ? (
-              <>
-                <Button
-                  href="/user/index"
-                  color="secondary.main"
-                  variant="text"
-                >
-                  Users
-                </Button>
-                <Button
-                  href="/category/index"
-                  color="secondary.main"
-                  variant="text"
-                >
-                  Categories
-                </Button>
-              </>
-            ) : (
-              <Button
-                href="/ticket/index/by-user"
-                color="secondary.main"
-                variant="text"
-              >
-                My Tickets
-              </Button>
             )}
           </Box>
-          <AuthManager />
+
+          {loggedUser ? (
+            <>
+              <Typography variant="body1">
+                👤 {loggedUser.name} 
+              </Typography>
+
+              <Button color="inherit" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <Button color="inherit" onClick={handleLogin}>
+              Login
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
+
+      <LoginDialog open={openLogin} onClose={handleClose} />
     </Box>
   );
 }

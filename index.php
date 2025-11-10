@@ -1,12 +1,27 @@
 <?php
-// Composer autoloader
-require_once 'vendor/autoload.php';
+
 /*Encabezada de las solicitudes*/
 /*CORS*/
-header("Access-Control-Allow-Origin: * ");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: *");
-header('Content-Type: application/json');
+//header("Access-Control-Allow-Origin: * ");
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowed_origins = ['http://localhost:5173'];
+
+if (in_array($origin, $allowed_origins)) {
+    header("Access-Control-Allow-Origin: $origin");
+    header("Access-Control-Allow-Credentials: true");
+}
+
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Content-Type: application/json; charset=UTF-8");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit(); 
+}
+
+// Composer autoloader
+require_once 'vendor/autoload.php';
 
 /*--- Requerimientos Clases o librerías*/
 require_once "controllers/core/Config.php";
