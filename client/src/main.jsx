@@ -8,6 +8,7 @@ import { NewTicket } from "./views/ticket/new";
 import { TicketIndex } from "./views/ticket/index";
 import { TicketDetail } from "./views/ticket/detail";
 import { CategoryIndex } from "./views/category";
+import { NewUser } from "./views/user/new";
 import { UserIndex } from "./views/user/index";
 import { UserDetail } from "./views/user/detail";
 import { CategoryDetail } from "./views/category/detail";
@@ -29,6 +30,11 @@ const router = createBrowserRouter([
       {
         path: "/user/:id",
         element: <UserDetail />,
+      },
+
+      {
+        path: "/user/new",
+        element: <NewUser />,
       },
 
       {
