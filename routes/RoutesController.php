@@ -156,7 +156,10 @@ class RoutesController
                                     if ($param1) {
                                         $response->delete($param1);
                                     } elseif ($action) {
-                                        if (method_exists($controller, $action)) {
+                                        // Check if action is numeric (likely an ID)
+                                        if (is_numeric($action)) {
+                                            $response->delete($action);
+                                        } elseif (method_exists($controller, $action)) {
                                             $response->$action();
                                         } else {
                                             $json = array(

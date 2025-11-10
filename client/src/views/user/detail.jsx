@@ -1,11 +1,10 @@
-import { Title1 } from "@components/typography";
-import { SubTitle } from "@components/typography";
 import { useParams } from "react-router-dom";
-import Table from "@components/table";
 import { useEffect, useState } from "react";
-import { Box, Typography, Divider } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import UserService from "@services/user";
 import { Loading } from "@components/loading";
+import { View } from "@components/view";
+import { UserManager } from "@components/managers/user";
 
 export function UserDetail() {
   const { id } = useParams();
@@ -42,46 +41,9 @@ export function UserDetail() {
     );
   }
 
-  const basicHeadTitles = [
-    { label: "Name", fieldName: "name", fieldType: "string" },
-    { label: "Email", fieldName: "email", fieldType: "string" },
-    { label: "Rol", fieldName: "role_name", fieldType: "string" },
-  ];
-
   return (
-    <Box sx={{ p: 4 }}>
-      <Title1>User Detail</Title1>
-      <SubTitle>{user.name}</SubTitle>
-
-      <Divider sx={{ my: 2 }} />
-
-      <Table
-        data={[user]}
-        headTitles={basicHeadTitles}
-        tableTitle={"Basic Information"}
-        onRowClick={() => {}}
-        hasPagination={false}
-        dense={false}
-      />
-
-      {user.role_name === "Technician" && user.special_fields?.length > 0 && (
-        <>
-          <Divider sx={{ my: 3 }} />
-          <Title1>Special Fields</Title1>
-          <Table
-            data={user.special_fields.map((s) => ({
-              name: s.special_field_name,
-              category: s.category_name,
-            }))}
-            headTitles={[
-              { label: "Specialty", fieldName: "name", fieldType: "string" },
-              { label: "Category", fieldName: "category", fieldType: "string" },
-            ]}
-            tableTitle={"Specialties"}
-            onRowClick={() => {}}
-          />
-        </>
-      )}
-    </Box>
+    <View>
+      <UserManager record={user} />
+    </View>
   );
 }
