@@ -36,6 +36,24 @@ class UserModel
             handleException($e);
         }
     }
+
+    /*Validate login */
+    public function validateLogin($email, $password)
+    {
+        try {
+            $user = $this->getUserByEmail($email);
+
+            if ($user && isset($user->password)) {
+                if (password_verify($password, $user->password)) {
+                    unset($user->password);
+                    return $user;
+                }
+            }
+            return false;
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
     /*Obtain */
     public function get($id)
     {

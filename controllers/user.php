@@ -37,6 +37,63 @@ class user
             handleException($e);
         }
     }
+
+    public function login()
+    {
+        try {
+            session_start();
+            $request = new Request();
+            $response = new Response();
+
+            $inputJson = $request->getJSON();
+            $email = $inputJson->email ?? null;
+            $password = $inputJson->password ?? null;
+
+            $userModel = new UserModel();
+            $user = $userModel->validateLogin($email, $password);
+
+            if ($user) {
+                $_SESSION['user_id'] = $user->id;
+                $_SESSION['user_name'] = $user->name;
+                $_SESSION['role'] = $user->role_name;
+
+                $response->toJSON([
+                    "success" => true,
+                    "message" => "Login successful",
+                    "user" => [
+                        "id" => $user->id,
+                        "name" => $user->name,
+                        "role" => $user->role_name
+                    ]
+                ]);
+            } else {
+                $response->toJSON([
+                    "success" => false,
+                    "message" => "Invalid email or password"
+                ]);
+            }
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function logout()
+    {
+        try {
+            session_start();
+            $response = new Response();
+
+            session_unset();
+            session_destroy();
+
+            $response->toJSON([
+                "sucess" => true,
+                "message" => "Logout sucessful"
+            ]);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
     public function post()
     {
         try {
