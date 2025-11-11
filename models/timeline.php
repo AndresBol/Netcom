@@ -180,7 +180,7 @@ class TimelineModel
             $vResultado = $this->enlace->executeSQL_DML($vSql);
             
             // Deactivate all ticket-attachment entries for this timeline
-            $this->ticketAttachmentModel->deleteByTimelineId($timeline->id);
+            $this->ticketAttachmentModel->deleteByTimelineId($id);
             
             //return the object
             return $this->get($id);

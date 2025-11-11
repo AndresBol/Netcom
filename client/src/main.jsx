@@ -12,6 +12,7 @@ import { NewUser } from "./views/user/new";
 import { UserIndex } from "./views/user/index";
 import { UserDetail } from "./views/user/detail";
 import { CategoryDetail } from "./views/category/detail";
+import { NewCategory } from "./views/category/new";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,11 @@ const router = createBrowserRouter([
       {
         path: "/ticket/index/:viewType",
         element: <TicketIndex />,
+      },
+
+      {
+        path: "/category/new",
+        element: <NewCategory />,
       },
 
       {

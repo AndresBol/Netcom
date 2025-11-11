@@ -7,19 +7,23 @@ import PriorityService from "@services/priority";
 import SlaService from "@services/sla";
 import CategoryService from "@services/category";
 import { useParams } from "react-router-dom";
-import { Title1 } from "@components/typography";
+import { CategoryManager } from "@components/managers/category";
 import { Loading } from "@components/loading";
 import { Divider } from "@mui/material";
 import { BackButton } from "@components/backbutton";
+import ManagerDialog from "@components/manager-dialog";
+import { SpecialtyManager } from "@components/managers/specialty";
+import { SLAManager } from "@components/managers/sla";
 
 export function CategoryDetail() {
   const { id } = useParams();
   const categoryId = id ? parseInt(id) : null;
-  const [categoryName, setCategoryName] = useState("");
+  const [category, setCategory] = useState(null);
   const [labels, setLabels] = useState([]);
   const [specialties, setSpecialties] = useState([]);
   const [slas, setSlas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isManagerDialogOpen, setIsManagerDialogOpen] = useState(null); // 'label', 'specialty', 'sla', or null
 
   useEffect(() => {
     if (!categoryId) return;
@@ -29,7 +33,7 @@ export function CategoryDetail() {
 
       try {
         const categoryRes = await CategoryService.getById(categoryId);
-        setCategoryName(categoryRes.data.name);
+        setCategory(categoryRes.data);
 
         const [labelsRes, specialtiesRes, slasRes, prioritiesRes] =
           await Promise.all([
@@ -94,7 +98,15 @@ export function CategoryDetail() {
         paddingBottom: 10,
       }}
     >
-      <Title1>{categoryName} Detail</Title1>
+      <ManagerDialog
+        open={isManagerDialogOpen !== null}
+        onClose={() => setIsManagerDialogOpen(null)}
+      >
+        {isManagerDialogOpen === "label" && <CategoryManager />}
+        {isManagerDialogOpen === "specialty" && <SpecialtyManager />}
+        {isManagerDialogOpen === "sla" && <SLAManager />}
+      </ManagerDialog>
+      <CategoryManager record={category} />
       <Divider sx={{ my: 2 }} />
       <Box
         sx={{
@@ -111,6 +123,7 @@ export function CategoryDetail() {
             headTitles={categoryHeadTitles[0]}
             tableTitle={"Labels"}
             onRowClick={() => {}}
+            onAddButtonClick={() => setIsManagerDialogOpen("label")}
             hasPagination={false}
             dense={true}
           />
@@ -121,6 +134,7 @@ export function CategoryDetail() {
             headTitles={categoryHeadTitles[0]}
             tableTitle={"Specialties"}
             onRowClick={() => {}}
+            onAddButtonClick={() => setIsManagerDialogOpen("specialty")}
             hasPagination={false}
             dense={true}
           />
@@ -132,16 +146,15 @@ export function CategoryDetail() {
           headTitles={categoryHeadTitles[1]}
           tableTitle={"SLAs"}
           onRowClick={() => {}}
+          onAddButtonClick={() => setIsManagerDialogOpen("sla")}
           hasPagination={false}
           dense={true}
         />
       </Box>
 
       <Box>
-        <BackButton/>
+        <BackButton />
       </Box>
-         
     </Box>
-    
   );
 }

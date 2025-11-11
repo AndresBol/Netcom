@@ -79,6 +79,12 @@ export function Form({
     toast.error("Please fix the errors in the form.");
   };
 
+  const title = record?.name
+    ? record.name
+    : record?.title
+      ? record.title
+      : "New Record";
+
   return (
     <Box sx={styles.Container}>
       <form
@@ -99,7 +105,7 @@ export function Form({
             await onDelete();
             reset();
           }}
-          title={record?.name ? record.name : "New Record"}
+          title={title}
         />
         {formData.map((fieldConfig) => (
           <Controller

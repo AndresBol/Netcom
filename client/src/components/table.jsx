@@ -20,6 +20,7 @@ import Collapse from "@mui/material/Collapse";
 import FilterDialog from "./filter-dialog";
 import { formatDate, formatTime } from "@utils/date-manager";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
+import AddIcon from "@mui/icons-material/Add";
 import { Body } from "./typography";
 
 function descendingComparator(a, b, orderBy) {
@@ -99,6 +100,7 @@ function EnhancedTableToolbar({
   tableTitle,
   onFilterBtnClick,
   hasActiveFilters,
+  onAddButtonClick,
 }) {
   return (
     <Toolbar
@@ -117,6 +119,13 @@ function EnhancedTableToolbar({
       >
         {tableTitle}
       </Typography>
+      {onAddButtonClick && (
+        <Tooltip title="Add record">
+          <IconButton onClick={onAddButtonClick}>
+            <AddIcon />
+          </IconButton>
+        </Tooltip>
+      )}
       <Tooltip title="Filter list">
         <IconButton
           onClick={onFilterBtnClick}
@@ -260,6 +269,7 @@ export default function Table({
   dense = false,
   actionButton = null,
   onActionButtonClick = null,
+  onAddButtonClick = null,
 }) {
   const headCells = generateHeadCells(headTitles);
   const [order, setOrder] = React.useState("asc");
@@ -354,6 +364,7 @@ export default function Table({
         tableTitle={tableTitle}
         onFilterBtnClick={handleFilterBtnClick}
         hasActiveFilters={Object.keys(filters).length > 0}
+        onAddButtonClick={onAddButtonClick}
       />
       <TableContainer>
         <TableMUI
