@@ -1,57 +1,35 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { formatDate, formatTime } from "@utils/date-manager";
 import { BackButton } from "@components/backbutton";
 
-import {
-  Card,
-  CardContent,
-  Paper,
-  Typography,
-  Box,
-  Divider,
-  Chip,
-  Rating,
-} from "@mui/material";
+import { Typography, Box, Divider, Rating } from "@mui/material";
 import TicketService from "@services/ticket";
-import StatusService from "@services/status";
-import CategoryService from "@services/category";
-import PriorityService from "@services/priority";
-import TicketLabelService from "@services/ticket-label";
 import TimelineService from "@services/timeline";
 import UserTicketService from "@services/user-ticket";
 import { Loading } from "@components/loading";
 import Table from "@components/table";
 import ImageDialog from "@components/image-dialog";
+import { SubTitle2, Body2, Title3 } from "@components/typography.jsx";
 import {
-  SubTitle,
-  SubTitle2,
-  Body2,
-  Title2,
-  Title3,
-} from "@components/typography.jsx";
-import IconButton from "@mui/material/IconButton";
-import {
-  getSlaStatusIcon,
   calculateResolutionDays,
   calculateSlaResolution,
   calculateSlaResponse,
 } from "@utils/sla-manager";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { View } from "@components/view";
 import { TicketManager } from "@components/managers/ticket";
+import { TimelineManager } from "@components/managers/timeline";
+import ManagerDialog from "@components/manager-dialog";
+import { useLoggedUser } from "@contexts/UserContext";
 
 export function TicketDetail() {
+  const { loggedUser } = useLoggedUser();
   const { id } = useParams();
   const ticketId = id ? parseInt(id) : 1;
 
   const [ticket, setTicket] = useState(null);
   const [assignedUsers, setAssignedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [statuses, setStatusest] = useState([]);
-  const [priorities, setPriorities] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [labels, setLabels] = useState([]);
   const [timeline, setTimeline] = useState([]);
   const [assignedOn, setAssignedOn] = useState(null);
 
@@ -67,6 +45,8 @@ export function TicketDetail() {
     open: false,
     data: null,
   });
+
+  const [isManagerDialogOpen, setIsManagerDialogOpen] = useState(false);
 
   const timelineTableHeadTitles = [
     { label: "Subject", fieldName: "subject", fieldType: "string" },
@@ -84,18 +64,6 @@ export function TicketDetail() {
       try {
         const ticketRes = await TicketService.getById(ticketId);
         setTicket(ticketRes.data);
-
-        const [statusRes, priorityRes, categoryRes, labelRes] =
-          await Promise.all([
-            StatusService.getAll(),
-            PriorityService.getAll(),
-            CategoryService.getAll(),
-            TicketLabelService.getAll(),
-          ]);
-        setStatusest(statusRes.data);
-        setPriorities(priorityRes.data);
-        setCategories(categoryRes.data);
-        setLabels(labelRes.data);
 
         const timelineRes = await TimelineService.getAllByTicketId(ticketId);
         setTimeline(timelineRes.data);
@@ -162,6 +130,12 @@ export function TicketDetail() {
         data={imageDialogManager.data}
         dialogTitle={`Ticket #${ticket.id} | ${ticket.title}`}
       />
+      <ManagerDialog
+        open={isManagerDialogOpen}
+        onClose={() => setIsManagerDialogOpen(false)}
+      >
+        <TimelineManager ticketId={ticket.id} userId={loggedUser.id} />
+      </ManagerDialog>
       <TicketManager record={ticket} />
       {ticket.rating && ticket.rating != 0 && (
         <>
@@ -271,6 +245,7 @@ export function TicketDetail() {
             data: row.ticket_attachments,
           });
         }}
+        onAddButtonClick={() => setIsManagerDialogOpen(true)}
         hasPagination={false}
         dense={true}
       />
