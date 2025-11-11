@@ -1,10 +1,12 @@
 import { View } from "@components/view";
 import { useEffect, useState } from "react";
 import CategoryService from "@services/category";
+import { Box } from "@mui/material";
 import { Loading } from "@components/loading";
 import { useNavigate } from "react-router-dom";
 import Table from "@components/table";
 import { Title1 } from "@components/typography";
+import { BackButton } from "@components/backbutton";
 
 export function CategoryIndex() {
   const [loading, setLoading] = useState(true);
@@ -47,6 +49,9 @@ export function CategoryIndex() {
         onRowClick={(cat) => navigate(`/category/${cat.id}`)}
         tableTitle= {<Title1>Available Categories</Title1>}
       />
+            <Box>
+        <BackButton/>
+      </Box>
     </View>
   );
 }

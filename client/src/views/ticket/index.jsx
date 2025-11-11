@@ -15,6 +15,7 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import Switch from "@mui/material/Switch";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
+import { BackButton } from "@components/backbutton";
 
 dayjs.extend(isBetween);
 
@@ -173,8 +174,10 @@ export function TicketIndex() {
           )}
         </Box>
       )}
+       <BackButton/>
     </View>
   );
+          
 }
 
 const styles = {

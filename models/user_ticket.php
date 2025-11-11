@@ -38,7 +38,7 @@ class UserTicketModel
             LEFT JOIN ticket_label tl ON t.label_id = tl.id
             LEFT JOIN user assigned_user ON ut.assigned_by = assigned_user.id
             LEFT JOIN sla ON t.category_id = sla.category_id AND t.priority_id = sla.priority_id
-            WHERE ut.user_id = $userId AND ut.is_active = 1 AND t.is_active = 1;";
+            WHERE ut.user_id = $userId AND ut.is_active = 1 AND t.is_active = 1  AND t.status_id NOT IN (SELECT id FROM status WHERE name = 'Resolved');";
             
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado ? $vResultado : [];

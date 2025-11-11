@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import { Title1 } from "@components/typography";
 import { Loading } from "@components/loading";
 import { Divider } from "@mui/material";
+import { BackButton } from "@components/backbutton";
 
 export function CategoryDetail() {
   const { id } = useParams();
@@ -135,6 +136,12 @@ export function CategoryDetail() {
           dense={true}
         />
       </Box>
+
+      <Box>
+        <BackButton/>
+      </Box>
+         
     </Box>
+    
   );
 }
