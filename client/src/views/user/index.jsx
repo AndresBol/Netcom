@@ -5,6 +5,7 @@ import UserService from "@services/user";
 import Table from "@components/table";
 import { Loading } from "@components/loading";
 import { useNavigate } from "react-router-dom";
+import { BackButton } from "@components/backbutton";
 
 export function UserIndex() {
   const [loading, setLoading] = useState(true);
@@ -50,6 +51,7 @@ export function UserIndex() {
         onRowClick={(user) => navigate(`/user/${user.id}`)}
         tableTitle="User List"
       />
+       <BackButton/>
     </View>
   );
 }

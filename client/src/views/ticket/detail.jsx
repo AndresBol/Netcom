@@ -1,6 +1,7 @@
 import { use, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { formatDate, formatTime } from "@utils/date-manager";
+import { BackButton } from "@components/backbutton";
 
 import {
   Card,
@@ -50,6 +51,7 @@ export function TicketDetail() {
   const [categories, setCategories] = useState([]);
   const [labels, setLabels] = useState([]);
   const [timeline, setTimeline] = useState([]);
+  const [assignedOn,setAssignedOn] = useState(null);
 
   const [slaProps, setSlaProps] = useState({
     resolution_days: null,
@@ -110,13 +112,14 @@ export function TicketDetail() {
   useEffect(() => {
     if (assignedUsers.length === 0 || !ticket) return;
 
-    const assignedOn = assignedUsers.filter(
-      (u) => u.user_role === "Technician"
-    )[0].assigned_on;
+  const techUser = assignedUsers.find((u) => u.user_role === "Technician");
+  const assignedOnValue = techUser ? techUser.assigned_on : null;
+  setAssignedOn(assignedOnValue);
 
+    
     const responseSLA = calculateSlaResponse(
       ticket.created_on,
-      assignedOn,
+      assignedOnValue,
       ticket.response_time
     );
 
@@ -136,6 +139,7 @@ export function TicketDetail() {
       resolution_time: resolutionSLA.actualTime,
       compliance_resolution: resolutionSLA.isCompliant,
     });
+    
   }, [assignedUsers]);
 
   if (loading) return <Loading />;
@@ -350,6 +354,15 @@ export function TicketDetail() {
                     )[0]?.user_name || "Unassigned"}
                   </Body2>
                   <SubTitle2 color="text.secondary" bold>
+                    Assigned On:
+                  </SubTitle2>
+                  <Body2>
+                    {assignedOn
+                      ? `${formatDate(assignedOn, "en-US")} ${formatTime(assignedOn, "en-US")}`
+                      : "Unassigned"}
+                  </Body2>
+
+                  <SubTitle2 color="text.secondary" bold>
                     Created By:
                   </SubTitle2>
                   <Body2>
@@ -400,7 +413,11 @@ export function TicketDetail() {
             hasPagination={false}
             dense={true}
           />
+          <Box>
+            <BackButton/>
+          </Box>
         </Paper>
+        
       </Box>
     </>
   );
