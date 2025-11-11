@@ -73,6 +73,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "space-between",
     gap: 2,
+    marginBottom: 6,
   },
   ChildContainer: {
     display: "flex",
