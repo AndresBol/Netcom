@@ -39,17 +39,30 @@ export const ticketSchema = yup.object({
         .max(500, 'El comentario no puede exceder los 500 caracteres'),
 });
 
-export const useTicketForm = () => useForm({
-  defaultValues: {
-    'status_id':1,
-    'category_id':1,
-    'priority_id':1,
-    'label_id':1,
-    'title':'',
-    'description':'',
-    'notification_status':'Pending',
-    'rating':0,
-    'comment':'',
-  },
-  resolver: yupResolver(ticketSchema),
-});
+export const useTicketForm = (ticket) => {
+  return useForm({
+    defaultValues: {
+    'status_id': ticket ? ticket.status_id : 1,
+    'category_id': ticket ? ticket.category_id : 1,
+    'priority_id': ticket ? ticket.priority_id : 1,
+    'label_id': ticket ? ticket.label_id : 1,
+    'title': ticket ? ticket.title : '',
+    'description': ticket ? ticket.description : '',
+    'notification_status': ticket ? ticket.notification_status : 'Pending',
+    'rating': ticket ? ticket.rating : 0,
+    'comment': ticket ? ticket.comment : '',
+    },
+    resolver: yupResolver(ticketSchema),
+    values: ticket ? {
+      'status_id': ticket.status_id,
+      'category_id': ticket.category_id,
+      'priority_id': ticket.priority_id,
+      'label_id': ticket.label_id,
+      'title': ticket.title,
+      'description': ticket.description,
+      'notification_status': ticket.notification_status,
+      'rating': ticket.rating,
+      'comment': ticket.comment,
+    } : undefined,
+  });
+};
