@@ -47,6 +47,15 @@ export function SLAManager({ record }) {
       fieldName: "resolution_time",
       fieldType: "number",
     },
+
+     {
+      label: "SLA",
+      fieldName: "name",
+      fieldType: "string",
+    },
+
+
+
   ];
 
   const fetchModels = async () => {

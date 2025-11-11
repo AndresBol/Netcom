@@ -29,11 +29,6 @@ export function LabelManager({ record }) {
       fieldType: "string",
     },
     {
-      label: "Description",
-      fieldName: "description",
-      fieldType: "string",
-    },
-    {
       label: "Category",
       fieldName: "category_id",
       fieldType: "one2many",
