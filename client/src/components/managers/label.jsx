@@ -3,17 +3,13 @@ import { Form } from "@components/form";
 import { useLabelForm } from "@validations/label";
 import { useEffect, useState } from "react";
 import TicketLabelService from "@services/ticket-label";
-import CategoryService from "@services/category";
 import toast from "react-hot-toast";
-import { Loading } from "@components/loading";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export function LabelManager({ record }) {
-  const [loading, setLoading] = React.useState(false);
+export function LabelManager({ record, categoryId }) {
   const [isUploading, setUploading] = React.useState(false);
   const [currentLabel, setCurrentLabel] = useState(record);
-  const [categories, setCategories] = useState([]);
 
   const navigate = useNavigate();
 
@@ -28,39 +24,21 @@ export function LabelManager({ record }) {
       fieldName: "name",
       fieldType: "string",
     },
-    {
-      label: "Category",
-      fieldName: "category_id",
-      fieldType: "one2many",
-      data: categories,
-    },
   ];
-
-  const fetchModels = async () => {
-    // Fetch Categories
-    const response = await CategoryService.getAll();
-    setCategories(response.data);
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    try {
-      fetchModels();
-    } catch (error) {
-      console.error("Error fetching models:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   const onSubmit = async (DataForm) => {
     setUploading(true);
     try {
+      const dataWithCategory = {
+        ...DataForm,
+        category_id: categoryId || DataForm.category_id,
+      };
+
       let response;
       if (currentLabel) {
-        response = await TicketLabelService.update(DataForm);
+        response = await TicketLabelService.update(dataWithCategory);
       } else {
-        response = await TicketLabelService.insert(DataForm);
+        response = await TicketLabelService.insert(dataWithCategory);
       }
 
       // Update the current label with the response data
@@ -92,8 +70,6 @@ export function LabelManager({ record }) {
       console.error("Error deleting label:", error);
     }
   };
-
-  if (loading) return <Loading />;
 
   return (
     <Box>

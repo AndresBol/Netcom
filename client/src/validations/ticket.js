@@ -31,7 +31,6 @@ export const ticketSchema = yup.object({
   rating: yup
         .number()
         .typeError('Solo acepta números')
-        .required('La calificación es requerida')
         .min(0, 'La calificación mínima es 0')
         .max(5, 'La calificación máxima es 5'),
   comment: yup
