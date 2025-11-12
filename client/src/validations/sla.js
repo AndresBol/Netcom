@@ -24,6 +24,10 @@ export const slaSchema = yup.object({
     .typeError('Solo acepta números')
     .required('El tiempo de resolución es requerido')
     .min(0, 'El tiempo de resolución debe ser mayor o igual a 0'),
+     name: yup
+        .string()
+        .required('El nombre es requerido')
+        .max(255, 'El nombre no puede exceder los 255 caracteres'),
 });
 
 export const useSLAForm = (sla) => {
@@ -34,6 +38,7 @@ export const useSLAForm = (sla) => {
       'priority_id': sla ? sla.priority_id : 1,
       'response_time': sla ? sla.response_time : 0,
       'resolution_time': sla ? sla.resolution_time : 0,
+      'name': sla ? sla.name : '',
     },
     resolver: yupResolver(slaSchema),
     values: sla ? {
@@ -42,6 +47,7 @@ export const useSLAForm = (sla) => {
       'priority_id': sla.priority_id,
       'response_time': sla.response_time,
       'resolution_time': sla.resolution_time,
+      'name': sla.name,
     } : undefined,
   });
 };
