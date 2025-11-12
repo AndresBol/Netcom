@@ -14,6 +14,7 @@ import { BackButton } from "@components/backbutton";
 import ManagerDialog from "@components/manager-dialog";
 import { SpecialtyManager } from "@components/managers/specialty";
 import { SLAManager } from "@components/managers/sla";
+import { LabelManager } from "@components/managers/label";
 
 export function CategoryDetail() {
   const { id } = useParams();
@@ -102,9 +103,15 @@ export function CategoryDetail() {
         open={isManagerDialogOpen !== null}
         onClose={() => setIsManagerDialogOpen(null)}
       >
-        {isManagerDialogOpen === "label" && <CategoryManager />}
-        {isManagerDialogOpen === "specialty" && <SpecialtyManager />}
-        {isManagerDialogOpen === "sla" && <SLAManager />}
+        {isManagerDialogOpen === "label" && (
+          <LabelManager categoryId={categoryId} />
+        )}
+        {isManagerDialogOpen === "specialty" && (
+          <SpecialtyManager categoryId={categoryId} />
+        )}
+        {isManagerDialogOpen === "sla" && (
+          <SLAManager categoryId={categoryId} />
+        )}
       </ManagerDialog>
       <CategoryManager record={category} />
       <Divider sx={{ my: 2 }} />

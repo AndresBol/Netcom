@@ -3,17 +3,13 @@ import { Form } from "@components/form";
 import { useSpecialtyForm } from "@validations/specialty";
 import { useEffect, useState } from "react";
 import SpecialFieldService from "@services/special-field";
-import CategoryService from "@services/category";
 import toast from "react-hot-toast";
-import { Loading } from "@components/loading";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export function SpecialtyManager({ record }) {
-  const [loading, setLoading] = React.useState(false);
+export function SpecialtyManager({ record, categoryId }) {
   const [isUploading, setUploading] = React.useState(false);
   const [currentSpecialty, setCurrentSpecialty] = useState(record);
-  const [categories, setCategories] = useState([]);
 
   const navigate = useNavigate();
 
@@ -28,39 +24,20 @@ export function SpecialtyManager({ record }) {
       fieldName: "name",
       fieldType: "string",
     },
-    {
-      label: "Category",
-      fieldName: "category_id",
-      fieldType: "one2many",
-      data: categories,
-    },
   ];
-
-  const fetchModels = async () => {
-    // Fetch Categories
-    const response = await CategoryService.getAll();
-    setCategories(response.data);
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    try {
-      fetchModels();
-    } catch (error) {
-      console.error("Error fetching models:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   const onSubmit = async (DataForm) => {
     setUploading(true);
     try {
+      const dataWithCategory = {
+        ...DataForm,
+        category_id: categoryId || DataForm.category_id,
+      };
       let response;
       if (currentSpecialty) {
-        response = await SpecialFieldService.update(DataForm);
+        response = await SpecialFieldService.update(dataWithCategory);
       } else {
-        response = await SpecialFieldService.insert(DataForm);
+        response = await SpecialFieldService.insert(dataWithCategory);
       }
 
       // Update the current specialty with the response data
@@ -92,8 +69,6 @@ export function SpecialtyManager({ record }) {
       console.error("Error deleting specialty:", error);
     }
   };
-
-  if (loading) return <Loading />;
 
   return (
     <Box>

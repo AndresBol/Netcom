@@ -4,12 +4,12 @@ import { useTimelineForm } from "@validations/timeline";
 import { useEffect, useState } from "react";
 import TimelineService from "@services/timeline";
 import toast from "react-hot-toast";
-import React from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
 
 export function TimelineManager({ record, ticketId, userId }) {
-  const [loading, setLoading] = React.useState(false);
-  const [isUploading, setUploading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isUploading, setUploading] = useState(false);
   const [currentTimeline, setCurrentTimeline] = useState(record);
 
   const navigate = useNavigate();
@@ -89,6 +89,7 @@ export function TimelineManager({ record, ticketId, userId }) {
         onSubmit={onSubmit}
         onDelete={onDelete}
       />
+      <Button>Agregar Archivo</Button>
     </Box>
   );
 }

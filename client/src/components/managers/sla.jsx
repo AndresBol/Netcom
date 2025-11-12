@@ -3,18 +3,16 @@ import { Form } from "@components/form";
 import { useSLAForm } from "@validations/sla";
 import { useEffect, useState } from "react";
 import SlaService from "@services/sla";
-import CategoryService from "@services/category";
 import PriorityService from "@services/priority";
 import toast from "react-hot-toast";
 import { Loading } from "@components/loading";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export function SLAManager({ record }) {
+export function SLAManager({ record, categoryId }) {
   const [loading, setLoading] = React.useState(false);
   const [isUploading, setUploading] = React.useState(false);
   const [currentSLA, setCurrentSLA] = useState(record);
-  const [categories, setCategories] = useState([]);
   const [priorities, setPriorities] = useState([]);
 
   const navigate = useNavigate();
@@ -25,12 +23,6 @@ export function SLAManager({ record }) {
   }, [record]);
 
   const formData = [
-    {
-      label: "Category",
-      fieldName: "category_id",
-      fieldType: "one2many",
-      data: categories,
-    },
     {
       label: "Priority",
       fieldName: "priority_id",
@@ -48,21 +40,14 @@ export function SLAManager({ record }) {
       fieldType: "number",
     },
 
-     {
+    {
       label: "SLA",
       fieldName: "name",
       fieldType: "string",
     },
-
-
-
   ];
 
   const fetchModels = async () => {
-    // Fetch Categories
-    const response = await CategoryService.getAll();
-    setCategories(response.data);
-
     // Fetch Priorities
     const priorityResponse = await PriorityService.getAll();
     setPriorities(priorityResponse.data);
@@ -82,11 +67,15 @@ export function SLAManager({ record }) {
   const onSubmit = async (DataForm) => {
     setUploading(true);
     try {
+      const dataWithCategory = {
+        ...DataForm,
+        category_id: categoryId || DataForm.category_id,
+      };
       let response;
       if (currentSLA) {
-        response = await SlaService.update(DataForm);
+        response = await SlaService.update(dataWithCategory);
       } else {
-        response = await SlaService.insert(DataForm);
+        response = await SlaService.insert(dataWithCategory);
       }
 
       // Update the current SLA with the response data
