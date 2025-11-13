@@ -60,6 +60,7 @@ require_once "controllers/role.php";
 require_once "controllers/special-field.php";
 require_once "controllers/timeline.php";
 require_once "controllers/user-ticket.php";
+require_once "controllers/ticket-attachment.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";

@@ -6,6 +6,17 @@ class TicketAttachmentModel
     {
         $this->enlace = new MySqlConnect();
     }
+
+    public function getAll() {
+    try {
+        $vSql = "SELECT id, timeline_id, file, extension, is_active FROM ticket_attachment WHERE is_active = 1;";
+        $vResultado = $this->enlace->ExecuteSQL($vSql);
+        return $vResultado ? $vResultado : [];
+    } catch (Exception $e) {
+        handleException($e);
+        return [];
+    }
+}
     
     /*Get all ticket attachments for a timeline entry */
     public function getByTimelineId($timelineId) {
