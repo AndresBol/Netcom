@@ -12,13 +12,16 @@ function formControl(field, fieldConfig, errors, isEditing) {
   switch (fieldConfig.fieldType) {
     case "string":
     case "password":
+    case "number":
       control = (
         <TextField
           {...field}
           id={fieldConfig.fieldName}
           label={fieldConfig.label}
           variant="outlined"
-          type={fieldConfig.fieldType === "password" ? "password" : "text"}
+          type={
+            fieldConfig.fieldType === "string" ? "text" : fieldConfig.fieldType
+          }
           disabled={!isEditing}
           sx={styles.FormInput}
           InputProps={{ sx: { textAlign: "center" } }}

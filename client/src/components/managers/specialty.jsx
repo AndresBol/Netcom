@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export function SpecialtyManager({ record, categoryId }) {
+export function SpecialtyManager({ record, categoryId, onSuccess }) {
   const [isUploading, setUploading] = React.useState(false);
   const [currentSpecialty, setCurrentSpecialty] = useState(record);
 
@@ -46,6 +46,11 @@ export function SpecialtyManager({ record, categoryId }) {
       }
 
       toast.success("Specialty modified!");
+
+      // Call the onSuccess callback to refresh parent data
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       console.error("Error modifying specialty:", error);
       toast.error("Failed to modify specialty");
@@ -59,8 +64,14 @@ export function SpecialtyManager({ record, categoryId }) {
       await SpecialFieldService.delete(currentSpecialty.id)
         .then((response) => {
           console.log("Specialty deleted:", response.data);
-          navigate(`/specialty/index`);
           toast.success("Specialty deleted!");
+
+          // Call the onSuccess callback to refresh parent data
+          if (onSuccess) {
+            onSuccess();
+          }
+
+          navigate(`/specialty/index`);
         })
         .catch((error) => {
           console.error("Error deleting specialty:", error);

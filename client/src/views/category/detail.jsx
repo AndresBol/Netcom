@@ -24,46 +24,49 @@ export function CategoryDetail() {
   const [specialties, setSpecialties] = useState([]);
   const [slas, setSlas] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isManagerDialogOpen, setIsManagerDialogOpen] = useState(null); // 'label', 'specialty', 'sla', or null
+  const [managerDialog, setManagerDialog] = useState({
+    model: null,
+    data: null,
+  }); // 'label', 'specialty', 'sla', or null
 
-  useEffect(() => {
+  const fetchData = async () => {
     if (!categoryId) return;
 
-    const fetchData = async () => {
-      setLoading(true);
+    setLoading(true);
 
-      try {
-        const categoryRes = await CategoryService.getById(categoryId);
-        setCategory(categoryRes.data);
+    try {
+      const categoryRes = await CategoryService.getById(categoryId);
+      setCategory(categoryRes.data);
 
-        const [labelsRes, specialtiesRes, slasRes, prioritiesRes] =
-          await Promise.all([
-            TicketLabelService.getByCategoryId(categoryId),
-            SpecialFieldService.getByCategory(categoryId),
-            SlaService.getByCategory(categoryId),
-            PriorityService.getAll(),
-          ]);
+      const [labelsRes, specialtiesRes, slasRes, prioritiesRes] =
+        await Promise.all([
+          TicketLabelService.getByCategoryId(categoryId),
+          SpecialFieldService.getByCategory(categoryId),
+          SlaService.getByCategory(categoryId),
+          PriorityService.getAll(),
+        ]);
 
-        const priorities = prioritiesRes.data || [];
+      const priorities = prioritiesRes.data || [];
 
-        const slasWithPriorityName = (slasRes.data || []).map((sla) => {
-          const priority = priorities.find((p) => p.id === sla.priority_id);
-          return {
-            ...sla,
-            priority_name: priority ? priority.name : "No priorities",
-          };
-        });
+      const slasWithPriorityName = (slasRes.data || []).map((sla) => {
+        const priority = priorities.find((p) => p.id === sla.priority_id);
+        return {
+          ...sla,
+          priority_name: priority ? priority.name : "No priorities",
+        };
+      });
 
-        setLabels(labelsRes.data || []);
-        setSpecialties(specialtiesRes.data || []);
-        setSlas(slasWithPriorityName);
-      } catch (error) {
-        console.error("Error fetching category details: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      setLabels(labelsRes.data || []);
+      setSpecialties(specialtiesRes.data || []);
+      setSlas(slasWithPriorityName);
+    } catch (error) {
+      console.error("Error fetching category details: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, [categoryId]);
 
@@ -100,17 +103,29 @@ export function CategoryDetail() {
       }}
     >
       <ManagerDialog
-        open={isManagerDialogOpen !== null}
-        onClose={() => setIsManagerDialogOpen(null)}
+        open={managerDialog.model !== null}
+        onClose={() => setManagerDialog({ model: null, data: null })}
       >
-        {isManagerDialogOpen === "label" && (
-          <LabelManager categoryId={categoryId} />
+        {managerDialog.model === "label" && (
+          <LabelManager
+            categoryId={categoryId}
+            record={managerDialog.data}
+            onSuccess={() => fetchData()}
+          />
         )}
-        {isManagerDialogOpen === "specialty" && (
-          <SpecialtyManager categoryId={categoryId} />
+        {managerDialog.model === "specialty" && (
+          <SpecialtyManager
+            categoryId={categoryId}
+            record={managerDialog.data}
+            onSuccess={() => fetchData()}
+          />
         )}
-        {isManagerDialogOpen === "sla" && (
-          <SLAManager categoryId={categoryId} />
+        {managerDialog.model === "sla" && (
+          <SLAManager
+            categoryId={categoryId}
+            record={managerDialog.data}
+            onSuccess={() => fetchData()}
+          />
         )}
       </ManagerDialog>
       <CategoryManager record={category} />
@@ -129,8 +144,12 @@ export function CategoryDetail() {
             data={labels}
             headTitles={categoryHeadTitles[0]}
             tableTitle={"Labels"}
-            onRowClick={() => {}}
-            onAddButtonClick={() => setIsManagerDialogOpen("label")}
+            onRowClick={(rData) =>
+              setManagerDialog({ model: "label", data: rData })
+            }
+            onAddButtonClick={() =>
+              setManagerDialog({ model: "label", data: null })
+            }
             hasPagination={false}
             dense={true}
           />
@@ -140,8 +159,12 @@ export function CategoryDetail() {
             data={specialties}
             headTitles={categoryHeadTitles[0]}
             tableTitle={"Specialties"}
-            onRowClick={() => {}}
-            onAddButtonClick={() => setIsManagerDialogOpen("specialty")}
+            onRowClick={(rData) =>
+              setManagerDialog({ model: "specialty", data: rData })
+            }
+            onAddButtonClick={() =>
+              setManagerDialog({ model: "specialty", data: null })
+            }
             hasPagination={false}
             dense={true}
           />
@@ -152,8 +175,12 @@ export function CategoryDetail() {
           data={slas}
           headTitles={categoryHeadTitles[1]}
           tableTitle={"SLAs"}
-          onRowClick={() => {}}
-          onAddButtonClick={() => setIsManagerDialogOpen("sla")}
+          onRowClick={(rData) =>
+            setManagerDialog({ model: "sla", data: rData })
+          }
+          onAddButtonClick={() =>
+            setManagerDialog({ model: "sla", data: null })
+          }
           hasPagination={false}
           dense={true}
         />

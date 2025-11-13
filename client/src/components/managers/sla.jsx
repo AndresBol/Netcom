@@ -9,7 +9,7 @@ import { Loading } from "@components/loading";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export function SLAManager({ record, categoryId }) {
+export function SLAManager({ record, categoryId, onSuccess }) {
   const [loading, setLoading] = React.useState(false);
   const [isUploading, setUploading] = React.useState(false);
   const [currentSLA, setCurrentSLA] = useState(record);
@@ -84,6 +84,11 @@ export function SLAManager({ record, categoryId }) {
       }
 
       toast.success("SLA modified!");
+
+      // Call the onSuccess callback to refresh parent data
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       console.error("Error modifying SLA:", error);
       toast.error("Failed to modify SLA");
@@ -97,8 +102,14 @@ export function SLAManager({ record, categoryId }) {
       await SlaService.delete(currentSLA.id)
         .then((response) => {
           console.log("SLA deleted:", response.data);
-          navigate(`/sla/index`);
           toast.success("SLA deleted!");
+
+          // Call the onSuccess callback to refresh parent data
+          if (onSuccess) {
+            onSuccess();
+          }
+
+          navigate(`/sla/index`);
         })
         .catch((error) => {
           console.error("Error deleting SLA:", error);
