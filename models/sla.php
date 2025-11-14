@@ -66,24 +66,24 @@ class SlaModel
             }
 
             if (
-                !isset($object['name']) ||
-                !isset($object['category_id']) || !isset($object['priority_id']) ||
-                !isset($object['response_time']) || !isset($object['resolution_time'])
+                !isset($object->name) ||
+                !isset($object->category_id) || !isset($object->priority_id) ||
+                !isset($object->response_time) || !isset($object->resolution_time)
             ) {
                 throw new Exception("Missing required fields");
             }
 
             $vSql = "INSERT INTO sla (name, category_id, priority_id, response_time, resolution_time, is_active) 
                      VALUES (
-                        '" . $object['name'] . "',
-                        " . $object['category_id'] . ",
-                        " . $object['priority_id'] . ",
-                        " . $object['response_time'] . ",
-                        " . $object['resolution_time'] . ",
+                        '" . $object->name . "',
+                        " . $object->category_id . ",
+                        " . $object->priority_id . ",
+                        " . $object->response_time . ",
+                        " . $object->resolution_time . ",
                         1
                      );";
 
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            $vResultado = $this->enlace->executeSQL_DML_last($vSql);
             return $this->get($vResultado);
         } catch (Exception $e) {
             handleException($e);
@@ -94,19 +94,24 @@ class SlaModel
     public function update($object)
     {
         try {
+            if ($object === null) {
+                throw new Exception("Object cannot be null");
+            }
+
             //sql query
             $vSql = "UPDATE sla SET 
-                        name = '" . $object['name'] . "',
-                        category_id = " . $object['category_id'] . ",
-                        priority_id = " . $object['priority_id'] . ",
-                        response_time = " . $object['response_time'] . ",
-                        resolution_time = " . $object['resolution_time'] . "
-                    WHERE id = " . $object['id'] . ";";
+                        name = '" . $object->name . "',
+                        category_id = " . $object->category_id . ",
+                        priority_id = " . $object->priority_id . ",
+                        response_time = " . $object->response_time . ",
+                        resolution_time = " . $object->resolution_time . "
+                    WHERE id = " . $object->id . ";";
 
             //query execution
-            $this->enlace->ExecuteSQL($vSql);
+            $this->enlace->executeSQL_DML($vSql);
 
-            return true;
+            //return the updated object
+            return $this->get($object->id);
         } catch (Exception $e) {
             handleException($e);
         }

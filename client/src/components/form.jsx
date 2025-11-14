@@ -3,6 +3,7 @@ import { FormHeader } from "@components/form-header";
 import { Controller } from "react-hook-form";
 import { Select } from "@components/select";
 import TextField from "@mui/material/TextField";
+import { Rating, Typography } from "@mui/material";
 import toast from "react-hot-toast";
 import { useState } from "react";
 
@@ -12,16 +13,21 @@ function formControl(field, fieldConfig, errors, isEditing) {
   switch (fieldConfig.fieldType) {
     case "string":
     case "password":
+    case "number":
+    case "multiline":
       control = (
         <TextField
           {...field}
           id={fieldConfig.fieldName}
           label={fieldConfig.label}
           variant="outlined"
-          type={fieldConfig.fieldType === "password" ? "password" : "text"}
+          type={
+            fieldConfig.fieldType === "string" ? "text" : fieldConfig.fieldType
+          }
+          multiline={fieldConfig.fieldType === "multiline"}
+          rows={4}
           disabled={!isEditing}
           sx={styles.FormInput}
-          InputProps={{ sx: { textAlign: "center" } }}
           error={Boolean(errors[fieldConfig.fieldName])}
           helperText={
             errors[fieldConfig.fieldName]
@@ -29,6 +35,30 @@ function formControl(field, fieldConfig, errors, isEditing) {
               : " "
           }
         />
+      );
+      break;
+    case "rating":
+      control = (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+          <Typography variant="subtitle1" color="text.secondary">
+            {fieldConfig.label}
+          </Typography>
+          <Rating
+            {...field}
+            name={fieldConfig.fieldName}
+            size="large"
+            disabled={!isEditing}
+            value={field.value || 0}
+            onChange={(event, newValue) => {
+              field.onChange(newValue);
+            }}
+          />
+          {errors[fieldConfig.fieldName] && (
+            <Typography variant="caption" color="error">
+              {errors[fieldConfig.fieldName].message}
+            </Typography>
+          )}
+        </Box>
       );
       break;
     case "one2many":

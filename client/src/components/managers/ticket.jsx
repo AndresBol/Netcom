@@ -3,6 +3,7 @@ import { Form } from "@components/form";
 import { useTicketForm } from "@validations/ticket";
 import { useEffect } from "react";
 import TicketService from "@services/ticket";
+import UserTicketService from "@services/user-ticket";
 import toast from "react-hot-toast";
 import { Loading } from "@components/loading";
 import React from "react";
@@ -12,6 +13,7 @@ import PriorityService from "@services/priority";
 import TicketLabelService from "@services/ticket-label";
 import StatusService from "@services/status";
 import { useState } from "react";
+import { useLoggedUser } from "@contexts/UserContext";
 
 export function TicketManager({ record }) {
   const [loading, setLoading] = React.useState(false);
@@ -21,6 +23,7 @@ export function TicketManager({ record }) {
   const [priorities, setPriorities] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [labels, setLabels] = useState([]);
+  const { loggedUser } = useLoggedUser();
 
   const navigate = useNavigate();
 
@@ -28,6 +31,14 @@ export function TicketManager({ record }) {
   useEffect(() => {
     setCurrentTicket(record);
   }, [record]);
+
+  // Check if the current ticket status is Resolved or Closed
+  const currentStatus = statuses.find(
+    (status) => status.id === currentTicket?.status_id
+  );
+  const isResolvedOrClosed =
+    currentStatus &&
+    (currentStatus.name === "Resolved" || currentStatus.name === "Closed");
 
   const formData = [
     {
@@ -60,10 +71,24 @@ export function TicketManager({ record }) {
     },
     {
       label: "Labels",
-      fieldName: "label_ids",
+      fieldName: "label_id",
       fieldType: "one2many",
       data: labels,
     },
+    ...(isResolvedOrClosed
+      ? [
+          {
+            label: "Rating",
+            fieldName: "rating",
+            fieldType: "rating",
+          },
+          {
+            label: "Comments",
+            fieldName: "comment",
+            fieldType: "multiline",
+          },
+        ]
+      : []),
   ];
 
   const fetchModels = async () => {
@@ -99,15 +124,35 @@ export function TicketManager({ record }) {
     setUploading(true);
     try {
       let response;
+      const isNewTicket = !currentTicket;
+
       if (currentTicket) {
-        response = await TicketService.update(DataForm);
+        // Include the id field when updating
+        response = await TicketService.update({
+          ...DataForm,
+          id: currentTicket.id,
+        });
       } else {
         response = await TicketService.insert(DataForm);
       }
 
-      // Update the current user with the response data
+      // Update the current ticket with the response data
       if (response && response.data) {
         setCurrentTicket(response.data);
+
+        // If it's a new ticket, create the relation with the logged user
+        if (isNewTicket && loggedUser) {
+          try {
+            await UserTicketService.insert({
+              user_id: loggedUser.id,
+              ticket_id: response.data.id,
+              assigned_by: loggedUser.id,
+            });
+          } catch (error) {
+            console.error("Error creating user-ticket relation:", error);
+            toast.error("Ticket created but failed to assign to user");
+          }
+        }
       }
 
       toast.success("Ticket modified!");

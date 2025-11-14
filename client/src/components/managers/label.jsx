@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export function LabelManager({ record, categoryId }) {
+export function LabelManager({ record, categoryId, onSuccess }) {
   const [isUploading, setUploading] = React.useState(false);
   const [currentLabel, setCurrentLabel] = useState(record);
 
@@ -47,6 +47,11 @@ export function LabelManager({ record, categoryId }) {
       }
 
       toast.success("Label modified!");
+
+      // Call the onSuccess callback to refresh parent data
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       console.error("Error modifying label:", error);
       toast.error("Failed to modify label");
@@ -60,8 +65,14 @@ export function LabelManager({ record, categoryId }) {
       await TicketLabelService.delete(currentLabel.id)
         .then((response) => {
           console.log("Label deleted:", response.data);
-          navigate(`/label/index`);
           toast.success("Label deleted!");
+
+          // Call the onSuccess callback to refresh parent data
+          if (onSuccess) {
+            onSuccess();
+          }
+
+          navigate(`/label/index`);
         })
         .catch((error) => {
           console.error("Error deleting label:", error);

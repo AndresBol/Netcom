@@ -204,20 +204,48 @@ class TicketModel
                 throw new Exception("Object cannot be null");
             }
             
+            // Build dynamic SET clause based on provided fields
+            $setFields = [];
+            
+            // necessary fields
+            if (isset($object->status_id)) {
+                $setFields[] = "status_id ='$object->status_id'";
+            }
+            if (isset($object->category_id)) {
+                $setFields[] = "category_id ='$object->category_id'";
+            }
+            if (isset($object->priority_id)) {
+                $setFields[] = "priority_id ='$object->priority_id'";
+            }
+            if (isset($object->label_id)) {
+                $setFields[] = "label_id ='$object->label_id'";
+            }
+            if (isset($object->title)) {
+                $setFields[] = "title ='$object->title'";
+            }
+            if (isset($object->description)) {
+                $setFields[] = "description ='$object->description'";
+            }
+            
+            // Optional fields
+            if (isset($object->notification_status)) {
+                $setFields[] = "notification_status ='$object->notification_status'";
+                $setFields[] = "notified_on = NOW()";
+            }
+            if (isset($object->rating)) {
+                $setFields[] = "rating ='$object->rating'";
+            }
+            if (isset($object->comment)) {
+                $setFields[] = "comment ='$object->comment'";
+            }
+            
+            // Check if we have fields to update
+            if (empty($setFields)) {
+                throw new Exception("No fields to update");
+            }
+            
             //sql query
-            $vSql = "Update ticket SET 
-            status_id ='$object->status_id', 
-            category_id ='$object->category_id',
-            priority_id ='$object->priority_id', 
-            label_id ='$object->label_id', 
-            title ='$object->title', 
-            description ='$object->description', 
-            notification_status ='$object->notification_status', 
-            notified_on = NOW(), 
-            rating ='$object->rating', 
-            comment ='$object->comment' 
-            Where 
-            id=$object->id;";
+            $vSql = "Update ticket SET " . implode(", ", $setFields) . " Where id=$object->id;";
 			
             //query execution
 			$vResultado = $this->enlace->executeSQL_DML( $vSql);

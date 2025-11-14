@@ -6,10 +6,9 @@ import { Title1, Title2, Title3 } from "@components/typography";
 import Button from "@mui/material/Button";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 
-
 export function Home() {
   const { loggedUser } = useLoggedUser();
- 
+
   return (
     <View
       styles={{
@@ -50,7 +49,6 @@ export function Home() {
           )}
           <Title2 color="white">Network tickets administration system</Title2>
         </Box>
-
         <Box
           sx={{
             position: "relative",
@@ -62,24 +60,30 @@ export function Home() {
             justifyContent: "center",
           }}
         >
-          <Title3 color="white">Create a new ticket</Title3>
-          <Button
-            href="/ticket/new"
-            variant="contained"
-            sx={{
-              marginTop: 1,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 1,
-              color: "white",
-              backgroundColor: "#015171",
-            }}
-          >
-            <PostAddIcon />
-            Here
-          </Button>
+          <Title3 color="white">
+            {loggedUser
+              ? "Create a new ticket"
+              : "Sign in first to create a new ticket"}
+          </Title3>
+          {loggedUser && (
+            <Button
+              href="/ticket/new"
+              variant="contained"
+              sx={{
+                marginTop: 1,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 1,
+                color: "white",
+                backgroundColor: "#015171",
+              }}
+            >
+              <PostAddIcon />
+              Here
+            </Button>
+          )}
         </Box>
       </Box>
 
@@ -100,4 +104,3 @@ export function Home() {
     </View>
   );
 }
-

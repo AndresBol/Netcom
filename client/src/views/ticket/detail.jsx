@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { formatDate, formatTime } from "@utils/date-manager";
 import { BackButton } from "@components/backbutton";
 
-import { Typography, Box, Divider, Rating } from "@mui/material";
+import { Typography, Box, Divider } from "@mui/material";
 import TicketService from "@services/ticket";
 import TimelineService from "@services/timeline";
 import UserTicketService from "@services/user-ticket";
@@ -137,38 +137,6 @@ export function TicketDetail() {
         <TimelineManager ticketId={ticket.id} userId={loggedUser.id} />
       </ManagerDialog>
       <TicketManager record={ticket} />
-      {ticket.rating && ticket.rating != 0 && (
-        <>
-          <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 1 }}>
-            Rating:
-          </Typography>
-          <Rating
-            name="size-large"
-            defaultValue={ticket.rating}
-            size="large"
-            readOnly
-          />
-        </>
-      )}
-      {ticket.comment && (
-        <>
-          <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 1 }}>
-            Comments:
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              whiteSpace: "pre-line",
-              backgroundColor: "#f9f9f9",
-              p: 2,
-              borderRadius: 2,
-              border: "1px solid #eee",
-            }}
-          >
-            {ticket.comment}
-          </Typography>
-        </>
-      )}
       <Divider sx={{ my: 2 }} />
       <Box sx={{ p: 1 }}>
         <Title3 color="text.secondary" bold>
