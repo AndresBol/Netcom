@@ -32,6 +32,14 @@ export function TicketManager({ record }) {
     setCurrentTicket(record);
   }, [record]);
 
+  // Check if the current ticket status is Resolved or Closed
+  const currentStatus = statuses.find(
+    (status) => status.id === currentTicket?.status_id
+  );
+  const isResolvedOrClosed =
+    currentStatus &&
+    (currentStatus.name === "Resolved" || currentStatus.name === "Closed");
+
   const formData = [
     {
       label: "Status",
@@ -63,10 +71,24 @@ export function TicketManager({ record }) {
     },
     {
       label: "Labels",
-      fieldName: "label_ids",
+      fieldName: "label_id",
       fieldType: "one2many",
       data: labels,
     },
+    ...(isResolvedOrClosed
+      ? [
+          {
+            label: "Rating",
+            fieldName: "rating",
+            fieldType: "rating",
+          },
+          {
+            label: "Comments",
+            fieldName: "comment",
+            fieldType: "multiline",
+          },
+        ]
+      : []),
   ];
 
   const fetchModels = async () => {
@@ -105,7 +127,11 @@ export function TicketManager({ record }) {
       const isNewTicket = !currentTicket;
 
       if (currentTicket) {
-        response = await TicketService.update(DataForm);
+        // Include the id field when updating
+        response = await TicketService.update({
+          ...DataForm,
+          id: currentTicket.id,
+        });
       } else {
         response = await TicketService.insert(DataForm);
       }
