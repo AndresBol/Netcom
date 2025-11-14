@@ -46,6 +46,7 @@ export function TicketManager({ record }) {
       fieldName: "status_id",
       fieldType: "one2many",
       data: statuses,
+      readonly: loggedUser?.role === "Client",
     },
     {
       label: "Title",
