@@ -5,7 +5,7 @@ import { Select } from "@components/select";
 import TextField from "@mui/material/TextField";
 import { Rating, Typography } from "@mui/material";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function formControl(field, fieldConfig, errors, isEditing) {
   let control;
@@ -93,8 +93,20 @@ export function Form({
   useModelForm,
   onSubmit,
   onDelete,
+  onFormReady,
 }) {
   const [isEditing, setIsEditing] = useState(record ? false : true);
+
+  const formApi = useModelForm();
+
+  useEffect(() => {
+    if (!onFormReady) return;
+    onFormReady(formApi);
+
+    return () => {
+      onFormReady(null);
+    };
+  }, [formApi, onFormReady]);
 
   const {
     control,
@@ -102,7 +114,7 @@ export function Form({
     reset,
     watch,
     formState: { errors },
-  } = useModelForm();
+  } = formApi;
 
   const onError = (errors, e) => {
     console.log(errors, e);
