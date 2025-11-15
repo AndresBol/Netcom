@@ -65,11 +65,11 @@ export function TicketDetail() {
         const ticketRes = await TicketService.getById(ticketId);
         setTicket(ticketRes.data);
 
-        const timelineRes = await TimelineService.getAllByTicketId(ticketId);
-        setTimeline(timelineRes.data);
-
         const userTicketRes = await UserTicketService.getByTicketId(ticketId);
         setAssignedUsers(userTicketRes.data);
+
+        const timelineRes = await TimelineService.getAllByTicketId(ticketId);
+        setTimeline(timelineRes.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
