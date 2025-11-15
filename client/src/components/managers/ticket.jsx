@@ -23,14 +23,115 @@ export function TicketManager({ record }) {
   const [priorities, setPriorities] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [labels, setLabels] = useState([]);
+  const [categoryLabels, setCategoryLabels] = useState([]);
+  const [formInstance, setFormInstance] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
+    record?.category_id ?? null
+  );
   const { loggedUser } = useLoggedUser();
 
   const navigate = useNavigate();
 
+  const toNumericId = (value) => {
+    if (value === undefined || value === null || value === "") {
+      return null;
+    }
+    const parsed = Number(value);
+    return Number.isNaN(parsed) ? null : parsed;
+  };
+
   // Update currentTicket when record prop changes
   useEffect(() => {
     setCurrentTicket(record);
+    setSelectedCategoryId(record?.category_id ?? null);
   }, [record]);
+
+  // Subscribe to form updates to keep track of select values
+  useEffect(() => {
+    if (!formInstance) return;
+
+    const currentCategoryValue = toNumericId(
+      formInstance.getValues("category_id")
+    );
+    if (currentCategoryValue !== undefined && currentCategoryValue !== null) {
+      setSelectedCategoryId(currentCategoryValue);
+    }
+
+    const subscription = formInstance.watch((value, { name }) => {
+      if (!name) return;
+      if (name === "category_id") {
+        setSelectedCategoryId(toNumericId(value?.[name]));
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [formInstance]);
+
+  // Ensure a category is always selected once data is available
+  useEffect(() => {
+    if (!formInstance || !categories.length) return;
+
+    const currentCategory = toNumericId(formInstance.getValues("category_id"));
+    const categoryExists = categories.some(
+      (category) => toNumericId(category.id) === currentCategory
+    );
+
+    if (currentCategory && categoryExists) {
+      if (selectedCategoryId !== currentCategory) {
+        setSelectedCategoryId(currentCategory);
+      }
+      return;
+    }
+
+    const fallbackCategory = toNumericId(categories[0]?.id);
+
+    if (fallbackCategory === null) return;
+
+    formInstance.setValue("category_id", fallbackCategory, {
+      shouldDirty: false,
+      shouldTouch: false,
+    });
+    setSelectedCategoryId(fallbackCategory);
+  }, [categories, formInstance, selectedCategoryId]);
+
+  // Filter labels by selected category and make sure one label stays selected
+  useEffect(() => {
+    const normalizedCategoryId = toNumericId(selectedCategoryId);
+
+    if (!normalizedCategoryId) {
+      setCategoryLabels([]);
+      if (formInstance) {
+        formInstance.setValue("label_id", null, {
+          shouldDirty: false,
+          shouldTouch: false,
+        });
+      }
+      return;
+    }
+
+    const filteredLabels = labels.filter((label) => {
+      const labelCategoryId = toNumericId(label.category_id);
+      return labelCategoryId === normalizedCategoryId;
+    });
+    setCategoryLabels(filteredLabels);
+
+    if (!formInstance) return;
+
+    const currentLabel = toNumericId(formInstance.getValues("label_id"));
+    const labelExists = filteredLabels.some(
+      (label) => toNumericId(label.id) === currentLabel
+    );
+
+    if (labelExists) {
+      return;
+    }
+
+    const fallbackLabel = toNumericId(filteredLabels[0]?.id);
+    formInstance.setValue("label_id", fallbackLabel, {
+      shouldDirty: false,
+      shouldTouch: false,
+    });
+  }, [labels, selectedCategoryId, formInstance]);
 
   // Check if the current ticket status is Resolved or Closed
   const currentStatus = statuses.find(
@@ -74,7 +175,7 @@ export function TicketManager({ record }) {
       label: "Labels",
       fieldName: "label_id",
       fieldType: "one2many",
-      data: labels,
+      data: categoryLabels,
     },
     ...(isResolvedOrClosed
       ? [
@@ -191,6 +292,7 @@ export function TicketManager({ record }) {
         record={currentTicket}
         isUploading={isUploading}
         useModelForm={() => useTicketForm(currentTicket)}
+        onFormReady={setFormInstance}
         onSubmit={onSubmit}
         onDelete={onDelete}
       />
