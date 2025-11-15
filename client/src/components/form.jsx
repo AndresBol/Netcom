@@ -26,7 +26,7 @@ function formControl(field, fieldConfig, errors, isEditing) {
           }
           multiline={fieldConfig.fieldType === "multiline"}
           rows={4}
-          disabled={!isEditing}
+          disabled={!isEditing || fieldConfig.readonly}
           sx={styles.FormInput}
           error={Boolean(errors[fieldConfig.fieldName])}
           helperText={
@@ -47,7 +47,7 @@ function formControl(field, fieldConfig, errors, isEditing) {
             {...field}
             name={fieldConfig.fieldName}
             size="large"
-            disabled={!isEditing}
+            disabled={!isEditing || fieldConfig.readonly}
             value={field.value || 0}
             onChange={(event, newValue) => {
               field.onChange(newValue);
@@ -67,7 +67,7 @@ function formControl(field, fieldConfig, errors, isEditing) {
           field={field}
           data={fieldConfig.data || []}
           model={fieldConfig.label}
-          disabled={!isEditing}
+          disabled={!isEditing || fieldConfig.readonly}
           sx={styles.FormInput}
           multiple={fieldConfig.multipleSelection || false}
           error={Boolean(errors[fieldConfig.fieldName])}
