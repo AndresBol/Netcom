@@ -8,19 +8,19 @@ export const timelineSchema = yup.object({
     .nullable(),
   ticket_id: yup
     .number()
-    .typeError('Solo acepta números')
-    .required('El ticket es requerido'),
+    .typeError('Only accepts numbers')
+    .required('Ticket is required'),
   user_id: yup
     .number()
-    .typeError('Solo acepta números')
-    .required('El usuario es requerido'),
+    .typeError('Only accepts numbers')
+    .required('User is required'),
   subject: yup
     .string()
-    .required('El asunto es requerido')
-    .max(255, 'El asunto no puede exceder los 255 caracteres'),
+    .required('Subject is required')
+    .max(255, 'Subject cannot exceed 255 characters'),
   description: yup
     .string()
-    .max(1000, 'La descripción no puede exceder los 1000 caracteres'),
+    .max(1000, 'Description cannot exceed 1000 characters'),
 });
 
 export const useTimelineForm = (timeline) => {

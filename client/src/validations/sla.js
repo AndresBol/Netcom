@@ -8,26 +8,26 @@ export const slaSchema = yup.object({
     .nullable(),
   category_id: yup
     .number()
-    .typeError('Solo acepta números')
-    .required('La categoría es requerida'),
+    .typeError('Only accepts numbers')
+    .required('Category is required'),
   priority_id: yup
     .number()
-    .typeError('Solo acepta números')
-    .required('La prioridad es requerida'),
+    .typeError('Only accepts numbers')
+    .required('Priority is required'),
   response_time: yup
     .number()
-    .typeError('Solo acepta números')
-    .required('El tiempo de respuesta es requerido')
-    .min(0, 'El tiempo de respuesta debe ser mayor o igual a 0'),
+    .typeError('Only accepts numbers')
+    .required('Response time is required')
+    .min(0, 'Response time must be greater than or equal to 0'),
   resolution_time: yup
     .number()
-    .typeError('Solo acepta números')
-    .required('El tiempo de resolución es requerido')
-    .min(0, 'El tiempo de resolución debe ser mayor o igual a 0'),
+    .typeError('Only accepts numbers')
+    .required('Resolution time is required')
+    .min(0, 'Resolution time must be greater than or equal to 0'),
      name: yup
         .string()
-        .required('El nombre es requerido')
-        .max(255, 'El nombre no puede exceder los 255 caracteres'),
+        .required('Name is required')
+        .max(255, 'Name cannot exceed 255 characters'),
 });
 
 export const useSLAForm = (sla) => {

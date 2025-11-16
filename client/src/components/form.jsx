@@ -121,6 +121,12 @@ export function Form({
     toast.error("Please fix the errors in the form.");
   };
 
+  const submitForm = handleSubmit(async (formValues) => {
+    await onSubmit(formValues);
+    reset();
+    setIsEditing(false);
+  }, onError);
+
   const title = record?.name
     ? record.name
     : record?.title
@@ -129,15 +135,7 @@ export function Form({
 
   return (
     <Box sx={styles.Container}>
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          await handleSubmit(onSubmit, onError)();
-          reset();
-          setIsEditing(false);
-        }}
-        noValidate
-      >
+      <form onSubmit={submitForm} noValidate>
         <FormHeader
           isEditing={isEditing}
           isUploading={isUploading}
