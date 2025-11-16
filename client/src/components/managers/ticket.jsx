@@ -14,6 +14,7 @@ import TicketLabelService from "@services/ticket-label";
 import StatusService from "@services/status";
 import { useState } from "react";
 import { useLoggedUser } from "@contexts/UserContext";
+import TimelineService from "@services/timeline";
 
 export function TicketManager({ record }) {
   const [loading, setLoading] = React.useState(false);
@@ -223,6 +224,8 @@ export function TicketManager({ record }) {
   }, []);
 
   const onSubmit = async (DataForm) => {
+
+    
     setUploading(true);
     try {
       let response;
@@ -250,6 +253,19 @@ export function TicketManager({ record }) {
               ticket_id: response.data.id,
               assigned_by: loggedUser.id,
             });
+
+            try {
+              
+              await TimelineService.insert({
+                ticket_id: response.data.id,
+                user_id: loggedUser.id,
+                subject: "Ticket created",
+                description: `Ticket creado por ${loggedUser.name}`,
+              });
+            } catch (err) {
+              console.error("Error creating default timeline:", err);
+            }
+
             navigate(`/ticket/${response.data.id}`);
           } catch (error) {
             console.error("Error creating user-ticket relation:", error);
