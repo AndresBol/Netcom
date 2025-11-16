@@ -183,7 +183,7 @@ class TicketModel
             '$object->title', 
             '$object->description', 
             '$object->notification_status', 
-            NOW(), 
+            NULL, 
             '$object->rating', 
             '$object->comment', 
             NOW(), 
