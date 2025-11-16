@@ -6,6 +6,7 @@ import Table from "@components/table";
 import { Loading } from "@components/loading";
 import { useNavigate } from "react-router-dom";
 import { BackButton } from "@components/backbutton";
+import { useLoggedUser } from "@contexts/UserContext";
 
 export function UserIndex() {
   const [loading, setLoading] = useState(true);
@@ -15,6 +16,8 @@ export function UserIndex() {
     { label: "Email", fieldName: "email", fieldType: "string" },
     { label: "Role", fieldName: "role_name", fieldType: "string" },
   ];
+
+  const { loggedUser } = useLoggedUser();
 
   const navigate = useNavigate();
 
@@ -44,14 +47,18 @@ export function UserIndex() {
 
   return (
     <View styles={styles.MainView}>
-      <Title1>Available Users</Title1>
       <Table
         headTitles={tableHeadTitles}
         data={users}
         onRowClick={(user) => navigate(`/user/${user.id}`)}
-        tableTitle="User List"
+        tableTitle={<Title1>Available Users</Title1>}
+        onAddButtonClick={
+          loggedUser?.role === "Administrator"
+            ? () => navigate(`/user/new`)
+            : undefined
+        }
       />
-       <BackButton/>
+      <BackButton />
     </View>
   );
 }
