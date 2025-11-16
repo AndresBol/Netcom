@@ -93,12 +93,12 @@ export function CategoryDetail() {
       {
         label: "Response Time",
         fieldName: "response_time",
-        fieldType: "number",
+        fieldType: "time",
       },
       {
         label: "Resolution Time",
         fieldName: "resolution_time",
-        fieldType: "number",
+        fieldType: "time",
       },
       { label: "SLA", fieldName: "name", fieldType: "string" },
     ],
