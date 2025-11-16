@@ -22,6 +22,7 @@ import { formatDate, formatTime } from "@utils/date-manager";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import AddIcon from "@mui/icons-material/Add";
 import { Body } from "./typography";
+import { calculateRemainingTime } from "@utils/sla-manager";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -144,6 +145,8 @@ function formatData(data, type) {
   switch (type) {
     case "dateTime":
       return formatDate(data, "en-US") + " " + formatTime(data, "en-US");
+    case "time":
+      return calculateRemainingTime(data);
     default:
       return data;
   }

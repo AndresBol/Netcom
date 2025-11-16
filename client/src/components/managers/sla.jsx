@@ -27,12 +27,12 @@ export function SLAManager({ record, categoryId, onSuccess }) {
       data: priorities,
     },
     {
-      label: "Response Time",
+      label: "Response Time (minutes)",
       fieldName: "response_time",
       fieldType: "number",
     },
     {
-      label: "Resolution Time",
+      label: "Resolution Time (minutes)",
       fieldName: "resolution_time",
       fieldType: "number",
     },
