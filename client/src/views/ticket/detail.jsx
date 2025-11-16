@@ -21,6 +21,7 @@ import { TicketManager } from "@components/managers/ticket";
 import { TimelineManager } from "@components/managers/timeline";
 import ManagerDialog from "@components/manager-dialog";
 import { useLoggedUser } from "@contexts/UserContext";
+import { calculateRemainingTime } from "@utils/sla-manager";
 
 export function TicketDetail() {
   const { loggedUser } = useLoggedUser();
@@ -86,17 +87,27 @@ export function TicketDetail() {
     const assignedOnValue = techUser ? techUser.assigned_on : null;
     setAssignedOn(assignedOnValue);
 
-    const responseSLA = calculateSlaResponse(
+    let responseSLA = calculateSlaResponse(
       ticket.created_on,
       assignedOnValue,
       ticket.response_time
     );
+    if (responseSLA === undefined) {
+      responseSLA = {
+        actualTime: calculateRemainingTime(ticket.response_time),
+      };
+    }
 
-    const resolutionSLA = calculateSlaResolution(
+    let resolutionSLA = calculateSlaResolution(
       ticket.created_on,
       ticket.notified_on,
       ticket.resolution_time
     );
+    if (resolutionSLA === undefined) {
+      resolutionSLA = {
+        actualTime: calculateRemainingTime(ticket.resolution_time),
+      };
+    }
 
     setSlaProps({
       resolution_days: calculateResolutionDays(
@@ -185,10 +196,14 @@ export function TicketDetail() {
           </Body2>
         </Box>
         <Box>
-          <SubTitle2 color="text.secondary" alignment="end" bold>
-            Days of resolution
-          </SubTitle2>
-          <Body2 alignment="end">{slaProps.resolution_days}</Body2>
+          {slaProps.resolution_days && (
+            <>
+              <SubTitle2 color="text.secondary" alignment="end" bold>
+                Days of resolution
+              </SubTitle2>
+              <Body2 alignment="end">{slaProps.resolution_days}</Body2>
+            </>
+          )}
           <SubTitle2 color="text.secondary" alignment="end" bold>
             SLA Response Time
           </SubTitle2>
