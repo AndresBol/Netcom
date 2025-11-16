@@ -5,13 +5,10 @@ import { useEffect, useState } from "react";
 import TicketLabelService from "@services/ticket-label";
 import toast from "react-hot-toast";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 export function LabelManager({ record, categoryId, onSuccess }) {
   const [isUploading, setUploading] = React.useState(false);
   const [currentLabel, setCurrentLabel] = useState(record);
-
-  const navigate = useNavigate();
 
   // Update currentLabel when record prop changes
   useEffect(() => {
@@ -71,8 +68,6 @@ export function LabelManager({ record, categoryId, onSuccess }) {
           if (onSuccess) {
             onSuccess();
           }
-
-          navigate(`/label/index`);
         })
         .catch((error) => {
           console.error("Error deleting label:", error);

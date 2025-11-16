@@ -7,15 +7,12 @@ import PriorityService from "@services/priority";
 import toast from "react-hot-toast";
 import { Loading } from "@components/loading";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 export function SLAManager({ record, categoryId, onSuccess }) {
   const [loading, setLoading] = React.useState(false);
   const [isUploading, setUploading] = React.useState(false);
   const [currentSLA, setCurrentSLA] = useState(record);
   const [priorities, setPriorities] = useState([]);
-
-  const navigate = useNavigate();
 
   // Update currentSLA when record prop changes
   useEffect(() => {
@@ -108,8 +105,6 @@ export function SLAManager({ record, categoryId, onSuccess }) {
           if (onSuccess) {
             onSuccess();
           }
-
-          navigate(`/sla/index`);
         })
         .catch((error) => {
           console.error("Error deleting SLA:", error);
