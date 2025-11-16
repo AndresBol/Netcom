@@ -8,12 +8,12 @@ export const specialtySchema = yup.object({
     .nullable(),
   category_id: yup
     .number()
-    .typeError('Solo acepta números')
-    .required('La categoría es requerida'),
+    .typeError('Only accepts numbers')
+    .required('Category is required'),
   name: yup
     .string()
-    .required('El nombre es requerido')
-    .max(255, 'El nombre no puede exceder los 255 caracteres'),
+    .required('Name is required')
+    .max(255, 'Name cannot exceed 255 characters'),
 });
 
 export const useSpecialtyForm = (specialty) => {

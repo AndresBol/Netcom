@@ -8,22 +8,22 @@ export const userSchema = yup.object({
     .nullable(),
   role_id: yup
     .number()
-    .typeError('Solo acepta números')
-    .required('El rol es requerido'),
+    .typeError('Only accepts numbers')
+    .required('Role is required'),
   name: yup
     .string()
-    .required('El nombre es requerido')
-    .max(150, 'El nombre no puede exceder los 150 caracteres'),
+    .required('Name is required')
+    .max(150, 'Name cannot exceed 150 characters'),
   email: yup
     .string()
-    .email('El email debe ser válido')
-    .required('El email es requerido')
-    .max(255, 'El email no puede exceder los 255 caracteres'),
+    .email('Email must be valid')
+    .required('Email is required')
+    .max(255, 'Email cannot exceed 255 characters'),
   password: yup
     .string()
-    .required('La contraseña es requerida')
-    .min(8, 'La contraseña debe tener al menos 8 caracteres')
-    .max(255, 'La contraseña no puede exceder los 255 caracteres'),
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters')
+    .max(255, 'Password cannot exceed 255 characters'),
   special_field_ids: yup
     .array()
     .of(yup.number())

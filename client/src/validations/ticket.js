@@ -5,37 +5,37 @@ import { useForm } from 'react-hook-form';
 export const ticketSchema = yup.object({
   status_id: yup
         .number()
-        .typeError('Solo acepta números')
-        .required('El estado es requerido'),
+        .typeError('Only accepts numbers')
+        .required('Status is required'),
   category_id: yup
         .number()
-        .typeError('Solo acepta números')
-        .required('La categoría es requerida'),
+        .typeError('Only accepts numbers')
+        .required('Category is required'),
   priority_id: yup
         .number()
-        .typeError('Solo acepta números')
-        .required('La prioridad es requerida'),
+        .typeError('Only accepts numbers')
+        .required('Priority is required'),
   label_id: yup
         .number()
-        .typeError('Solo acepta números'),
+        .typeError('Only accepts numbers'),
   title: yup
         .string()
-        .required('El título es requerido')
-        .max(255, 'El título no puede exceder los 255 caracteres'),
+        .required('Title is required')
+        .max(255, 'Title cannot exceed 255 characters'),
   description: yup
         .string(),
   notification_status: yup
         .string()
-        .required('El estado de notificación es requerido')
-        .max(50, 'El estado de notificación no puede exceder los 50 caracteres'),
+        .required('Notification status is required')
+        .max(50, 'Notification status cannot exceed 50 characters'),
   rating: yup
         .number()
-        .typeError('Solo acepta números')
-        .min(0, 'La calificación mínima es 0')
-        .max(5, 'La calificación máxima es 5'),
+        .typeError('Only accepts numbers')
+        .min(0, 'Minimum rating is 0')
+        .max(5, 'Maximum rating is 5'),
   comment: yup
         .string()
-        .max(500, 'El comentario no puede exceder los 500 caracteres'),
+        .max(500, 'Comment cannot exceed 500 characters'),
 });
 
 export const useTicketForm = (ticket) => {
