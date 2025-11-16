@@ -16,13 +16,46 @@ export function UserManager({ record }) {
   const [roles, setRoles] = React.useState([]);
   const [specialFields, setSpecialFields] = React.useState([]);
   const [currentUser, setCurrentUser] = React.useState(record);
+  const [formInstance, setFormInstance] = React.useState(null);
+  const [showSpecialFields, setShowSpecialFields] = React.useState(false);
 
   const navigate = useNavigate();
+
+  const toNumericId = (value) => {
+    if (value === undefined || value === null || value === "") return null;
+    const parsed = Number(value);
+    return Number.isNaN(parsed) ? null : parsed;
+  };
 
   // Update currentUser when record prop changes
   useEffect(() => {
     setCurrentUser(record);
   }, [record]);
+
+  // Watch for role changes to show/hide special fields
+  useEffect(() => {
+    if (!formInstance || !roles.length) return;
+
+    const subscription = formInstance.watch((value, { name }) => {
+      if (name !== "role_id") return;
+
+      const selectedRoleId = toNumericId(value.role_id);
+      if (!selectedRoleId) {
+        setShowSpecialFields(false);
+        return;
+      }
+
+      const role = roles.find((r) => toNumericId(r.id) === selectedRoleId);
+      if (!role) {
+        setShowSpecialFields(false);
+        return;
+      }
+
+      setShowSpecialFields(role.name === "Technician");
+    });
+
+    return () => subscription.unsubscribe();
+  }, [formInstance, roles]);
 
   const formData = [
     {
@@ -46,13 +79,17 @@ export function UserManager({ record }) {
       fieldType: "one2many",
       data: roles,
     },
-    {
-      label: "Special Fields",
-      fieldName: "special_field_ids",
-      fieldType: "one2many",
-      data: specialFields,
-      multipleSelection: true,
-    },
+    ...(showSpecialFields
+      ? [
+          {
+            label: "Special Fields",
+            fieldName: "special_field_ids",
+            fieldType: "one2many",
+            data: specialFields,
+            multipleSelection: true,
+          },
+        ]
+      : []),
   ];
 
   const fetchModels = async () => {
@@ -126,6 +163,7 @@ export function UserManager({ record }) {
         record={currentUser}
         isUploading={isUploading}
         useModelForm={() => useUserForm(currentUser)}
+        onFormReady={setFormInstance}
         onSubmit={onSubmit}
         onDelete={onDelete}
       />
