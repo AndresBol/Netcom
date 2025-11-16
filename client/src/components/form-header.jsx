@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import { Title2 } from "@components/typography";
 import { CircularProgress } from "@mui/material";
+import { useLoggedUser } from "@contexts/UserContext";
 export function FormHeader({
   isEditing,
   isUploading,
@@ -14,6 +15,7 @@ export function FormHeader({
   onDeleteBtnClick,
   title,
 }) {
+  const { loggedUser } = useLoggedUser();
   return (
     <Box sx={styles.Container}>
       {isEditing ? (
@@ -47,17 +49,19 @@ export function FormHeader({
         </>
       ) : (
         <Box sx={styles.ChildContainer}>
-          <Button
-            type="button"
-            variant="contained"
-            startIcon={<EditIcon />}
-            onClick={(e) => {
-              e.preventDefault();
-              onEditChange(true);
-            }}
-          >
-            Edit
-          </Button>
+          {loggedUser?.role !== "Client" && (
+            <Button
+              type="button"
+              variant="contained"
+              startIcon={<EditIcon />}
+              onClick={(e) => {
+                e.preventDefault();
+                onEditChange(true);
+              }}
+            >
+              Edit
+            </Button>
+          )}
           <Title2>{title}</Title2>
         </Box>
       )}

@@ -250,6 +250,7 @@ export function TicketManager({ record }) {
               ticket_id: response.data.id,
               assigned_by: loggedUser.id,
             });
+            navigate(`/ticket/${response.data.id}`);
           } catch (error) {
             console.error("Error creating user-ticket relation:", error);
             toast.error("Ticket created but failed to assign to user");

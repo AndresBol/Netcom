@@ -213,7 +213,11 @@ export function TicketDetail() {
             data: row.ticket_attachments,
           });
         }}
-        onAddButtonClick={() => setIsManagerDialogOpen(true)}
+        onAddButtonClick={
+          loggedUser?.role !== "Client"
+            ? () => setIsManagerDialogOpen(true)
+            : undefined
+        }
         hasPagination={false}
         dense={true}
       />
