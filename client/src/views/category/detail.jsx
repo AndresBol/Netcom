@@ -42,16 +42,21 @@ export function CategoryDetail() {
       setCategory(categoryRes.data);
 
       const [labelsRes, specialtiesRes, slasRes, prioritiesRes] =
-        await Promise.all([
+        await Promise.allSettled([
           TicketLabelService.getByCategoryId(categoryId),
           SpecialFieldService.getByCategory(categoryId),
           SlaService.getByCategory(categoryId),
           PriorityService.getAll(),
         ]);
 
-      const priorities = prioritiesRes.data || [];
+      const priorities =
+        prioritiesRes.status === "fulfilled"
+          ? prioritiesRes.value.data || []
+          : [];
 
-      const slasWithPriorityName = (slasRes.data || []).map((sla) => {
+      const slasData =
+        slasRes.status === "fulfilled" ? slasRes.value.data || [] : [];
+      const slasWithPriorityName = slasData.map((sla) => {
         const priority = priorities.find((p) => p.id === sla.priority_id);
         return {
           ...sla,
@@ -59,8 +64,14 @@ export function CategoryDetail() {
         };
       });
 
-      setLabels(labelsRes.data || []);
-      setSpecialties(specialtiesRes.data || []);
+      setLabels(
+        labelsRes.status === "fulfilled" ? labelsRes.value.data || [] : []
+      );
+      setSpecialties(
+        specialtiesRes.status === "fulfilled"
+          ? specialtiesRes.value.data || []
+          : []
+      );
       setSlas(slasWithPriorityName);
     } catch (error) {
       console.error("Error fetching category details: ", error);
@@ -113,21 +124,30 @@ export function CategoryDetail() {
           <LabelManager
             categoryId={categoryId}
             record={managerDialog.data}
-            onSuccess={() => fetchData()}
+            onSuccess={() => {
+              fetchData();
+              setManagerDialog({ model: null, data: null });
+            }}
           />
         )}
         {managerDialog.model === "specialty" && (
           <SpecialtyManager
             categoryId={categoryId}
             record={managerDialog.data}
-            onSuccess={() => fetchData()}
+            onSuccess={() => {
+              fetchData();
+              setManagerDialog({ model: null, data: null });
+            }}
           />
         )}
         {managerDialog.model === "sla" && (
           <SLAManager
             categoryId={categoryId}
             record={managerDialog.data}
-            onSuccess={() => fetchData()}
+            onSuccess={() => {
+              fetchData();
+              setManagerDialog({ model: null, data: null });
+            }}
           />
         )}
       </ManagerDialog>

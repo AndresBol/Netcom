@@ -5,13 +5,10 @@ import { useEffect, useState } from "react";
 import SpecialFieldService from "@services/special-field";
 import toast from "react-hot-toast";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 export function SpecialtyManager({ record, categoryId, onSuccess }) {
   const [isUploading, setUploading] = React.useState(false);
   const [currentSpecialty, setCurrentSpecialty] = useState(record);
-
-  const navigate = useNavigate();
 
   // Update currentSpecialty when record prop changes
   useEffect(() => {
@@ -70,8 +67,6 @@ export function SpecialtyManager({ record, categoryId, onSuccess }) {
           if (onSuccess) {
             onSuccess();
           }
-
-          navigate(`/specialty/index`);
         })
         .catch((error) => {
           console.error("Error deleting specialty:", error);

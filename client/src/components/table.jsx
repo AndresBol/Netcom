@@ -275,7 +275,9 @@ export default function Table({
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(
+    hasPagination ? 10 : Number.MAX_SAFE_INTEGER
+  );
   const [filterDialogOpen, setFilterDialogOpen] = React.useState(false);
   const [filters, setFilters] = React.useState({});
 
@@ -383,6 +385,7 @@ export default function Table({
             {visibleRows.map((row, index) => {
               return (
                 <Row
+                  key={row.id || index}
                   data={{
                     rowId: row.id,
                     headTitles,
