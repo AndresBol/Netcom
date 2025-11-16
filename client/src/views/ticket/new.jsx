@@ -5,7 +5,7 @@ export function NewTicket() {
   return (
     <View>
       <TicketManager />
-        <BackButton/>
+      <BackButton />
     </View>
   );
 }

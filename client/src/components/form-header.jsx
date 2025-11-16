@@ -49,7 +49,7 @@ export function FormHeader({
         </>
       ) : (
         <Box sx={styles.ChildContainer}>
-          {loggedUser?.role !== "Client" && (
+          {loggedUser?.role === "Administrator" && (
             <Button
               type="button"
               variant="contained"

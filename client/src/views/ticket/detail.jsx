@@ -196,14 +196,14 @@ export function TicketDetail() {
           </Body2>
         </Box>
         <Box>
-          {slaProps.resolution_days && (
+          {slaProps.resolution_days ? (
             <>
               <SubTitle2 color="text.secondary" alignment="end" bold>
                 Days of resolution
               </SubTitle2>
               <Body2 alignment="end">{slaProps.resolution_days}</Body2>
             </>
-          )}
+          ) : undefined}
           <SubTitle2 color="text.secondary" alignment="end" bold>
             SLA Response Time
           </SubTitle2>

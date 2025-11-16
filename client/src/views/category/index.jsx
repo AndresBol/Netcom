@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Table from "@components/table";
 import { Title1 } from "@components/typography";
 import { BackButton } from "@components/backbutton";
+import { useLoggedUser } from "@contexts/UserContext";
 
 export function CategoryIndex() {
   const [loading, setLoading] = useState(true);
@@ -14,6 +15,8 @@ export function CategoryIndex() {
   const tableHeadTitles = [
     { label: "Name", fieldName: "name", fieldType: "string" },
   ];
+
+  const { loggedUser } = useLoggedUser();
 
   const navigate = useNavigate();
 
@@ -47,10 +50,15 @@ export function CategoryIndex() {
         headTitles={tableHeadTitles}
         data={categories}
         onRowClick={(cat) => navigate(`/category/${cat.id}`)}
-        tableTitle= {<Title1>Available Categories</Title1>}
+        tableTitle={<Title1>Available Categories</Title1>}
+        onAddButtonClick={
+          loggedUser?.role === "Administrator"
+            ? () => navigate(`/category/new`)
+            : undefined
+        }
       />
-            <Box>
-        <BackButton/>
+      <Box>
+        <BackButton />
       </Box>
     </View>
   );

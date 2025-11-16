@@ -15,6 +15,7 @@ import ManagerDialog from "@components/manager-dialog";
 import { SpecialtyManager } from "@components/managers/specialty";
 import { SLAManager } from "@components/managers/sla";
 import { LabelManager } from "@components/managers/label";
+import { useLoggedUser } from "@contexts/UserContext";
 
 export function CategoryDetail() {
   const { id } = useParams();
@@ -28,6 +29,8 @@ export function CategoryDetail() {
     model: null,
     data: null,
   }); // 'label', 'specialty', 'sla', or null
+
+  const { loggedUser } = useLoggedUser();
 
   const fetchData = async () => {
     if (!categoryId) return;
@@ -147,8 +150,10 @@ export function CategoryDetail() {
             onRowClick={(rData) =>
               setManagerDialog({ model: "label", data: rData })
             }
-            onAddButtonClick={() =>
-              setManagerDialog({ model: "label", data: null })
+            onAddButtonClick={
+              loggedUser?.role === "Administrator"
+                ? () => setManagerDialog({ model: "label", data: null })
+                : undefined
             }
             hasPagination={false}
             dense={true}
@@ -162,8 +167,10 @@ export function CategoryDetail() {
             onRowClick={(rData) =>
               setManagerDialog({ model: "specialty", data: rData })
             }
-            onAddButtonClick={() =>
-              setManagerDialog({ model: "specialty", data: null })
+            onAddButtonClick={
+              loggedUser?.role === "Administrator"
+                ? () => setManagerDialog({ model: "specialty", data: null })
+                : undefined
             }
             hasPagination={false}
             dense={true}
@@ -178,8 +185,10 @@ export function CategoryDetail() {
           onRowClick={(rData) =>
             setManagerDialog({ model: "sla", data: rData })
           }
-          onAddButtonClick={() =>
-            setManagerDialog({ model: "sla", data: null })
+          onAddButtonClick={
+            loggedUser?.role === "Administrator"
+              ? () => setManagerDialog({ model: "sla", data: null })
+              : undefined
           }
           hasPagination={false}
           dense={true}
