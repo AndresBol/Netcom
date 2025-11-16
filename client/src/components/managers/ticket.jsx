@@ -272,7 +272,7 @@ export function TicketManager({ record }) {
       await TicketService.delete(currentTicket.id)
         .then((response) => {
           console.log("Ticket deleted:", response.data);
-          navigate(`/ticket/ticket/index/by-user`);
+          navigate(`/ticket/index/by-user`);
           toast.success("Ticket deleted!");
         })
         .catch((error) => {
