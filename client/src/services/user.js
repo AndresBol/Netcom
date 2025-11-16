@@ -19,10 +19,13 @@ login(email, password) {
   );
 }
 
-  logout() {
-    return axios.post(`${BASE_URL}/logout`);
-  }
-
+ logout() {
+  return axios.post(
+    `${BASE_URL}/logout`,
+    {},
+    { withCredentials: true }
+  );
+}
   getAll() {
     return axios.get(BASE_URL);
   }

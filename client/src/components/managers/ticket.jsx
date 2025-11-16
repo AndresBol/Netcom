@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { Form } from "@components/form";
 import { useTicketForm } from "@validations/ticket";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import TicketService from "@services/ticket";
 import UserTicketService from "@services/user-ticket";
 import toast from "react-hot-toast";
@@ -12,129 +12,55 @@ import CategoryService from "@services/category";
 import PriorityService from "@services/priority";
 import TicketLabelService from "@services/ticket-label";
 import StatusService from "@services/status";
-import { useState } from "react";
 import { useLoggedUser } from "@contexts/UserContext";
 import TimelineService from "@services/timeline";
 
 export function TicketManager({ record }) {
-  const [loading, setLoading] = React.useState(false);
-  const [isUploading, setUploading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isUploading, setUploading] = useState(false);
   const [currentTicket, setCurrentTicket] = useState(record);
   const [categories, setCategories] = useState([]);
   const [priorities, setPriorities] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [labels, setLabels] = useState([]);
-  const [categoryLabels, setCategoryLabels] = useState([]);
   const [formInstance, setFormInstance] = useState(null);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(
-    record?.category_id ?? null
-  );
-  const { loggedUser } = useLoggedUser();
 
+  const { loggedUser } = useLoggedUser();
   const navigate = useNavigate();
 
   const toNumericId = (value) => {
-    if (value === undefined || value === null || value === "") {
-      return null;
-    }
+    if (value === undefined || value === null || value === "") return null;
     const parsed = Number(value);
     return Number.isNaN(parsed) ? null : parsed;
   };
 
-  // Update currentTicket when record prop changes
+  // Update ticket when record changes
   useEffect(() => {
     setCurrentTicket(record);
-    setSelectedCategoryId(record?.category_id ?? null);
   }, [record]);
 
-  // Subscribe to form updates to keep track of select values
   useEffect(() => {
-    if (!formInstance) return;
-
-    const currentCategoryValue = toNumericId(
-      formInstance.getValues("category_id")
-    );
-    if (currentCategoryValue !== undefined && currentCategoryValue !== null) {
-      setSelectedCategoryId(currentCategoryValue);
-    }
+    if (!formInstance || !labels.length) return;
 
     const subscription = formInstance.watch((value, { name }) => {
-      if (!name) return;
-      if (name === "category_id") {
-        setSelectedCategoryId(toNumericId(value?.[name]));
-      }
+      if (name !== "label_id") return;
+
+      const selectedLabelId = toNumericId(value.label_id);
+      if (!selectedLabelId) return;
+
+      const label = labels.find((l) => toNumericId(l.id) === selectedLabelId);
+      if (!label) return;
+
+      formInstance.setValue("category_id", toNumericId(label.category_id), {
+        shouldDirty: true,
+        shouldTouch: true,
+      });
     });
 
     return () => subscription.unsubscribe();
-  }, [formInstance]);
+  }, [formInstance, labels]);
 
-  // Ensure a category is always selected once data is available
-  useEffect(() => {
-    if (!formInstance || !categories.length) return;
-
-    const currentCategory = toNumericId(formInstance.getValues("category_id"));
-    const categoryExists = categories.some(
-      (category) => toNumericId(category.id) === currentCategory
-    );
-
-    if (currentCategory && categoryExists) {
-      if (selectedCategoryId !== currentCategory) {
-        setSelectedCategoryId(currentCategory);
-      }
-      return;
-    }
-
-    const fallbackCategory = toNumericId(categories[0]?.id);
-
-    if (fallbackCategory === null) return;
-
-    formInstance.setValue("category_id", fallbackCategory, {
-      shouldDirty: false,
-      shouldTouch: false,
-    });
-    setSelectedCategoryId(fallbackCategory);
-  }, [categories, formInstance, selectedCategoryId]);
-
-  // Filter labels by selected category and make sure one label stays selected
-  useEffect(() => {
-    const normalizedCategoryId = toNumericId(selectedCategoryId);
-
-    if (!normalizedCategoryId) {
-      setCategoryLabels([]);
-      if (formInstance) {
-        formInstance.setValue("label_id", null, {
-          shouldDirty: false,
-          shouldTouch: false,
-        });
-      }
-      return;
-    }
-
-    const filteredLabels = labels.filter((label) => {
-      const labelCategoryId = toNumericId(label.category_id);
-      return labelCategoryId === normalizedCategoryId;
-    });
-    setCategoryLabels(filteredLabels);
-
-    if (!formInstance) return;
-
-    const currentLabel = toNumericId(formInstance.getValues("label_id"));
-    const labelExists = filteredLabels.some(
-      (label) => toNumericId(label.id) === currentLabel
-    );
-
-    if (labelExists) {
-      return;
-    }
-
-    const fallbackLabel = toNumericId(filteredLabels[0]?.id);
-    formInstance.setValue("label_id", fallbackLabel, {
-      shouldDirty: false,
-      shouldTouch: false,
-    });
-  }, [labels, selectedCategoryId, formInstance]);
-
-  // Check if the current ticket status is Resolved or Closed
+  // Current status validation
   const currentStatus = statuses.find(
     (status) => status.id === currentTicket?.status_id
   );
@@ -144,6 +70,17 @@ export function TicketManager({ record }) {
 
   const formData = [
     {
+      label: "Title",
+      fieldName: "title",
+      fieldType: "string",
+    },
+
+    {
+      label: "Description",
+      fieldName: "description",
+      fieldType: "string",
+    },
+    {
       label: "Status",
       fieldName: "status_id",
       fieldType: "one2many",
@@ -151,20 +88,18 @@ export function TicketManager({ record }) {
       readonly: loggedUser?.role === "Client",
     },
     {
-      label: "Title",
-      fieldName: "title",
-      fieldType: "string",
-    },
-    {
-      label: "Description",
-      fieldName: "description",
-      fieldType: "string",
-    },
-    {
       label: "Category",
       fieldName: "category_id",
       fieldType: "one2many",
       data: categories,
+      readonly: true,
+    },
+
+    {
+      label: "Labels",
+      fieldName: "label_id",
+      fieldType: "one2many",
+      data: labels,
     },
     {
       label: "Priority",
@@ -172,12 +107,7 @@ export function TicketManager({ record }) {
       fieldType: "one2many",
       data: priorities,
     },
-    {
-      label: "Labels",
-      fieldName: "label_id",
-      fieldType: "one2many",
-      data: categoryLabels,
-    },
+
     ...(isResolvedOrClosed
       ? [
           {
@@ -195,44 +125,33 @@ export function TicketManager({ record }) {
   ];
 
   const fetchModels = async () => {
-    //Fetch Categories
-    const response = await CategoryService.getAll();
-    setCategories(response.data);
+    const responseCategories = await CategoryService.getAll();
+    setCategories(responseCategories.data);
 
-    //Fetch Priorities
-    const priorityResponse = await PriorityService.getAll();
-    setPriorities(priorityResponse.data);
+    const responsePriorities = await PriorityService.getAll();
+    setPriorities(responsePriorities.data);
 
-    //Fetch Labels
-    const labelResponse = await TicketLabelService.getAll();
-    setLabels(labelResponse.data);
+    const responseLabels = await TicketLabelService.getAll();
+    setLabels(responseLabels.data);
 
-    //Fetch Statuses
-    const statusResponse = await StatusService.getAll();
-    setStatuses(statusResponse.data);
+    const responseStatuses = await StatusService.getAll();
+    setStatuses(responseStatuses.data);
   };
 
   useEffect(() => {
     setLoading(true);
-    try {
-      fetchModels();
-    } catch (error) {
-      console.error("Error fetching models:", error);
-    } finally {
-      setLoading(false);
-    }
+    fetchModels()
+      .catch((error) => console.error("Error fetching models:", error))
+      .finally(() => setLoading(false));
   }, []);
 
   const onSubmit = async (DataForm) => {
-
-    
     setUploading(true);
     try {
       let response;
       const isNewTicket = !currentTicket;
 
       if (currentTicket) {
-        // Include the id field when updating
         response = await TicketService.update({
           ...DataForm,
           id: currentTicket.id,
@@ -241,36 +160,24 @@ export function TicketManager({ record }) {
         response = await TicketService.insert(DataForm);
       }
 
-      // Update the current ticket with the response data
-      if (response && response.data) {
+      if (response?.data) {
         setCurrentTicket(response.data);
 
-        // If it's a new ticket, create the relation with the logged user
         if (isNewTicket && loggedUser) {
-          try {
-            await UserTicketService.insert({
-              user_id: loggedUser.id,
-              ticket_id: response.data.id,
-              assigned_by: loggedUser.id,
-            });
+          await UserTicketService.insert({
+            user_id: loggedUser.id,
+            ticket_id: response.data.id,
+            assigned_by: loggedUser.id,
+          });
 
-            try {
-              
-              await TimelineService.insert({
-                ticket_id: response.data.id,
-                user_id: loggedUser.id,
-                subject: "Ticket created",
-                description: `Ticket creado por ${loggedUser.name}`,
-              });
-            } catch (err) {
-              console.error("Error creating default timeline:", err);
-            }
+          await TimelineService.insert({
+            ticket_id: response.data.id,
+            user_id: loggedUser.id,
+            subject: "Ticket created",
+            description: `Ticket created by ${loggedUser.name}`,
+          });
 
-            navigate(`/ticket/${response.data.id}`);
-          } catch (error) {
-            console.error("Error creating user-ticket relation:", error);
-            toast.error("Ticket created but failed to assign to user");
-          }
+          navigate(`/ticket/${response.data.id}`);
         }
       }
 
@@ -285,18 +192,12 @@ export function TicketManager({ record }) {
 
   const onDelete = async () => {
     try {
-      //Delete user on DB via API
-      await TicketService.delete(currentTicket.id)
-        .then((response) => {
-          console.log("Ticket deleted:", response.data);
-          navigate(`/ticket/index/by-user`);
-          toast.success("Ticket deleted!");
-        })
-        .catch((error) => {
-          console.error("Error deleting ticket:", error);
-        });
+      await TicketService.delete(currentTicket.id);
+      navigate(`/ticket/index/by-user`);
+      toast.success("Ticket deleted!");
     } catch (error) {
       console.error("Error deleting ticket:", error);
+      toast.error("Error deleting ticket");
     }
   };
 
