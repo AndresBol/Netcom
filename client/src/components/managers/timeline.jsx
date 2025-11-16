@@ -156,20 +156,8 @@ export function TimelineManager({ record, ticketId, userId }) {
             onClick={() => fileInputRef.current.click()}
           >
             Select Files
-          </Button>
-
-          <Button
-            variant="contained"
-            onClick={() =>
-              currentTimeline?.id
-                ? handleFileUpload(currentTimeline.id)
-                : toast.error("You must save the timeline first")
-            }
-          >
-            Upload Files
-          </Button>
+          </Button>   
         </Box>
-
         {files.length > 0 && (
           <Box
             mt={2}
