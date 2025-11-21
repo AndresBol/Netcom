@@ -72,16 +72,16 @@ export default function LoginDialog({ open, onClose }) {
             sx={{ width: 80, height: 80, mb: 1 }}
           />
           <Typography variant="h6" fontWeight="bold" color="primary">
-            Bienvenido a Netcom
+            Welcome to Netcom
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Inicia sesión con tu cuenta
+            Sign in with your account
           </Typography>
         </Box>
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <TextField
-            label="Correo"
+            label="Email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -96,7 +96,7 @@ export default function LoginDialog({ open, onClose }) {
             }}
           />
           <TextField
-            label="Contraseña"
+            label="Password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -121,7 +121,7 @@ export default function LoginDialog({ open, onClose }) {
 
       <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
         <Button onClick={onClose} color="secondary" variant="outlined">
-          Cancelar
+          Cancel
         </Button>
         <Button
           onClick={handleLogin}
@@ -133,7 +133,7 @@ export default function LoginDialog({ open, onClose }) {
             "&:hover": { backgroundColor: "primary.dark" },
           }}
         >
-          {loading ? <CircularProgress size={20} color="inherit" /> : "Ingresar"}
+          {loading ? <CircularProgress size={20} color="inherit" /> : "Sign In"}
         </Button>
       </DialogActions>
     </Dialog>
