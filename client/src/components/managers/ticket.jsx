@@ -14,6 +14,7 @@ import TicketLabelService from "@services/ticket-label";
 import StatusService from "@services/status";
 import { useLoggedUser } from "@contexts/UserContext";
 import TimelineService from "@services/timeline";
+import { useTranslation } from "react-i18next";
 
 export function TicketManager({ record }) {
   const [loading, setLoading] = useState(false);
@@ -24,6 +25,7 @@ export function TicketManager({ record }) {
   const [statuses, setStatuses] = useState([]);
   const [labels, setLabels] = useState([]);
   const [formInstance, setFormInstance] = useState(null);
+  const { t } = useTranslation();
 
   const { loggedUser } = useLoggedUser();
   const navigate = useNavigate();
@@ -70,25 +72,25 @@ export function TicketManager({ record }) {
 
   const formData = [
     {
-      label: "Title",
+      label: t("fields.title"),
       fieldName: "title",
       fieldType: "string",
     },
 
     {
-      label: "Description",
+      label: t("fields.description"),
       fieldName: "description",
       fieldType: "string",
     },
     {
-      label: "Status",
+      label: t("fields.status"),
       fieldName: "status_id",
       fieldType: "one2many",
       data: statuses,
       readonly: loggedUser?.role === "Client",
     },
     {
-      label: "Category",
+      label: t("fields.category"),
       fieldName: "category_id",
       fieldType: "one2many",
       data: categories,
@@ -96,13 +98,13 @@ export function TicketManager({ record }) {
     },
 
     {
-      label: "Labels",
+      label: t("fields.labels"),
       fieldName: "label_id",
       fieldType: "one2many",
       data: labels,
     },
     {
-      label: "Priority",
+      label: t("fields.priority"),
       fieldName: "priority_id",
       fieldType: "one2many",
       data: priorities,
@@ -111,7 +113,7 @@ export function TicketManager({ record }) {
     ...(isResolvedOrClosed
       ? [
           {
-            label: "Rating",
+            label: t("fields.rating"),
             fieldName: "rating",
             fieldType: "rating",
           },
@@ -181,10 +183,10 @@ export function TicketManager({ record }) {
         }
       }
 
-      toast.success("Ticket modified!");
+      toast.success(t("messages.ticketModified"));
     } catch (error) {
       console.error("Error modifying ticket:", error);
-      toast.error("Failed to modify ticket");
+      toast.error(t("messages.failedToModifyTicket"));
     } finally {
       setUploading(false);
     }
@@ -194,10 +196,10 @@ export function TicketManager({ record }) {
     try {
       await TicketService.delete(currentTicket.id);
       navigate(`/ticket/index/by-user`);
-      toast.success("Ticket deleted!");
+      toast.success(t("messages.ticketDeleted"));
     } catch (error) {
       console.error("Error deleting ticket:", error);
-      toast.error("Error deleting ticket");
+      toast.error(t("messages.failedToModifyTicket"));
     }
   };
 

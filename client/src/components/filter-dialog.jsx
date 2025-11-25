@@ -14,6 +14,7 @@ import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { useTranslation } from "react-i18next";
 
 export default function FilterDialog({
   open,
@@ -22,9 +23,10 @@ export default function FilterDialog({
   data,
   onFilterApply,
   currentFilters,
-  dialogTitle = "Filter Table",
+  dialogTitle,
   excludeFieldType = "one2many",
 }) {
+  const { t } = useTranslation();
   const [selectedFilters, setSelectedFilters] = React.useState(currentFilters);
   const [expandedColumn, setExpandedColumn] = React.useState(null);
 
@@ -80,7 +82,7 @@ export default function FilterDialog({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{dialogTitle}</DialogTitle>
+      <DialogTitle>{dialogTitle || t("filter.title")}</DialogTitle>
       <DialogContent>
         <Box sx={{ mt: 2 }}>
           <List>
@@ -138,13 +140,13 @@ export default function FilterDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClearFilters} color="error">
-          Clear Filters
+          {t("filter.clearFilters")}
         </Button>
         <Button onClick={onClose} color="black">
-          Cancel
+          {t("common.cancel")}
         </Button>
         <Button onClick={handleApplyFilters} variant="contained">
-          Apply Filters
+          {t("filter.applyFilters")}
         </Button>
       </DialogActions>
     </Dialog>

@@ -5,16 +5,15 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import { useTranslation } from "react-i18next";
 
-export default function ImageDialog({
-  open,
-  onClose,
-  data,
-  dialogTitle = "Available Images",
-}) {
+export default function ImageDialog({ open, onClose, data, dialogTitle }) {
+  const { t } = useTranslation();
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{dialogTitle}</DialogTitle>
+      <DialogTitle>
+        {dialogTitle || t("imageDialog.availableImages")}
+      </DialogTitle>
       <DialogContent>
         <Box sx={{ mt: 2 }}>
           {data && data.length > 0 ? (
@@ -34,13 +33,13 @@ export default function ImageDialog({
               />
             ))
           ) : (
-            <Box>No images available.</Box>
+            <Box>{t("imageDialog.noImages")}</Box>
           )}
         </Box>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" onClick={onClose}>
-          Close
+          {t("common.close")}
         </Button>
       </DialogActions>
     </Dialog>

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
+import { useTranslation } from "react-i18next";
 
 export function TimelineManager({ record, ticketId, userId }) {
   const [loading, setLoading] = useState(false);
@@ -17,6 +18,7 @@ export function TimelineManager({ record, ticketId, userId }) {
   const [files, setFiles] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
@@ -36,8 +38,12 @@ export function TimelineManager({ record, ticketId, userId }) {
   };
 
   const formData = [
-    { label: "Subject", fieldName: "subject", fieldType: "string" },
-    { label: "Description", fieldName: "description", fieldType: "string" },
+    { label: t("fields.subject"), fieldName: "subject", fieldType: "string" },
+    {
+      label: t("fields.description"),
+      fieldName: "description",
+      fieldType: "string",
+    },
   ];
 
   const onSubmit = async (DataForm) => {
@@ -58,7 +64,7 @@ export function TimelineManager({ record, ticketId, userId }) {
 
       if (response && response.data) {
         setCurrentTimeline(response.data);
-        toast.success("Timeline modified!");
+        toast.success(t("messages.timelineModified"));
       }
 
       if (files.length > 0) {
@@ -66,7 +72,7 @@ export function TimelineManager({ record, ticketId, userId }) {
       }
     } catch (error) {
       console.error("Error modifying timeline:", error);
-      toast.error("Failed to modify timeline");
+      toast.error(t("messages.failedToModifyTimeline"));
     } finally {
       setUploading(false);
     }
@@ -75,7 +81,7 @@ export function TimelineManager({ record, ticketId, userId }) {
   const handleFileUpload = async (timelineId) => {
     try {
       const res = await AttachmentService.uploadFiles(timelineId, files);
-      toast.success("Files uploaded successfully!");
+      toast.success(t("messages.filesUploadedSuccessfully"));
       setFiles([]);
       setPreviews([]);
       loadAttachments(timelineId);
@@ -84,7 +90,7 @@ export function TimelineManager({ record, ticketId, userId }) {
       }, 1000);
     } catch (error) {
       console.error("Error uploading files:", error);
-      toast.error("Error uploading files");
+      toast.error(t("messages.errorUploadingFiles"));
     }
   };
 
@@ -94,7 +100,7 @@ export function TimelineManager({ record, ticketId, userId }) {
         .then((response) => {
           console.log("Timeline deleted:", response.data);
           navigate(`/timeline/index`);
-          toast.success("Timeline deleted!");
+          toast.success(t("messages.timelineDeleted"));
         })
         .catch((error) => {
           console.error("Error deleting timeline:", error);
@@ -155,8 +161,8 @@ export function TimelineManager({ record, ticketId, userId }) {
             startIcon={<CloudUploadIcon />}
             onClick={() => fileInputRef.current.click()}
           >
-            Select Files
-          </Button>   
+            {t("fields.selectFiles")}
+          </Button>
         </Box>
         {files.length > 0 && (
           <Box
@@ -209,7 +215,6 @@ export function TimelineManager({ record, ticketId, userId }) {
                   </Box>
                 )}
 
-           
                 <IconButton
                   size="small"
                   sx={{
@@ -232,7 +237,7 @@ export function TimelineManager({ record, ticketId, userId }) {
 
       {attachments.length > 0 && (
         <Box mt={3}>
-          <h4>Attachments</h4>
+          <h4>{t("fields.attachments")}</h4>
           <ul>
             {attachments.map((file) => (
               <li key={file.id}>

@@ -6,8 +6,11 @@ import Grid from "@mui/material/Grid2";
 import error from "@assets/Error.png";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
+import { useTranslation } from "react-i18next";
+
 export function PageNotFound() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const back = () => {
     navigate(-1);
   };
@@ -34,11 +37,10 @@ export function PageNotFound() {
             color="text.primary"
             gutterBottom
           >
-            Recurso no encontrado
+            {t("pageNotFound.title")}
           </Typography>
           <Typography variant="h5" align="center" color="text.secondary">
-            La página que está buscando podría haber sido eliminada, cambio su
-            nombre o no está disponible temporalmente
+            {t("pageNotFound.message")}
           </Typography>
           <Box
             sx={{
@@ -54,7 +56,7 @@ export function PageNotFound() {
               onClick={() => back()}
               color="secondary"
             >
-              Regresar
+              {t("pageNotFound.goBack")}
             </Button>
           </Box>
         </Grid>

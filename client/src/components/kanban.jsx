@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import { getSlaStatusIcon } from "@utils/sla-manager";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import { useTranslation } from "react-i18next";
 
 export function Kanban({ data, model = "basic" }) {
   return (
@@ -29,6 +30,7 @@ export function Kanban({ data, model = "basic" }) {
 
 function TicketKanbanItem(ticket) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   return (
     <Card
       sx={styles.CardContainer}
@@ -38,9 +40,17 @@ function TicketKanbanItem(ticket) {
         <SubTitle bold>
           #{ticket.id} {ticket.title}
         </SubTitle>
-        <Body>Category: {ticket.category_name}</Body>
-        <Body>Priority: {ticket.priority_name}</Body>
-        {ticket.label_name && <Body>Label: {ticket.label_name}</Body>}
+        <Body>
+          {t("fields.category")}: {ticket.category_name}
+        </Body>
+        <Body>
+          {t("fields.priority")}: {ticket.priority_name}
+        </Body>
+        {ticket.label_name && (
+          <Body>
+            {t("fields.labels")}: {ticket.label_name}
+          </Body>
+        )}
         <Body>
           <br />
         </Body>
@@ -79,6 +89,7 @@ function TicketKanbanItem(ticket) {
 }
 
 function KanbanItem(item) {
+  const { t } = useTranslation();
   return (
     <Card
       sx={styles.CardContainer}
@@ -89,7 +100,7 @@ function KanbanItem(item) {
         <Body>{item.description}</Body>
       </CardContent>
       <CardActions sx={styles.ActionsContainer}>
-        <Button size="small">View Details</Button>
+        <Button size="small">{t("kanban.viewDetails")}</Button>
       </CardActions>
     </Card>
   );

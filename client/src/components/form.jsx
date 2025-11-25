@@ -6,6 +6,7 @@ import TextField from "@mui/material/TextField";
 import { Rating, Typography } from "@mui/material";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function formControl(field, fieldConfig, errors, isEditing) {
   let control;
@@ -96,6 +97,7 @@ export function Form({
   onFormReady,
 }) {
   const [isEditing, setIsEditing] = useState(record ? false : true);
+  const { t } = useTranslation();
 
   const formApi = useModelForm();
 
@@ -118,7 +120,7 @@ export function Form({
 
   const onError = (errors, e) => {
     console.log(errors, e);
-    toast.error("Please fix the errors in the form.");
+    toast.error(t("messages.formErrors"));
   };
 
   const submitForm = handleSubmit(async (formValues) => {
@@ -131,7 +133,7 @@ export function Form({
     ? record.name
     : record?.title
       ? record.title
-      : "New Record";
+      : t("common.newRecord");
 
   return (
     <Box sx={styles.Container}>

@@ -7,6 +7,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Title2 } from "@components/typography";
 import { CircularProgress } from "@mui/material";
 import { useLoggedUser } from "@contexts/UserContext";
+import { useTranslation } from "react-i18next";
+
 export function FormHeader({
   isEditing,
   isUploading,
@@ -16,6 +18,7 @@ export function FormHeader({
   title,
 }) {
   const { loggedUser } = useLoggedUser();
+  const { t } = useTranslation();
   return (
     <Box sx={styles.Container}>
       {isEditing ? (
@@ -25,7 +28,7 @@ export function FormHeader({
               {isUploading ? (
                 <CircularProgress color="white" size={25} />
               ) : (
-                "Save"
+                t("common.save")
               )}
             </Button>
             <Title2>{title}</Title2>
@@ -42,7 +45,7 @@ export function FormHeader({
                 startIcon={<CloseIcon />}
                 onClick={() => onEditChange(false)}
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
             </Box>
           )}
@@ -59,7 +62,7 @@ export function FormHeader({
                 onEditChange(true);
               }}
             >
-              Edit
+              {t("common.edit")}
             </Button>
           )}
           <Title2>{title}</Title2>

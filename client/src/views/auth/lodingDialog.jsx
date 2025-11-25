@@ -12,12 +12,13 @@ import {
 } from "@mui/material";
 import UserService from "@services/user";
 import { useLoggedUser } from "@contexts/UserContext";
-import LockOutlineIcon from '@mui/icons-material/LockOutline';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-
+import LockOutlineIcon from "@mui/icons-material/LockOutline";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import { useTranslation } from "react-i18next";
 
 export default function LoginDialog({ open, onClose }) {
   const { setLoggedUser } = useLoggedUser();
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -32,10 +33,10 @@ export default function LoginDialog({ open, onClose }) {
         setLoggedUser(response.data.user);
         onClose();
       } else {
-        setError(response.data.message || "Credenciales incorrectas");
+        setError(response.data.message || t("auth.invalidCredentials"));
       }
     } catch (err) {
-      setError("Error de servidor");
+      setError(t("auth.serverError"));
     } finally {
       setLoading(false);
     }
@@ -56,7 +57,6 @@ export default function LoginDialog({ open, onClose }) {
       }}
     >
       <DialogContent>
-   
         <Box
           sx={{
             display: "flex",
@@ -72,40 +72,40 @@ export default function LoginDialog({ open, onClose }) {
             sx={{ width: 80, height: 80, mb: 1 }}
           />
           <Typography variant="h6" fontWeight="bold" color="primary">
-            Welcome to Netcom
+            {t("auth.welcomeToNetcom")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Sign in with your account
+            {t("auth.signInMessage")}
           </Typography>
         </Box>
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <TextField
-            label="Email"
+            label={t("fields.email")}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             fullWidth
             size="small"
             InputProps={{
-              startAdornment:(
+              startAdornment: (
                 <InputAdornment position="start">
-                  <MailOutlineIcon color="action"/>
+                  <MailOutlineIcon color="action" />
                 </InputAdornment>
               ),
             }}
           />
           <TextField
-            label="Password"
+            label={t("fields.password")}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
             size="small"
-              InputProps={{
-              startAdornment:(
+            InputProps={{
+              startAdornment: (
                 <InputAdornment position="start">
-                  <LockOutlineIcon color="action"/>
+                  <LockOutlineIcon color="action" />
                 </InputAdornment>
               ),
             }}
@@ -118,10 +118,9 @@ export default function LoginDialog({ open, onClose }) {
         </Box>
       </DialogContent>
 
-
       <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
         <Button onClick={onClose} color="secondary" variant="outlined">
-          Cancel
+          {t("common.cancel")}
         </Button>
         <Button
           onClick={handleLogin}
@@ -133,7 +132,11 @@ export default function LoginDialog({ open, onClose }) {
             "&:hover": { backgroundColor: "primary.dark" },
           }}
         >
-          {loading ? <CircularProgress size={20} color="inherit" /> : "Sign In"}
+          {loading ? (
+            <CircularProgress size={20} color="inherit" />
+          ) : (
+            t("auth.signIn")
+          )}
         </Button>
       </DialogActions>
     </Dialog>

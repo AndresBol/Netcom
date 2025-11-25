@@ -9,10 +9,13 @@ import Button from "@mui/material/Button";
 import { useLoggedUser } from "@contexts/UserContext";
 import UserService from "@services/user";
 import LoginDialog from "@views/auth/lodingDialog";
+import LanguageSelector from "@components/language-selector";
+import { useTranslation } from "react-i18next";
 
 export default function Header() {
   const { loggedUser, setLoggedUser } = useLoggedUser();
   const [openLogin, setOpenLogin] = React.useState(false);
+  const { t } = useTranslation();
 
   const handleLogin = () => setOpenLogin(true);
 
@@ -39,6 +42,7 @@ export default function Header() {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
+            gap: 2,
           }}
         >
           <Box
@@ -69,7 +73,7 @@ export default function Header() {
                 <HomeIcon />
               </IconButton>
               <Typography variant="h6" color="secondary.main">
-                Home
+                {t("header.home")}
               </Typography>
             </Box>
 
@@ -82,7 +86,7 @@ export default function Header() {
                     color="secondary.main"
                     variant="text"
                   >
-                    My Tickets
+                    {t("header.myTickets")}
                   </Button>
                 )}
 
@@ -93,7 +97,7 @@ export default function Header() {
                     color="secondary.main"
                     variant="text"
                   >
-                    All Tickets
+                    {t("header.allTickets")}
                   </Button>
                 )}
 
@@ -104,34 +108,32 @@ export default function Header() {
                       color="secondary.main"
                       variant="text"
                     >
-                      Users
+                      {t("header.users")}
                     </Button>
                     <Button
                       href="/category/index"
                       color="secondary.main"
                       variant="text"
                     >
-                      Categories
+                      {t("header.categories")}
                     </Button>
                   </>
                 )}
               </>
             )}
           </Box>
-
+          <LanguageSelector />
           {loggedUser ? (
             <>
-              <Typography variant="body1">
-                👤 {loggedUser.name} 
-              </Typography>
+              <Typography variant="body1">👤 {loggedUser.name}</Typography>
 
               <Button color="inherit" onClick={handleLogout}>
-                Logout
+                {t("header.logout")}
               </Button>
             </>
           ) : (
             <Button color="inherit" onClick={handleLogin}>
-              Login
+              {t("header.login")}
             </Button>
           )}
         </Toolbar>

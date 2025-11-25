@@ -8,12 +8,14 @@ import Table from "@components/table";
 import { Title1 } from "@components/typography";
 import { BackButton } from "@components/backbutton";
 import { useLoggedUser } from "@contexts/UserContext";
+import { useTranslation } from "react-i18next";
 
 export function CategoryIndex() {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
+  const { t } = useTranslation();
   const tableHeadTitles = [
-    { label: "Name", fieldName: "name", fieldType: "string" },
+    { label: t("category.name"), fieldName: "name", fieldType: "string" },
   ];
 
   const { loggedUser } = useLoggedUser();
@@ -50,7 +52,7 @@ export function CategoryIndex() {
         headTitles={tableHeadTitles}
         data={categories}
         onRowClick={(cat) => navigate(`/category/${cat.id}`)}
-        tableTitle={<Title1>Available Categories</Title1>}
+        tableTitle={<Title1>{t("category.title")}</Title1>}
         onAddButtonClick={
           loggedUser?.role === "Administrator"
             ? () => navigate(`/category/new`)

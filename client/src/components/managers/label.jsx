@@ -5,10 +5,12 @@ import { useEffect, useState } from "react";
 import TicketLabelService from "@services/ticket-label";
 import toast from "react-hot-toast";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export function LabelManager({ record, categoryId, onSuccess }) {
   const [isUploading, setUploading] = React.useState(false);
   const [currentLabel, setCurrentLabel] = useState(record);
+  const { t } = useTranslation();
 
   // Update currentLabel when record prop changes
   useEffect(() => {
@@ -17,7 +19,7 @@ export function LabelManager({ record, categoryId, onSuccess }) {
 
   const formData = [
     {
-      label: "Name",
+      label: t("fields.name"),
       fieldName: "name",
       fieldType: "string",
     },
@@ -43,7 +45,7 @@ export function LabelManager({ record, categoryId, onSuccess }) {
         setCurrentLabel(response.data);
       }
 
-      toast.success("Label modified!");
+      toast.success(t("messages.labelModified"));
 
       // Call the onSuccess callback to refresh parent data
       if (onSuccess) {
@@ -51,7 +53,7 @@ export function LabelManager({ record, categoryId, onSuccess }) {
       }
     } catch (error) {
       console.error("Error modifying label:", error);
-      toast.error("Failed to modify label");
+      toast.error(t("messages.failedToModifyLabel"));
     } finally {
       setUploading(false);
     }
@@ -62,7 +64,7 @@ export function LabelManager({ record, categoryId, onSuccess }) {
       await TicketLabelService.delete(currentLabel.id)
         .then((response) => {
           console.log("Label deleted:", response.data);
-          toast.success("Label deleted!");
+          toast.success(t("messages.labelDeleted"));
 
           // Call the onSuccess callback to refresh parent data
           if (onSuccess) {

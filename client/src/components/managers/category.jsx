@@ -7,11 +7,13 @@ import toast from "react-hot-toast";
 import { Loading } from "@components/loading";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export function CategoryManager({ record }) {
   const [loading, setLoading] = React.useState(false);
   const [isUploading, setUploading] = React.useState(false);
   const [currentCategory, setCurrentCategory] = useState(record);
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
 
@@ -22,7 +24,7 @@ export function CategoryManager({ record }) {
 
   const formData = [
     {
-      label: "Name",
+      label: t("fields.name"),
       fieldName: "name",
       fieldType: "string",
     },
@@ -43,10 +45,10 @@ export function CategoryManager({ record }) {
         setCurrentCategory(response.data);
       }
       navigate(`/category/${response.data.id}`);
-      toast.success("Category modified!");
+      toast.success(t("messages.categoryModified"));
     } catch (error) {
       console.error("Error modifying category:", error);
-      toast.error("Failed to modify category");
+      toast.error(t("messages.failedToModifyCategory"));
     } finally {
       setUploading(false);
     }
@@ -58,7 +60,7 @@ export function CategoryManager({ record }) {
         .then((response) => {
           console.log("Category deleted:", response.data);
           navigate(`/category/index`);
-          toast.success("Category deleted!");
+          toast.success(t("messages.categoryDeleted"));
         })
         .catch((error) => {
           console.error("Error deleting category:", error);

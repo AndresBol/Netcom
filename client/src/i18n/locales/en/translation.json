@@ -22,7 +22,8 @@
     "new": "New",
     "view": "View",
     "here": "Here",
-    "language": "Language"
+    "language": "Language",
+    "newRecord": "New Record"
   },
   "header": {
     "home": "Home",
@@ -121,6 +122,116 @@
     "updateSuccess": "Updated successfully",
     "createSuccess": "Created successfully",
     "errorOccurred": "An error occurred",
-    "noPermission": "You don't have permission to perform this action"
+    "noPermission": "You don't have permission to perform this action",
+    "formErrors": "Please fix the errors in the form.",
+    "categoryModified": "Category modified!",
+    "categoryDeleted": "Category deleted!",
+    "failedToModifyCategory": "Failed to modify category",
+    "userModified": "User modified!",
+    "userDeleted": "User deleted!",
+    "failedToModifyUser": "Failed to modify user",
+    "ticketModified": "Ticket modified!",
+    "ticketDeleted": "Ticket deleted!",
+    "failedToModifyTicket": "Failed to modify ticket",
+    "labelModified": "Label modified!",
+    "labelDeleted": "Label deleted!",
+    "failedToModifyLabel": "Failed to modify label",
+    "slaModified": "SLA modified!",
+    "slaDeleted": "SLA deleted!",
+    "failedToModifySLA": "Failed to modify SLA",
+    "specialtyModified": "Specialty modified!",
+    "specialtyDeleted": "Specialty deleted!",
+    "failedToModifySpecialty": "Failed to modify specialty",
+    "timelineModified": "Timeline modified!",
+    "timelineDeleted": "Timeline deleted!",
+    "failedToModifyTimeline": "Failed to modify timeline",
+    "filesUploadedSuccessfully": "Files uploaded successfully!",
+    "errorUploadingFiles": "Error uploading files",
+    "attachmentDeleted": "Attachment deleted successfully!"
+  },
+  "fields": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "specialFields": "Special Fields",
+    "title": "Title",
+    "description": "Description",
+    "status": "Status",
+    "category": "Category",
+    "labels": "Labels",
+    "priority": "Priority",
+    "responseTime": "Response Time (minutes)",
+    "resolutionTime": "Resolution Time (minutes)",
+    "sla": "SLA",
+    "subject": "Subject",
+    "attachments": "Attachments",
+    "rating": "Rating",
+    "uploadFiles": "Upload Files",
+    "selectFiles": "Select files",
+    "availability": "Availability",
+    "workload": "Workload",
+    "date": "Date",
+    "resolutionTime2": "Resolution Time"
+  },
+  "userDetail": {
+    "userNotFound": "User not found",
+    "workInformation": "Work Information",
+    "currentStatus": "Current Status",
+    "ticketsCount": "{{count}} tickets",
+    "available": "Available",
+    "busy": "Busy",
+    "overloaded": "Overloaded"
+  },
+  "ticketDetail": {
+    "ticketNotFound": "Ticket not found",
+    "assignedTo": "Assigned to",
+    "compliance": "Compliance",
+    "noTimeline": "No timeline entries",
+    "slaInformation": "SLA Information",
+    "responseCompliance": "Response Compliance",
+    "resolutionCompliance": "Resolution Compliance"
+  },
+  "categoryDetail": {
+    "labels": "Labels",
+    "specialties": "Specialties",
+    "slas": "SLAs",
+    "addNew": "Add New {{item}}"
+  },
+  "pageNotFound": {
+    "title": "Resource not found",
+    "message": "The page you are looking for might have been removed, had its name changed or is temporarily unavailable",
+    "goBack": "Go Back"
+  },
+  "table": {
+    "rowsPerPage": "Rows per page:",
+    "of": "of",
+    "noData": "No data available",
+    "sortBy": "Sort by",
+    "filterBy": "Filter by",
+    "addRecord": "Add record",
+    "filterList": "Filter list",
+    "sortedDescending": "sorted descending",
+    "sortedAscending": "sorted ascending"
+  },
+  "filter": {
+    "title": "Filter Table",
+    "clearFilters": "Clear Filters",
+    "applyFilters": "Apply Filters"
+  },
+  "kanban": {
+    "viewDetails": "View Details",
+    "resolved": "Resolved"
+  },
+  "imageDialog": {
+    "availableImages": "Available Images",
+    "noImages": "No images available."
+  },
+  "auth": {
+    "welcomeToNetcom": "Welcome to Netcom",
+    "signInMessage": "Sign in with your account",
+    "signIn": "Sign In",
+    "invalidCredentials": "Invalid credentials",
+    "serverError": "Server error"
   }
 }
