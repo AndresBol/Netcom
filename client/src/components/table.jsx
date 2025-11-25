@@ -23,6 +23,7 @@ import FileOpenIcon from "@mui/icons-material/FileOpen";
 import AddIcon from "@mui/icons-material/Add";
 import { Body } from "./typography";
 import { calculateRemainingTime } from "@utils/sla-manager";
+import { useTranslation } from "react-i18next";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -57,6 +58,7 @@ function generateHeadCells(headTitles) {
 
 function EnhancedTableHead(props) {
   const { headCells, order, orderBy, onRequestSort, actionButton } = props;
+  const { t } = useTranslation();
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -86,7 +88,9 @@ function EnhancedTableHead(props) {
               {headCell.label}
               {orderBy === headCell.id ? (
                 <Box component="span" sx={visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
+                  {order === "desc"
+                    ? t("table.sortedDescending")
+                    : t("table.sortedAscending")}
                 </Box>
               ) : null}
             </TableSortLabel>
@@ -103,6 +107,7 @@ function EnhancedTableToolbar({
   hasActiveFilters,
   onAddButtonClick,
 }) {
+  const { t } = useTranslation();
   return (
     <Toolbar
       sx={[
@@ -121,13 +126,13 @@ function EnhancedTableToolbar({
         {tableTitle}
       </Typography>
       {onAddButtonClick && (
-        <Tooltip title="Add record">
+        <Tooltip title={t("table.addRecord")}>
           <IconButton onClick={onAddButtonClick}>
             <AddIcon />
           </IconButton>
         </Tooltip>
       )}
-      <Tooltip title="Filter list">
+      <Tooltip title={t("table.filterList")}>
         <IconButton
           onClick={onFilterBtnClick}
           color={hasActiveFilters ? "primary" : "default"}

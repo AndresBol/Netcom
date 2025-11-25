@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { Loading } from "@components/loading";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export function UserManager({ record }) {
   const [loading, setLoading] = React.useState(false);
@@ -18,6 +19,7 @@ export function UserManager({ record }) {
   const [currentUser, setCurrentUser] = React.useState(record);
   const [formInstance, setFormInstance] = React.useState(null);
   const [showSpecialFields, setShowSpecialFields] = React.useState(false);
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
 
@@ -59,22 +61,22 @@ export function UserManager({ record }) {
 
   const formData = [
     {
-      label: "Name",
+      label: t("fields.name"),
       fieldName: "name",
       fieldType: "string",
     },
     {
-      label: "Email",
+      label: t("fields.email"),
       fieldName: "email",
       fieldType: "string",
     },
     {
-      label: "Password",
+      label: t("fields.password"),
       fieldName: "password",
       fieldType: "password",
     },
     {
-      label: "Role",
+      label: t("fields.role"),
       fieldName: "role_id",
       fieldType: "one2many",
       data: roles,
@@ -82,7 +84,7 @@ export function UserManager({ record }) {
     ...(showSpecialFields
       ? [
           {
-            label: "Special Fields",
+            label: t("fields.specialFields"),
             fieldName: "special_field_ids",
             fieldType: "one2many",
             data: specialFields,
@@ -128,10 +130,10 @@ export function UserManager({ record }) {
         setCurrentUser(response.data);
       }
 
-      toast.success("User modified!");
+      toast.success(t("messages.userModified"));
     } catch (error) {
       console.error("Error modifying user:", error);
-      toast.error("Failed to modify user");
+      toast.error(t("messages.failedToModifyUser"));
     } finally {
       setUploading(false);
     }
@@ -144,7 +146,7 @@ export function UserManager({ record }) {
         .then((response) => {
           console.log("User deleted:", response.data);
           navigate(`/user/index`);
-          toast.success("User deleted!");
+          toast.success(t("messages.userDeleted"));
         })
         .catch((error) => {
           console.error("Error deleting user:", error);

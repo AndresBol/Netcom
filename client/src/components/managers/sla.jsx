@@ -7,12 +7,14 @@ import PriorityService from "@services/priority";
 import toast from "react-hot-toast";
 import { Loading } from "@components/loading";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export function SLAManager({ record, categoryId, onSuccess }) {
   const [loading, setLoading] = React.useState(false);
   const [isUploading, setUploading] = React.useState(false);
   const [currentSLA, setCurrentSLA] = useState(record);
   const [priorities, setPriorities] = useState([]);
+  const { t } = useTranslation();
 
   // Update currentSLA when record prop changes
   useEffect(() => {
@@ -21,24 +23,24 @@ export function SLAManager({ record, categoryId, onSuccess }) {
 
   const formData = [
     {
-      label: "Priority",
+      label: t("fields.priority"),
       fieldName: "priority_id",
       fieldType: "one2many",
       data: priorities,
     },
     {
-      label: "Response Time (minutes)",
+      label: t("fields.responseTime"),
       fieldName: "response_time",
       fieldType: "number",
     },
     {
-      label: "Resolution Time (minutes)",
+      label: t("fields.resolutionTime"),
       fieldName: "resolution_time",
       fieldType: "number",
     },
 
     {
-      label: "SLA",
+      label: t("fields.sla"),
       fieldName: "name",
       fieldType: "string",
     },
@@ -80,7 +82,7 @@ export function SLAManager({ record, categoryId, onSuccess }) {
         setCurrentSLA(response.data);
       }
 
-      toast.success("SLA modified!");
+      toast.success(t("messages.slaModified"));
 
       // Call the onSuccess callback to refresh parent data
       if (onSuccess) {
@@ -88,7 +90,7 @@ export function SLAManager({ record, categoryId, onSuccess }) {
       }
     } catch (error) {
       console.error("Error modifying SLA:", error);
-      toast.error("Failed to modify SLA");
+      toast.error(t("messages.failedToModifySLA"));
     } finally {
       setUploading(false);
     }
@@ -99,7 +101,7 @@ export function SLAManager({ record, categoryId, onSuccess }) {
       await SlaService.delete(currentSLA.id)
         .then((response) => {
           console.log("SLA deleted:", response.data);
-          toast.success("SLA deleted!");
+          toast.success(t("messages.slaDeleted"));
 
           // Call the onSuccess callback to refresh parent data
           if (onSuccess) {

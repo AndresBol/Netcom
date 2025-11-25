@@ -16,12 +16,14 @@ import Switch from "@mui/material/Switch";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { BackButton } from "@components/backbutton";
+import { useTranslation } from "react-i18next";
 
 dayjs.extend(isBetween);
 
 export function TicketIndex() {
   const { viewType } = useParams();
   const { loggedUser } = useLoggedUser();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [tickets, setTickets] = useState([]);
   const [filteredTickets, setFilteredTickets] = useState([]);
@@ -88,7 +90,7 @@ export function TicketIndex() {
           alignItems: "center",
         }}
       >
-        <Title1>Available Tickets</Title1>
+        <Title1>{t("ticket.title")}</Title1>
         <Box
           sx={{
             display: "flex",
@@ -97,7 +99,7 @@ export function TicketIndex() {
             alignItems: "center",
           }}
         >
-          <SubTitle bold={true}>Week Calendar</SubTitle>
+          <SubTitle bold={true}>{t("ticket.weekCalendar")}</SubTitle>
           <Switch
             checked={isWeekView}
             onChange={() => setIsWeekView(!isWeekView)}
@@ -116,7 +118,7 @@ export function TicketIndex() {
             alignItems: "center",
           }}
         >
-          <Title2>You don't have registered Tickets</Title2>
+          <Title2>{t("ticket.noTickets")}</Title2>
           {loggedUser?.role_name === "Client" && (
             <Box
               sx={{
@@ -125,7 +127,7 @@ export function TicketIndex() {
                 alignItems: "center",
               }}
             >
-              <Title3>Create a new ticket</Title3>
+              <Title3>{t("ticket.createTicket")}</Title3>
               <Button
                 href="/ticket/new"
                 variant="contained"
@@ -139,7 +141,7 @@ export function TicketIndex() {
                 }}
               >
                 <PostAddIcon />
-                Here
+                {t("common.here")}
               </Button>
             </Box>
           )}
@@ -174,10 +176,9 @@ export function TicketIndex() {
           )}
         </Box>
       )}
-       <BackButton/>
+      <BackButton />
     </View>
   );
-          
 }
 
 const styles = {

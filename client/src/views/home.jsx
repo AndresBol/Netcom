@@ -5,9 +5,11 @@ import { Box } from "@mui/material";
 import { Title1, Title2, Title3 } from "@components/typography";
 import Button from "@mui/material/Button";
 import PostAddIcon from "@mui/icons-material/PostAdd";
+import { useTranslation } from "react-i18next";
 
 export function Home() {
   const { loggedUser } = useLoggedUser();
+  const { t } = useTranslation();
 
   return (
     <View
@@ -45,9 +47,11 @@ export function Home() {
       >
         <Box sx={{ position: "relative", zIndex: 2, py: 4 }}>
           {loggedUser && (
-            <Title1 color="white">Welcome {loggedUser.name}!</Title1>
+            <Title1 color="white">
+              {t("home.welcome", { name: loggedUser.name })}
+            </Title1>
           )}
-          <Title2 color="white">Network tickets administration system</Title2>
+          <Title2 color="white">{t("home.title")}</Title2>
         </Box>
         <Box
           sx={{
@@ -61,9 +65,7 @@ export function Home() {
           }}
         >
           <Title3 color="white">
-            {loggedUser
-              ? "Create a new ticket"
-              : "Sign in first to create a new ticket"}
+            {loggedUser ? t("home.createTicket") : t("home.signInFirst")}
           </Title3>
           {loggedUser && (
             <Button
@@ -81,13 +83,13 @@ export function Home() {
               }}
             >
               <PostAddIcon />
-              Here
+              {t("common.here")}
             </Button>
           )}
         </Box>
       </Box>
 
-      <Title3>Powered by Netcom</Title3>
+      <Title3>{t("home.poweredBy")}</Title3>
       <Box
         key={"netcom-logo"}
         component="img"

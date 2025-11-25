@@ -16,6 +16,7 @@ import { SpecialtyManager } from "@components/managers/specialty";
 import { SLAManager } from "@components/managers/sla";
 import { LabelManager } from "@components/managers/label";
 import { useLoggedUser } from "@contexts/UserContext";
+import { useTranslation } from "react-i18next";
 
 export function CategoryDetail() {
   const { id } = useParams();
@@ -31,6 +32,7 @@ export function CategoryDetail() {
   }); // 'label', 'specialty', 'sla', or null
 
   const { loggedUser } = useLoggedUser();
+  const { t } = useTranslation();
 
   const fetchData = async () => {
     if (!categoryId) return;
@@ -87,20 +89,24 @@ export function CategoryDetail() {
   if (loading) return <Loading />;
 
   const categoryHeadTitles = [
-    [{ label: "Name", fieldName: "name", fieldType: "string" }],
+    [{ label: t("fields.name"), fieldName: "name", fieldType: "string" }],
     [
-      { label: "Priority", fieldName: "priority_name", fieldType: "string" },
       {
-        label: "Response Time",
+        label: t("fields.priority"),
+        fieldName: "priority_name",
+        fieldType: "string",
+      },
+      {
+        label: t("fields.responseTime"),
         fieldName: "response_time",
         fieldType: "time",
       },
       {
-        label: "Resolution Time",
+        label: t("fields.resolutionTime2"),
         fieldName: "resolution_time",
         fieldType: "time",
       },
-      { label: "SLA", fieldName: "name", fieldType: "string" },
+      { label: t("fields.sla"), fieldName: "name", fieldType: "string" },
     ],
   ];
 

@@ -9,13 +9,14 @@ import UserTicketService from "@services/user-ticket";
 import { Title1 } from "@components/typography";
 import Table from "@components/table";
 import { BackButton } from "@components/backbutton";
-
+import { useTranslation } from "react-i18next";
 
 export function UserDetail() {
   const { id } = useParams();
   const userId = id ? parseInt(id) : null;
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!userId) return;
@@ -24,7 +25,7 @@ export function UserDetail() {
       setLoading(true);
 
       try {
-        let workload =0;
+        let workload = 0;
 
         try {
           const userTicketsRes = await UserTicketService.getByUserId(userId);
@@ -35,7 +36,11 @@ export function UserDetail() {
         }
 
         const availability =
-          workload === 0 ? "Available" : workload <= 3 ? "Busy" : "Overloaded";
+          workload === 0
+            ? t("userDetail.available")
+            : workload <= 3
+              ? t("userDetail.busy")
+              : t("userDetail.overloaded");
         const res = await UserService.getById(userId);
         setUser({
           ...res.data,
@@ -57,37 +62,47 @@ export function UserDetail() {
   if (!user) {
     return (
       <Box textAlign="center" sx={{ mt: 4 }}>
-        <Typography> User not found</Typography>
+        <Typography>{t("userDetail.userNotFound")}</Typography>
       </Box>
     );
   }
 
   return (
-    <View styles={{marginBottom: 10}}>
+    <View styles={{ marginBottom: 10 }}>
       <UserManager record={user} />
-      {(user.role_name === "Technician") && (
+      {user.role_name === "Technician" && (
         <>
           <Divider sx={{ my: 3 }} />
-          <Title1>Work Information</Title1>
+          <Title1>{t("userDetail.workInformation")}</Title1>
           <Table
             data={[
               {
                 availability: user.availability,
-                workload: `${user.workload} tickets`,
+                workload: t("userDetail.ticketsCount", {
+                  count: user.workload,
+                }),
               },
             ]}
             headTitles={[
-              { label: "Availability", fieldName: "availability", fieldType: "string" },
-              { label: "Workload", fieldName: "workload", fieldType: "string" },
+              {
+                label: t("fields.availability"),
+                fieldName: "availability",
+                fieldType: "string",
+              },
+              {
+                label: t("fields.workload"),
+                fieldName: "workload",
+                fieldType: "string",
+              },
             ]}
-            tableTitle={"Current Status"}
+            tableTitle={t("userDetail.currentStatus")}
             onRowClick={() => {}}
             hasPagination={false}
             dense={false}
           />
         </>
       )}
-        <BackButton/>
+      <BackButton />
     </View>
   );
 }

@@ -7,14 +7,16 @@ import { Loading } from "@components/loading";
 import { useNavigate } from "react-router-dom";
 import { BackButton } from "@components/backbutton";
 import { useLoggedUser } from "@contexts/UserContext";
+import { useTranslation } from "react-i18next";
 
 export function UserIndex() {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
+  const { t } = useTranslation();
   const tableHeadTitles = [
-    { label: "Name", fieldName: "name", fieldType: "string" },
-    { label: "Email", fieldName: "email", fieldType: "string" },
-    { label: "Role", fieldName: "role_name", fieldType: "string" },
+    { label: t("user.name"), fieldName: "name", fieldType: "string" },
+    { label: t("user.email"), fieldName: "email", fieldType: "string" },
+    { label: t("user.role"), fieldName: "role_name", fieldType: "string" },
   ];
 
   const { loggedUser } = useLoggedUser();
@@ -51,7 +53,7 @@ export function UserIndex() {
         headTitles={tableHeadTitles}
         data={users}
         onRowClick={(user) => navigate(`/user/${user.id}`)}
-        tableTitle={<Title1>Available Users</Title1>}
+        tableTitle={<Title1>{t("user.title")}</Title1>}
         onAddButtonClick={
           loggedUser?.role === "Administrator"
             ? () => navigate(`/user/new`)

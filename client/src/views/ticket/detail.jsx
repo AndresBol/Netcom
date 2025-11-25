@@ -22,11 +22,13 @@ import { TimelineManager } from "@components/managers/timeline";
 import ManagerDialog from "@components/manager-dialog";
 import { useLoggedUser } from "@contexts/UserContext";
 import { calculateRemainingTime } from "@utils/sla-manager";
+import { useTranslation } from "react-i18next";
 
 export function TicketDetail() {
   const { loggedUser } = useLoggedUser();
   const { id } = useParams();
   const ticketId = id ? parseInt(id) : 1;
+  const { t } = useTranslation();
 
   const [ticket, setTicket] = useState(null);
   const [assignedUsers, setAssignedUsers] = useState([]);
@@ -50,11 +52,15 @@ export function TicketDetail() {
   const [isManagerDialogOpen, setIsManagerDialogOpen] = useState(false);
 
   const timelineTableHeadTitles = [
-    { label: "Subject", fieldName: "subject", fieldType: "string" },
-    { label: "Description", fieldName: "description", fieldType: "string" },
-    { label: "Date", fieldName: "date", fieldType: "dateTime" },
+    { label: t("fields.subject"), fieldName: "subject", fieldType: "string" },
     {
-      label: "Attachments",
+      label: t("fields.description"),
+      fieldName: "description",
+      fieldType: "string",
+    },
+    { label: t("fields.date"), fieldName: "date", fieldType: "dateTime" },
+    {
+      label: t("fields.attachments"),
       fieldName: "ticket_attachments",
       fieldType: "actionButton",
     },

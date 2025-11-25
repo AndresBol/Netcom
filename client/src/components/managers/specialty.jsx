@@ -5,10 +5,12 @@ import { useEffect, useState } from "react";
 import SpecialFieldService from "@services/special-field";
 import toast from "react-hot-toast";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export function SpecialtyManager({ record, categoryId, onSuccess }) {
   const [isUploading, setUploading] = React.useState(false);
   const [currentSpecialty, setCurrentSpecialty] = useState(record);
+  const { t } = useTranslation();
 
   // Update currentSpecialty when record prop changes
   useEffect(() => {
@@ -17,7 +19,7 @@ export function SpecialtyManager({ record, categoryId, onSuccess }) {
 
   const formData = [
     {
-      label: "Name",
+      label: t("fields.name"),
       fieldName: "name",
       fieldType: "string",
     },
@@ -42,7 +44,7 @@ export function SpecialtyManager({ record, categoryId, onSuccess }) {
         setCurrentSpecialty(response.data);
       }
 
-      toast.success("Specialty modified!");
+      toast.success(t("messages.specialtyModified"));
 
       // Call the onSuccess callback to refresh parent data
       if (onSuccess) {
@@ -50,7 +52,7 @@ export function SpecialtyManager({ record, categoryId, onSuccess }) {
       }
     } catch (error) {
       console.error("Error modifying specialty:", error);
-      toast.error("Failed to modify specialty");
+      toast.error(t("messages.failedToModifySpecialty"));
     } finally {
       setUploading(false);
     }
@@ -61,7 +63,7 @@ export function SpecialtyManager({ record, categoryId, onSuccess }) {
       await SpecialFieldService.delete(currentSpecialty.id)
         .then((response) => {
           console.log("Specialty deleted:", response.data);
-          toast.success("Specialty deleted!");
+          toast.success(t("messages.specialtyDeleted"));
 
           // Call the onSuccess callback to refresh parent data
           if (onSuccess) {
