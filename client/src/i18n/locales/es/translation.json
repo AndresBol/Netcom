@@ -1,0 +1,126 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "add": "Agregar",
+    "update": "Actualizar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "back": "Volver",
+    "submit": "Enviar",
+    "close": "Cerrar",
+    "yes": "Sí",
+    "no": "No",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "actions": "Acciones",
+    "details": "Detalles",
+    "new": "Nuevo",
+    "view": "Ver",
+    "here": "Aquí",
+    "language": "Idioma"
+  },
+  "header": {
+    "home": "Inicio",
+    "users": "Usuarios",
+    "tickets": "Tickets",
+    "categories": "Categorías",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "profile": "Perfil",
+    "myTickets": "Mis Tickets",
+    "allTickets": "Todos los Tickets"
+  },
+  "home": {
+    "welcome": "¡Bienvenido {{name}}!",
+    "title": "Sistema de administración de tickets de red",
+    "createTicket": "Crear un nuevo ticket",
+    "signInFirst": "Inicia sesión primero para crear un nuevo ticket",
+    "poweredBy": "Desarrollado por Netcom"
+  },
+  "user": {
+    "title": "Usuarios Disponibles",
+    "newUser": "Nuevo Usuario",
+    "userDetails": "Detalles del Usuario",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "role": "Rol",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "noUsers": "No hay usuarios disponibles"
+  },
+  "ticket": {
+    "title": "Tickets Disponibles",
+    "newTicket": "Nuevo Ticket",
+    "ticketDetails": "Detalles del Ticket",
+    "myTickets": "Mis Tickets",
+    "allTickets": "Todos los Tickets",
+    "noTickets": "No tienes tickets registrados",
+    "createTicket": "Crear un nuevo ticket",
+    "status": "Estado",
+    "priority": "Prioridad",
+    "category": "Categoría",
+    "assignedTo": "Asignado a",
+    "createdBy": "Creado por",
+    "createdOn": "Creado el",
+    "updatedOn": "Actualizado el",
+    "description": "Descripción",
+    "attachments": "Archivos Adjuntos",
+    "comments": "Comentarios",
+    "weekCalendar": "Calendario Semanal",
+    "noTicketsInWeek": "No se encontraron tickets para la semana seleccionada"
+  },
+  "category": {
+    "title": "Categorías Disponibles",
+    "newCategory": "Nueva Categoría",
+    "categoryDetails": "Detalles de la Categoría",
+    "name": "Nombre",
+    "description": "Descripción",
+    "noCategories": "No hay categorías disponibles"
+  },
+  "table": {
+    "rowsPerPage": "Filas por página:",
+    "of": "de",
+    "noData": "No hay datos disponibles",
+    "sortBy": "Ordenar por",
+    "filterBy": "Filtrar por"
+  },
+  "form": {
+    "required": "Este campo es requerido",
+    "invalidEmail": "Dirección de correo electrónico inválida",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "minLength": "Se requieren mínimo {{count}} caracteres",
+    "maxLength": "Máximo {{count}} caracteres permitidos",
+    "selectOption": "Seleccione una opción",
+    "uploadFile": "Subir archivo",
+    "dragAndDrop": "Arrastra y suelta archivos aquí"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "register": "Registrarse",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "rememberMe": "Recuérdame",
+    "welcomeBack": "¡Bienvenido de nuevo!",
+    "signIn": "Inicia sesión para continuar"
+  },
+  "kanban": {
+    "todo": "Por Hacer",
+    "inProgress": "En Progreso",
+    "done": "Completado",
+    "backlog": "Pendiente"
+  },
+  "messages": {
+    "deleteConfirm": "¿Está seguro de que desea eliminar este elemento?",
+    "saveSuccess": "Guardado exitosamente",
+    "deleteSuccess": "Eliminado exitosamente",
+    "updateSuccess": "Actualizado exitosamente",
+    "createSuccess": "Creado exitosamente",
+    "errorOccurred": "Ocurrió un error",
+    "noPermission": "No tienes permiso para realizar esta acción"
+  }
+}
