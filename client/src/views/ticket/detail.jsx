@@ -151,7 +151,14 @@ export function TicketDetail() {
         open={isManagerDialogOpen}
         onClose={() => setIsManagerDialogOpen(false)}
       >
-        <TimelineManager ticketId={ticket.id} userId={loggedUser.id} />
+        <TimelineManager
+          ticketId={ticket.id}
+          userId={loggedUser.id}
+          onSaved={(newTimelineEntry) => {
+            setIsManagerDialogOpen(false); 
+            setTimeline(prev => [newTimelineEntry, ...prev]);
+          }}
+        />
       </ManagerDialog>
       <TicketManager record={ticket} />
       <Divider sx={{ my: 2 }} />

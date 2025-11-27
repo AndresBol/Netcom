@@ -1,27 +1,22 @@
-import { Box, IconButton } from "@mui/material";
+import { Box } from "@mui/material";
 import { Form } from "@components/form";
 import { useTimelineForm } from "@validations/timeline";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import TimelineService from "@services/timeline";
 import AttachmentService from "@services/ticket-attachment";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
+import { FileUploader } from "@components/FileUploader";
 
-export function TimelineManager({ record, ticketId, userId }) {
-  const [loading, setLoading] = useState(false);
+export function TimelineManager({ record, ticketId, userId, onSaved }) {
   const [isUploading, setUploading] = useState(false);
   const [currentTimeline, setCurrentTimeline] = useState(record);
   const [files, setFiles] = useState([]);
-  const [attachments, setAttachments] = useState([]);
   const [previews, setPreviews] = useState([]);
   const { t } = useTranslation();
 
   const navigate = useNavigate();
-  const fileInputRef = useRef(null);
 
   useEffect(() => {
     setCurrentTimeline(record);
@@ -48,28 +43,34 @@ export function TimelineManager({ record, ticketId, userId }) {
 
   const onSubmit = async (DataForm) => {
     setUploading(true);
+
     try {
-      const dataWithTicketAndUser = {
+      const dataToSend = {
         ...DataForm,
         ticket_id: ticketId || DataForm.ticket_id,
         user_id: userId || DataForm.user_id,
       };
 
       let response;
+
       if (currentTimeline) {
-        response = await TimelineService.update(dataWithTicketAndUser);
+        response = await TimelineService.update(dataToSend);
       } else {
-        response = await TimelineService.insert(dataWithTicketAndUser);
+        response = await TimelineService.insert(dataToSend);
       }
 
-      if (response && response.data) {
-        setCurrentTimeline(response.data);
-        toast.success(t("messages.timelineModified"));
-      }
+      const newTimeline = response.data;
 
       if (files.length > 0) {
-        await handleFileUpload(response.data.id);
+        await handleFileUpload(newTimeline.id);
       }
+
+      const fullEntryRes = await TimelineService.getById(newTimeline.id);
+      const fullEntry = fullEntryRes.data;
+
+      if (onSaved) onSaved(fullEntry);
+
+      toast.success(t("messages.timelineModified"));
     } catch (error) {
       console.error("Error modifying timeline:", error);
       toast.error(t("messages.failedToModifyTimeline"));
@@ -84,10 +85,9 @@ export function TimelineManager({ record, ticketId, userId }) {
       toast.success(t("messages.filesUploadedSuccessfully"));
       setFiles([]);
       setPreviews([]);
-      loadAttachments(timelineId);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      await loadAttachments(timelineId);
+
+      return res.data;
     } catch (error) {
       console.error("Error uploading files:", error);
       toast.error(t("messages.errorUploadingFiles"));
@@ -110,24 +110,6 @@ export function TimelineManager({ record, ticketId, userId }) {
     }
   };
 
-  const handleFileSelect = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setFiles(selectedFiles);
-
-    const imagePreviews = selectedFiles.map((file) =>
-      file.type.startsWith("image/") ? URL.createObjectURL(file) : null
-    );
-
-    setPreviews(imagePreviews);
-  };
-
-  const handleRemoveFile = (index) => {
-    const updatedFiles = files.filter((_, i) => i !== index);
-    const updatedPreviews = previews.filter((_, i) => i !== index);
-    setFiles(updatedFiles);
-    setPreviews(updatedPreviews);
-  };
-
   return (
     <Box>
       <Form
@@ -140,119 +122,14 @@ export function TimelineManager({ record, ticketId, userId }) {
       />
 
       <Box mt={2}>
-        <input
-          type="file"
-          multiple
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          onChange={handleFileSelect}
+        <FileUploader
+          files={files}
+          setFiles={setFiles}
+          previews={previews}
+          setPreviews={setPreviews}
+          label={t("fields.selectFiles")}
         />
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 2,
-            flexWrap: "wrap",
-          }}
-        >
-          <Button
-            variant="outlined"
-            startIcon={<CloudUploadIcon />}
-            onClick={() => fileInputRef.current.click()}
-          >
-            {t("fields.selectFiles")}
-          </Button>
-        </Box>
-        {files.length > 0 && (
-          <Box
-            mt={2}
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 1.5,
-              alignItems: "center",
-            }}
-          >
-            {files.map((file, i) => (
-              <Box
-                key={i}
-                sx={{
-                  position: "relative",
-                  width: 70,
-                  height: 70,
-                  border: "1px solid #ccc",
-                  borderRadius: 1,
-                  overflow: "hidden",
-                }}
-              >
-                {previews[i] ? (
-                  <Box
-                    component="img"
-                    src={previews[i]}
-                    alt={`preview-${i}`}
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                ) : (
-                  <Box
-                    sx={{
-                      fontSize: 11,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100%",
-                      color: "#666",
-                      backgroundColor: "#f5f5f5",
-                      textAlign: "center",
-                      px: 0.5,
-                    }}
-                  >
-                    📄 {file.name}
-                  </Box>
-                )}
-
-                <IconButton
-                  size="small"
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    backgroundColor: "rgba(255,255,255,0.8)",
-                    "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
-                    p: 0.2,
-                  }}
-                  onClick={() => handleRemoveFile(i)}
-                >
-                  <CloseIcon sx={{ fontSize: 14 }} />
-                </IconButton>
-              </Box>
-            ))}
-          </Box>
-        )}
       </Box>
-
-      {attachments.length > 0 && (
-        <Box mt={3}>
-          <h4>{t("fields.attachments")}</h4>
-          <ul>
-            {attachments.map((file) => (
-              <li key={file.id}>
-                <a
-                  href={`http://localhost:81/netcom/uploads/${file.file_name}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {file.original_name || file.file_name}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </Box>
-      )}
     </Box>
   );
 }
