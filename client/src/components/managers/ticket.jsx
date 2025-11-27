@@ -15,6 +15,8 @@ import StatusService from "@services/status";
 import { useLoggedUser } from "@contexts/UserContext";
 import TimelineService from "@services/timeline";
 import { useTranslation } from "react-i18next";
+import { FileUploader } from "@components/FileUploader";
+import AttachmentService from "@services/ticket-attachment";
 
 export function TicketManager({ record }) {
   const [loading, setLoading] = useState(false);
@@ -24,6 +26,9 @@ export function TicketManager({ record }) {
   const [priorities, setPriorities] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [labels, setLabels] = useState([]);
+  const [files, setFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
+
   const [formInstance, setFormInstance] = useState(null);
   const { t } = useTranslation();
 
@@ -165,6 +170,11 @@ export function TicketManager({ record }) {
       if (response?.data) {
         setCurrentTicket(response.data);
 
+        if (files.length > 0) {
+          await AttachmentService.uploadFiles(response.data.id, files);
+          toast.success("Attachments uploaded successfully");
+        }
+
         if (isNewTicket && loggedUser) {
           await UserTicketService.insert({
             user_id: loggedUser.id,
@@ -172,12 +182,19 @@ export function TicketManager({ record }) {
             assigned_by: loggedUser.id,
           });
 
-          await TimelineService.insert({
+          const timelineResponse = await TimelineService.insert({
             ticket_id: response.data.id,
             user_id: loggedUser.id,
             subject: "Ticket created",
             description: `Ticket created by ${loggedUser.name}`,
           });
+
+          const timelineId = timelineResponse.data.id;
+
+        
+          if (files.length > 0) {
+            await AttachmentService.uploadFiles(timelineId, files);
+          }
 
           navigate(`/ticket/${response.data.id}`);
         }
@@ -216,6 +233,15 @@ export function TicketManager({ record }) {
         onSubmit={onSubmit}
         onDelete={onDelete}
       />
+      {!currentTicket && (
+        <FileUploader
+          files={files}
+          setFiles={setFiles}
+          previews={previews}
+          setPreviews={setPreviews}
+          label={t("fields.selectFiles")}
+        />
+      )}
     </Box>
   );
 }
