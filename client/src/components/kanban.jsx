@@ -64,7 +64,7 @@ function TicketKanbanItem(ticket) {
         >
           <SubTitle bold>
             {ticket.status_name !== "Resolved" ? (
-              getSlaStatusIcon(ticket.created_on, ticket.resolution_time)
+              getSlaStatusIcon(ticket.created_on, ticket.resolution_time, t)
             ) : (
               <IconButton size="large" edge="start">
                 <TaskAltIcon />

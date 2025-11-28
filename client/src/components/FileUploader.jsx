@@ -2,9 +2,17 @@ import { Box, Button, IconButton } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 
-export function FileUploader({ files, setFiles, previews, setPreviews, label = "Subir archivos" }) {
+export function FileUploader({
+  files,
+  setFiles,
+  previews,
+  setPreviews,
+  label,
+}) {
   const fileInputRef = useRef(null);
+  const { t } = useTranslation();
 
   const handleFileSelect = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -39,7 +47,7 @@ export function FileUploader({ files, setFiles, previews, setPreviews, label = "
         startIcon={<CloudUploadIcon />}
         onClick={() => fileInputRef.current.click()}
       >
-        {label}
+        {label || t("common.uploadFiles")}
       </Button>
 
       {/* Previews */}

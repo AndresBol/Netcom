@@ -144,14 +144,14 @@ function EnhancedTableToolbar({
   );
 }
 
-function formatData(data, type) {
+function formatData(data, type, t) {
   if (data === null || data === undefined) return "";
 
   switch (type) {
     case "dateTime":
       return formatDate(data, "en-US") + " " + formatTime(data, "en-US");
     case "time":
-      return calculateRemainingTime(data);
+      return calculateRemainingTime(data, t);
     default:
       return data;
   }
@@ -184,7 +184,7 @@ function ActionButton({ label, onClick }) {
   );
 }
 
-function Row({ data: rowData }) {
+function Row({ data: rowData, t }) {
   const [open, setOpen] = React.useState(false);
   const hasOne2Many = rowData.headTitles.some(
     (headTitle) => headTitle.fieldType === "one2many"
@@ -232,7 +232,8 @@ function Row({ data: rowData }) {
               >
                 {formatData(
                   rowData.row[headTitle.fieldName],
-                  headTitle.fieldType
+                  headTitle.fieldType,
+                  t
                 )}
               </TableCell>
             )
@@ -279,6 +280,7 @@ export default function Table({
   onActionButtonClick = null,
   onAddButtonClick = null,
 }) {
+  const { t } = useTranslation();
   const headCells = generateHeadCells(headTitles);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
@@ -368,7 +370,11 @@ export default function Table({
         data={data}
         onFilterApply={handleFilterApply}
         currentFilters={filters}
-        dialogTitle={`Filter ${tableTitle}`}
+        dialogTitle={t("table.filterDialogTitle", {
+          tableTitle: React.isValidElement(tableTitle)
+            ? tableTitle.props.children
+            : tableTitle,
+        })}
       />
       <EnhancedTableToolbar
         tableTitle={tableTitle}
@@ -402,6 +408,7 @@ export default function Table({
                     actionButton,
                     onActionButtonClick: () => onActionButtonClick(row),
                   }}
+                  t={t}
                 />
               );
             })}
@@ -426,6 +433,10 @@ export default function Table({
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage={t("table.rowsPerPage")}
+          labelDisplayedRows={({ from, to, count }) =>
+            t("table.displayedRows", { from, to, count })
+          }
         />
       )}
     </>

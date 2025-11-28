@@ -23,7 +23,8 @@
     "view": "View",
     "here": "Here",
     "language": "Language",
-    "newRecord": "New Record"
+    "newRecord": "New Record",
+    "uploadFiles": "Upload Files"
   },
   "header": {
     "home": "Home",
@@ -142,11 +143,12 @@
     "specialtyModified": "Specialty modified!",
     "specialtyDeleted": "Specialty deleted!",
     "failedToModifySpecialty": "Failed to modify specialty",
-    "timelineModified": "Timeline modified!",
-    "timelineDeleted": "Timeline deleted!",
-    "failedToModifyTimeline": "Failed to modify timeline",
-    "filesUploadedSuccessfully": "Files uploaded successfully!",
+    "timelineModified": "Timeline entry modified!",
+    "timelineDeleted": "Timeline entry deleted!",
+    "failedToModifyTimeline": "Failed to modify timeline entry",
+    "filesUploadedSuccessfully": "Files uploaded successfully",
     "errorUploadingFiles": "Error uploading files",
+    "attachmentsUploadedSuccessfully": "Attachments uploaded successfully",
     "attachmentDeleted": "Attachment deleted successfully!"
   },
   "fields": {
@@ -190,7 +192,8 @@
     "noTimeline": "No timeline entries",
     "slaInformation": "SLA Information",
     "responseCompliance": "Response Compliance",
-    "resolutionCompliance": "Resolution Compliance"
+    "resolutionCompliance": "Resolution Compliance",
+    "timeline": "Timeline"
   },
   "categoryDetail": {
     "labels": "Labels",
@@ -212,7 +215,9 @@
     "addRecord": "Add record",
     "filterList": "Filter list",
     "sortedDescending": "sorted descending",
-    "sortedAscending": "sorted ascending"
+    "sortedAscending": "sorted ascending",
+    "displayedRows": "{{from}}-{{to}} of {{count}}",
+    "filterDialogTitle": "Filter {{tableTitle}}"
   },
   "filter": {
     "title": "Filter Table",
@@ -233,5 +238,72 @@
     "signIn": "Sign In",
     "invalidCredentials": "Invalid credentials",
     "serverError": "Server error"
+  },
+  "validation": {
+    "onlyAcceptsNumbers": "Only accepts numbers",
+    "roleRequired": "Role is required",
+    "nameRequired": "Name is required",
+    "nameMaxLength": "Name cannot exceed 150 characters",
+    "emailValid": "Email must be valid",
+    "emailRequired": "Email is required",
+    "emailMaxLength": "Email cannot exceed 255 characters",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 8 characters",
+    "passwordMaxLength": "Password cannot exceed 255 characters",
+    "ticketRequired": "Ticket is required",
+    "userRequired": "User is required",
+    "subjectRequired": "Subject is required",
+    "subjectMaxLength": "Subject cannot exceed 255 characters",
+    "descriptionMaxLength": "Description cannot exceed 1000 characters",
+    "statusRequired": "Status is required",
+    "categoryRequired": "Category is required",
+    "priorityRequired": "Priority is required",
+    "titleRequired": "Title is required",
+    "titleMaxLength": "Title cannot exceed 255 characters",
+    "notificationStatusRequired": "Notification status is required",
+    "notificationStatusMaxLength": "Notification status cannot exceed 50 characters",
+    "ratingMin": "Minimum rating is 0",
+    "ratingMax": "Maximum rating is 5",
+    "commentMaxLength": "Comment cannot exceed 500 characters",
+    "responseTimeRequired": "Response time is required",
+    "responseTimeMin": "Response time must be greater than or equal to 0",
+    "resolutionTimeRequired": "Resolution time is required",
+    "resolutionTimeMin": "Resolution time must be greater than or equal to 0"
+  },
+  "categoryDetail": {
+    "labels": "Labels",
+    "specialties": "Specialties",
+    "slas": "SLAs"
+  },
+  "language": {
+    "english": "English",
+    "spanish": "Español"
+  },
+  "time": {
+    "minutes": "min",
+    "hours": "hrs",
+    "days": "days",
+    "ago": "ago"
+  },
+  "sla": {
+    "met": "✓ Met",
+    "notMet": "✗ Not Met",
+    "na": "N/A",
+    "expired": "Expired",
+    "nearExpiry": "Near Expiry",
+    "onTime": "On Time"
+  },
+  "ticketDetail": {
+    "slaRequirements": "SLA Requirements:",
+    "assignedTo": "Assigned To:",
+    "assignedOn": "Assigned On:",
+    "createdBy": "Created By:",
+    "createdAt": "Created At:",
+    "unassigned": "Unassigned",
+    "daysOfResolution": "Days of resolution",
+    "slaResponseTime": "SLA Response Time",
+    "slaResolutionTime": "SLA Resolution Time",
+    "ticketNotFound": "Ticket not found",
+    "timeline": "Timeline"
   }
 }

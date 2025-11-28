@@ -1,29 +1,31 @@
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-export const timelineSchema = yup.object({
+export const timelineSchema = (t) => yup.object({
   id: yup
     .number()
     .nullable(),
   ticket_id: yup
     .number()
-    .typeError('Only accepts numbers')
-    .required('Ticket is required'),
+    .typeError(t('validation.onlyAcceptsNumbers'))
+    .required(t('validation.ticketRequired')),
   user_id: yup
     .number()
-    .typeError('Only accepts numbers')
-    .required('User is required'),
+    .typeError(t('validation.onlyAcceptsNumbers'))
+    .required(t('validation.userRequired')),
   subject: yup
     .string()
-    .required('Subject is required')
-    .max(255, 'Subject cannot exceed 255 characters'),
+    .required(t('validation.subjectRequired'))
+    .max(255, t('validation.subjectMaxLength')),
   description: yup
     .string()
-    .max(1000, 'Description cannot exceed 1000 characters'),
+    .max(1000, t('validation.descriptionMaxLength')),
 });
 
 export const useTimelineForm = (timeline) => {
+  const { t } = useTranslation();
   return useForm({
     defaultValues: {
       'id': timeline ? timeline.id : null,
@@ -32,7 +34,7 @@ export const useTimelineForm = (timeline) => {
       'subject': timeline ? timeline.subject : '',
       'description': timeline ? timeline.description : '',
     },
-    resolver: yupResolver(timelineSchema),
+    resolver: yupResolver(timelineSchema(t)),
     values: timeline ? {
       'id': timeline.id,
       'ticket_id': timeline.ticket_id,

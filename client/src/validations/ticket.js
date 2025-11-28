@@ -1,44 +1,46 @@
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-export const ticketSchema = yup.object({
+export const ticketSchema = (t) => yup.object({
   status_id: yup
         .number()
-        .typeError('Only accepts numbers')
-        .required('Status is required'),
+        .typeError(t('validation.onlyAcceptsNumbers'))
+        .required(t('validation.statusRequired')),
   category_id: yup
         .number()
-        .typeError('Only accepts numbers')
-        .required('Category is required'),
+        .typeError(t('validation.onlyAcceptsNumbers'))
+        .required(t('validation.categoryRequired')),
   priority_id: yup
         .number()
-        .typeError('Only accepts numbers')
-        .required('Priority is required'),
+        .typeError(t('validation.onlyAcceptsNumbers'))
+        .required(t('validation.priorityRequired')),
   label_id: yup
         .number()
-        .typeError('Only accepts numbers'),
+        .typeError(t('validation.onlyAcceptsNumbers')),
   title: yup
         .string()
-        .required('Title is required')
-        .max(255, 'Title cannot exceed 255 characters'),
+        .required(t('validation.titleRequired'))
+        .max(255, t('validation.titleMaxLength')),
   description: yup
         .string(),
   notification_status: yup
         .string()
-        .required('Notification status is required')
-        .max(50, 'Notification status cannot exceed 50 characters'),
+        .required(t('validation.notificationStatusRequired'))
+        .max(50, t('validation.notificationStatusMaxLength')),
   rating: yup
         .number()
-        .typeError('Only accepts numbers')
-        .min(0, 'Minimum rating is 0')
-        .max(5, 'Maximum rating is 5'),
+        .typeError(t('validation.onlyAcceptsNumbers'))
+        .min(0, t('validation.ratingMin'))
+        .max(5, t('validation.ratingMax')),
   comment: yup
         .string()
-        .max(500, 'Comment cannot exceed 500 characters'),
+        .max(500, t('validation.commentMaxLength')),
 });
 
 export const useTicketForm = (ticket) => {
+  const { t } = useTranslation();
   return useForm({
     defaultValues: {
     'status_id': ticket ? ticket.status_id : 1,
@@ -51,7 +53,7 @@ export const useTicketForm = (ticket) => {
     'rating': ticket ? ticket.rating : 0,
     'comment': ticket ? ticket.comment : '',
     },
-    resolver: yupResolver(ticketSchema),
+    resolver: yupResolver(ticketSchema(t)),
     values: ticket ? {
       'status_id': ticket.status_id,
       'category_id': ticket.category_id,

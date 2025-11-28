@@ -96,22 +96,24 @@ export function TicketDetail() {
     let responseSLA = calculateSlaResponse(
       ticket.created_on,
       assignedOnValue,
-      ticket.response_time
+      ticket.response_time,
+      t
     );
     if (responseSLA === undefined) {
       responseSLA = {
-        actualTime: calculateRemainingTime(ticket.response_time),
+        actualTime: calculateRemainingTime(ticket.response_time, t),
       };
     }
 
     let resolutionSLA = calculateSlaResolution(
       ticket.created_on,
       ticket.notified_on,
-      ticket.resolution_time
+      ticket.resolution_time,
+      t
     );
     if (resolutionSLA === undefined) {
       resolutionSLA = {
-        actualTime: calculateRemainingTime(ticket.resolution_time),
+        actualTime: calculateRemainingTime(ticket.resolution_time, t),
       };
     }
 
@@ -131,7 +133,7 @@ export function TicketDetail() {
   if (!ticket)
     return (
       <Typography variant="h6" color="error" align="center" sx={{ mt: 4 }}>
-        Ticket not found
+        {t("ticketDetail.ticketNotFound")}
       </Typography>
     );
 
@@ -155,8 +157,8 @@ export function TicketDetail() {
           ticketId={ticket.id}
           userId={loggedUser.id}
           onSaved={(newTimelineEntry) => {
-            setIsManagerDialogOpen(false); 
-            setTimeline(prev => [newTimelineEntry, ...prev]);
+            setIsManagerDialogOpen(false);
+            setTimeline((prev) => [newTimelineEntry, ...prev]);
           }}
         />
       </ManagerDialog>
@@ -164,7 +166,7 @@ export function TicketDetail() {
       <Divider sx={{ my: 2 }} />
       <Box sx={{ p: 1 }}>
         <Title3 color="text.secondary" bold>
-          SLA Requirements:
+          {t("ticketDetail.slaRequirements")}
         </Title3>
       </Box>
       <Box
@@ -178,14 +180,14 @@ export function TicketDetail() {
       >
         <Box>
           <SubTitle2 color="text.secondary" bold>
-            Assigned To:
+            {t("ticketDetail.assignedTo")}
           </SubTitle2>
           <Body2>
             {assignedUsers.filter((u) => u.user_role === "Technician")[0]
-              ?.user_name || "Unassigned"}
+              ?.user_name || t("ticketDetail.unassigned")}
           </Body2>
           <SubTitle2 color="text.secondary" bold>
-            Assigned On:
+            {t("ticketDetail.assignedOn")}
           </SubTitle2>
           <Body2>
             {assignedOn
@@ -194,14 +196,14 @@ export function TicketDetail() {
           </Body2>
 
           <SubTitle2 color="text.secondary" bold>
-            Created By:
+            {t("ticketDetail.createdBy")}
           </SubTitle2>
           <Body2>
             {assignedUsers.filter((u) => u.user_role === "Client")[0]
-              ?.user_name || "Unassigned"}
+              ?.user_name || t("ticketDetail.unassigned")}
           </Body2>
           <SubTitle2 color="text.secondary" bold>
-            Created At:
+            {t("ticketDetail.createdAt")}
           </SubTitle2>
           <Body2>
             {formatDate(ticket.created_on, "en-US")}{" "}
@@ -212,18 +214,18 @@ export function TicketDetail() {
           {slaProps.resolution_days ? (
             <>
               <SubTitle2 color="text.secondary" alignment="end" bold>
-                Days of resolution
+                {t("ticketDetail.daysOfResolution")}
               </SubTitle2>
               <Body2 alignment="end">{slaProps.resolution_days}</Body2>
             </>
           ) : undefined}
           <SubTitle2 color="text.secondary" alignment="end" bold>
-            SLA Response Time
+            {t("ticketDetail.slaResponseTime")}
           </SubTitle2>
           <Body2 alignment="end">{slaProps.response_time}</Body2>
           <Body2 alignment="end">{slaProps.compliance_response}</Body2>
           <SubTitle2 color="text.secondary" alignment="end" bold>
-            SLA Resolution Time
+            {t("ticketDetail.slaResolutionTime")}
           </SubTitle2>
           <Body2 alignment="end">{slaProps.resolution_time}</Body2>
           <Body2 alignment="end">{slaProps.compliance_resolution}</Body2>
@@ -233,7 +235,7 @@ export function TicketDetail() {
       <Table
         data={timeline}
         headTitles={timelineTableHeadTitles}
-        tableTitle={"Timeline"}
+        tableTitle={t("ticketDetail.timeline")}
         onActionButtonClick={(row) => {
           console.log("Row:", row);
           setImageDialogManager({
