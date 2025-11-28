@@ -172,7 +172,7 @@ export function CategoryDetail() {
           <Table
             data={labels}
             headTitles={categoryHeadTitles[0]}
-            tableTitle={"Labels"}
+            tableTitle={t("categoryDetail.labels")}
             onRowClick={(rData) =>
               setManagerDialog({ model: "label", data: rData })
             }
@@ -189,7 +189,7 @@ export function CategoryDetail() {
           <Table
             data={specialties}
             headTitles={categoryHeadTitles[0]}
-            tableTitle={"Specialties"}
+            tableTitle={t("categoryDetail.specialties")}
             onRowClick={(rData) =>
               setManagerDialog({ model: "specialty", data: rData })
             }
@@ -207,7 +207,7 @@ export function CategoryDetail() {
         <Table
           data={slas}
           headTitles={categoryHeadTitles[1]}
-          tableTitle={"SLAs"}
+          tableTitle={t("categoryDetail.slas")}
           onRowClick={(rData) =>
             setManagerDialog({ model: "sla", data: rData })
           }

@@ -23,7 +23,8 @@
     "view": "Ver",
     "here": "Aquí",
     "language": "Idioma",
-    "newRecord": "Nuevo Registro"
+    "newRecord": "Nuevo Registro",
+    "uploadFiles": "Subir Archivos"
   },
   "header": {
     "home": "Inicio",
@@ -147,7 +148,8 @@
     "failedToModifyTimeline": "Error al modificar la línea de tiempo",
     "filesUploadedSuccessfully": "¡Archivos cargados exitosamente!",
     "errorUploadingFiles": "Error al cargar archivos",
-    "attachmentDeleted": "¡Archivo adjunto eliminado exitosamente!"
+    "attachmentDeleted": "¡Archivo adjunto eliminado exitosamente!",
+    "attachmentsUploadedSuccessfully": "Adjuntos cargados exitosamente"
   },
   "fields": {
     "name": "Nombre",
@@ -190,7 +192,8 @@
     "noTimeline": "No hay entradas en la línea de tiempo",
     "slaInformation": "Información de SLA",
     "responseCompliance": "Cumplimiento de Respuesta",
-    "resolutionCompliance": "Cumplimiento de Resolución"
+    "resolutionCompliance": "Cumplimiento de Resolución",
+    "timeline": "Línea de tiempo"
   },
   "categoryDetail": {
     "labels": "Etiquetas",
@@ -212,7 +215,9 @@
     "addRecord": "Agregar registro",
     "filterList": "Filtrar lista",
     "sortedDescending": "ordenado descendente",
-    "sortedAscending": "ordenado ascendente"
+    "sortedAscending": "ordenado ascendente",
+    "displayedRows": "{{from}}-{{to}} de {{count}}",
+    "filterDialogTitle": "Filtrar {{tableTitle}}"
   },
   "filter": {
     "title": "Filtrar Tabla",
@@ -233,5 +238,72 @@
     "signIn": "Iniciar Sesión",
     "invalidCredentials": "Credenciales inválidas",
     "serverError": "Error del servidor"
+  },
+  "validation": {
+    "onlyAcceptsNumbers": "Solo acepta números",
+    "roleRequired": "El rol es requerido",
+    "nameRequired": "El nombre es requerido",
+    "nameMaxLength": "El nombre no puede exceder 150 caracteres",
+    "emailValid": "El email debe ser válido",
+    "emailRequired": "El email es requerido",
+    "emailMaxLength": "El email no puede exceder 255 caracteres",
+    "passwordRequired": "La contraseña es requerida",
+    "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+    "passwordMaxLength": "La contraseña no puede exceder 255 caracteres",
+    "ticketRequired": "El ticket es requerido",
+    "userRequired": "El usuario es requerido",
+    "subjectRequired": "El asunto es requerido",
+    "subjectMaxLength": "El asunto no puede exceder 255 caracteres",
+    "descriptionMaxLength": "La descripción no puede exceder 1000 caracteres",
+    "statusRequired": "El estado es requerido",
+    "categoryRequired": "La categoría es requerida",
+    "priorityRequired": "La prioridad es requerida",
+    "titleRequired": "El título es requerido",
+    "titleMaxLength": "El título no puede exceder 255 caracteres",
+    "notificationStatusRequired": "El estado de notificación es requerido",
+    "notificationStatusMaxLength": "El estado de notificación no puede exceder 50 caracteres",
+    "ratingMin": "La calificación mínima es 0",
+    "ratingMax": "La calificación máxima es 5",
+    "commentMaxLength": "El comentario no puede exceder 500 caracteres",
+    "responseTimeRequired": "El tiempo de respuesta es requerido",
+    "responseTimeMin": "El tiempo de respuesta debe ser mayor o igual a 0",
+    "resolutionTimeRequired": "El tiempo de resolución es requerido",
+    "resolutionTimeMin": "El tiempo de resolución debe ser mayor o igual a 0"
+  },
+  "categoryDetail": {
+    "labels": "Etiquetas",
+    "specialties": "Especialidades",
+    "slas": "SLAs"
+  },
+  "language": {
+    "english": "Inglés",
+    "spanish": "Español"
+  },
+  "time": {
+    "minutes": "min",
+    "hours": "hrs",
+    "days": "días",
+    "ago": "atrás"
+  },
+  "sla": {
+    "met": "✓ Cumplido",
+    "notMet": "✗ No Cumplido",
+    "na": "N/D",
+    "expired": "Expirado",
+    "nearExpiry": "Cerca de Expirar",
+    "onTime": "A Tiempo"
+  },
+  "ticketDetail": {
+    "slaRequirements": "Requisitos SLA:",
+    "assignedTo": "Asignado a:",
+    "assignedOn": "Asignado el:",
+    "createdBy": "Creado por:",
+    "createdAt": "Creado el:",
+    "unassigned": "Sin asignar",
+    "daysOfResolution": "Días de resolución",
+    "slaResponseTime": "Tiempo de respuesta SLA",
+    "slaResolutionTime": "Tiempo de resolución SLA",
+    "ticketNotFound": "Ticket no encontrado",
+    "timeline": "Línea de tiempo"
   }
 }

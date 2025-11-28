@@ -1,29 +1,30 @@
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-export const userSchema = yup.object({
+export const userSchema = (t) => yup.object({
   id: yup
     .number()
     .nullable(),
   role_id: yup
     .number()
-    .typeError('Only accepts numbers')
-    .required('Role is required'),
+    .typeError(t('validation.onlyAcceptsNumbers'))
+    .required(t('validation.roleRequired')),
   name: yup
     .string()
-    .required('Name is required')
-    .max(150, 'Name cannot exceed 150 characters'),
+    .required(t('validation.nameRequired'))
+    .max(150, t('validation.nameMaxLength')),
   email: yup
     .string()
-    .email('Email must be valid')
-    .required('Email is required')
-    .max(255, 'Email cannot exceed 255 characters'),
+    .email(t('validation.emailValid'))
+    .required(t('validation.emailRequired'))
+    .max(255, t('validation.emailMaxLength')),
   password: yup
     .string()
-    .required('Password is required')
-    .min(8, 'Password must be at least 8 characters')
-    .max(255, 'Password cannot exceed 255 characters'),
+    .required(t('validation.passwordRequired'))
+    .min(8, t('validation.passwordMinLength'))
+    .max(255, t('validation.passwordMaxLength')),
   special_field_ids: yup
     .array()
     .of(yup.number())
@@ -31,6 +32,7 @@ export const userSchema = yup.object({
 });
 
 export const useUserForm = (user) => {
+  const { t } = useTranslation();
   return useForm({
     defaultValues: {
       'id': user ? user.id : null,
@@ -40,7 +42,7 @@ export const useUserForm = (user) => {
       'password': user ? user.password : '',
       'special_field_ids': user && user.special_fields ? user.special_fields.map(sf => sf.special_field_id) : [],
     },
-    resolver: yupResolver(userSchema),
+    resolver: yupResolver(userSchema(t)),
     values: user ? {
       'id': user.id,
       'role_id': user.role_id,

@@ -1,22 +1,24 @@
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-export const specialtySchema = yup.object({
+export const specialtySchema = (t) => yup.object({
   id: yup
     .number()
     .nullable(),
   category_id: yup
     .number()
-    .typeError('Only accepts numbers')
-    .required('Category is required'),
+    .typeError(t('validation.onlyAcceptsNumbers'))
+    .required(t('validation.categoryRequired')),
   name: yup
     .string()
-    .required('Name is required')
-    .max(255, 'Name cannot exceed 255 characters'),
+    .required(t('validation.nameRequired'))
+    .max(255, t('validation.nameMaxLength')),
 });
 
 export const useSpecialtyForm = (specialty) => {
+  const { t } = useTranslation();
   return useForm({
     defaultValues: {
       'id': specialty ? specialty.id : null,
@@ -24,7 +26,7 @@ export const useSpecialtyForm = (specialty) => {
       'name': specialty ? specialty.name : '',
      
     },
-    resolver: yupResolver(specialtySchema),
+    resolver: yupResolver(specialtySchema(t)),
     values: specialty ? {
       'id': specialty.id,
       'category_id': specialty.category_id,

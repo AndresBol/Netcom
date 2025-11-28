@@ -1,36 +1,38 @@
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-export const slaSchema = yup.object({
+export const slaSchema = (t) => yup.object({
   id: yup
     .number()
     .nullable(),
   category_id: yup
     .number()
-    .typeError('Only accepts numbers')
-    .required('Category is required'),
+    .typeError(t('validation.onlyAcceptsNumbers'))
+    .required(t('validation.categoryRequired')),
   priority_id: yup
     .number()
-    .typeError('Only accepts numbers')
-    .required('Priority is required'),
+    .typeError(t('validation.onlyAcceptsNumbers'))
+    .required(t('validation.priorityRequired')),
   response_time: yup
     .number()
-    .typeError('Only accepts numbers')
-    .required('Response time is required')
-    .min(0, 'Response time must be greater than or equal to 0'),
+    .typeError(t('validation.onlyAcceptsNumbers'))
+    .required(t('validation.responseTimeRequired'))
+    .min(0, t('validation.responseTimeMin')),
   resolution_time: yup
     .number()
-    .typeError('Only accepts numbers')
-    .required('Resolution time is required')
-    .min(0, 'Resolution time must be greater than or equal to 0'),
+    .typeError(t('validation.onlyAcceptsNumbers'))
+    .required(t('validation.resolutionTimeRequired'))
+    .min(0, t('validation.resolutionTimeMin')),
      name: yup
         .string()
-        .required('Name is required')
-        .max(255, 'Name cannot exceed 255 characters'),
+        .required(t('validation.nameRequired'))
+        .max(255, t('validation.nameMaxLength')),
 });
 
 export const useSLAForm = (sla) => {
+  const { t } = useTranslation();
   return useForm({
     defaultValues: {
       'id': sla ? sla.id : null,
@@ -40,7 +42,7 @@ export const useSLAForm = (sla) => {
       'resolution_time': sla ? sla.resolution_time : 0,
       'name': sla ? sla.name : '',
     },
-    resolver: yupResolver(slaSchema),
+    resolver: yupResolver(slaSchema(t)),
     values: sla ? {
       'id': sla.id,
       'category_id': sla.category_id,

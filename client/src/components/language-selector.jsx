@@ -7,8 +7,8 @@ const LanguageSelector = () => {
   const { i18n, t } = useTranslation();
 
   const languages = [
-    { code: "en", label: "English", flag: "🇺🇸" },
-    { code: "es", label: "Español", flag: "🇪🇸" },
+    { code: "en", label: t("language.english"), flag: "🇺🇸" },
+    { code: "es", label: t("language.spanish"), flag: "🇪🇸" },
   ];
 
   const handleLanguageChange = (event) => {

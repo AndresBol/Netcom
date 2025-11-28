@@ -172,7 +172,7 @@ export function TicketManager({ record }) {
 
         if (files.length > 0) {
           await AttachmentService.uploadFiles(response.data.id, files);
-          toast.success("Attachments uploaded successfully");
+          toast.success(t("messages.attachmentsUploadedSuccessfully"));
         }
 
         if (isNewTicket && loggedUser) {
@@ -191,7 +191,6 @@ export function TicketManager({ record }) {
 
           const timelineId = timelineResponse.data.id;
 
-        
           if (files.length > 0) {
             await AttachmentService.uploadFiles(timelineId, files);
           }
