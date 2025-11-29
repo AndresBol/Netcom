@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import { Title2 } from "@components/typography";
 import { CircularProgress } from "@mui/material";
-import { useLoggedUser } from "@contexts/UserContext";
+import { useLoggedUser } from "@components/user/user-provider.jsx";
 import { useTranslation } from "react-i18next";
 
 export function FormHeader({

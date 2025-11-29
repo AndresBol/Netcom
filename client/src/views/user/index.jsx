@@ -6,7 +6,7 @@ import Table from "@components/table";
 import { Loading } from "@components/loading";
 import { useNavigate } from "react-router-dom";
 import { BackButton } from "@components/backbutton";
-import { useLoggedUser } from "@contexts/UserContext";
+import { useLoggedUser } from "@components/user/user-provider.jsx";
 import { useTranslation } from "react-i18next";
 
 export function UserIndex() {
@@ -16,7 +16,7 @@ export function UserIndex() {
   const tableHeadTitles = [
     { label: t("user.name"), fieldName: "name", fieldType: "string" },
     { label: t("user.email"), fieldName: "email", fieldType: "string" },
-    { label: t("user.role"), fieldName: "role_name", fieldType: "string" },
+    { label: t("user.role"), fieldName: "role", fieldType: "string" },
   ];
 
   const { loggedUser } = useLoggedUser();

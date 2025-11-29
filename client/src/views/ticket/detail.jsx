@@ -20,7 +20,7 @@ import { View } from "@components/view";
 import { TicketManager } from "@components/managers/ticket";
 import { TimelineManager } from "@components/managers/timeline";
 import ManagerDialog from "@components/manager-dialog";
-import { useLoggedUser } from "@contexts/UserContext";
+import { useLoggedUser } from "@components/user/user-provider.jsx";
 import { calculateRemainingTime } from "@utils/sla-manager";
 import { useTranslation } from "react-i18next";
 

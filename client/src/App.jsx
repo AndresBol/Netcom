@@ -2,7 +2,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { Layout } from "./views/layout/Layout";
 import { appTheme } from "./themes/theme";
-import { UserProvider } from "./contexts/UserContext";
+import { UserProvider } from "@components/user/user-provider.jsx";
 
 export default function App() {
   return (

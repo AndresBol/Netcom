@@ -14,63 +14,44 @@ import { UserIndex } from "./views/user/index";
 import { UserDetail } from "./views/user/detail";
 import { CategoryDetail } from "./views/category/detail";
 import { NewCategory } from "./views/category/new";
+import { UserProvider } from "@components/user/user-provider";
+import { Auth } from "@components/user/auth";
+import Logout from "@components/user/logout.jsx";
+import LoginDialog from "@components/user/login-dialog.jsx";
+import Unauthorized from "@components/user/unauthorized.jsx";
 
 const router = createBrowserRouter([
   {
     element: <App />,
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-
-      {
-        path: "/user/index",
-        element: <UserIndex />,
-      },
-
-      {
-        path: "/user/:id",
-        element: <UserDetail />,
-      },
-
-      {
-        path: "/user/new",
-        element: <NewUser />,
-      },
-
-      {
-        path: "/ticket/new",
-        element: <NewTicket />,
-      },
-
-      {
-        path: "/ticket/:id",
-        element: <TicketDetail />,
-      },
-
+      { path: "/", element: <Home /> },
+      { path: "/unauthorized", element: <Unauthorized /> },
+      { path: "/user/logout", element: <Logout /> },
+      { path: "/ticket/new", element: <NewTicket /> },
+      { path: "/ticket/:id", element: <TicketDetail /> },
       {
         path: "/ticket/index/:viewType",
         element: <TicketIndex />,
       },
 
       {
-        path: "/category/new",
-        element: <NewCategory />,
-      },
+        element: <Auth requiredRoles={["Administrator"]} />,
+        children: [
+          { path: "/user/index", element: <UserIndex /> },
+          { path: "/user/:id", element: <UserDetail /> },
+          { path: "/user/new", element: <NewUser /> },
 
-      {
-        path: "/category/:id",
-        element: <CategoryDetail />,
-      },
-
-      {
-        path: "/category/index",
-        element: <CategoryIndex />,
+          { path: "/category/index", element: <CategoryIndex /> },
+          { path: "/category/:id", element: <CategoryDetail /> },
+          { path: "/category/new", element: <NewCategory /> },
+        ],
       },
     ],
   },
 ]);
+
 createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />
+  <UserProvider>
+    <RouterProvider router={router} />
+  </UserProvider>
 );
