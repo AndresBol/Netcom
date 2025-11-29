@@ -39,6 +39,19 @@ class user
         }
     }
 
+    public function getByRoleName($roleName)
+    {
+        try {
+            $response = new Response();
+            $user = new UserModel();
+            $result = $user->getByRoleName($roleName);
+            //Give an response
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
     public function login()
     {
         try {
@@ -142,6 +155,19 @@ class user
             $response = new Response();
             $user = new UserModel();
             $result = $user->delete($id);
+            //Give an response
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function getTechniciansWorkload()
+    {
+        try {
+            $response = new Response();
+            $user = new UserModel();
+            $result = $user->getTechniciansWorkload();
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {

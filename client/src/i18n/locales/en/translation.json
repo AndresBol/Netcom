@@ -35,7 +35,8 @@
     "logout": "Logout",
     "profile": "Profile",
     "myTickets": "My Tickets",
-    "allTickets": "All Tickets"
+    "allTickets": "All Tickets",
+    "pendingTickets": "Pending Tickets"
   },
   "home": {
     "welcome": "Welcome {{name}}!",
@@ -61,6 +62,7 @@
     "ticketDetails": "Ticket Details",
     "myTickets": "My Tickets",
     "allTickets": "All Tickets",
+    "pendingTickets": "Pending Tickets",
     "noTickets": "You don't have registered Tickets",
     "createTicket": "Create a new ticket",
     "status": "Status",
@@ -74,7 +76,9 @@
     "attachments": "Attachments",
     "comments": "Comments",
     "weekCalendar": "Week Calendar",
-    "noTicketsInWeek": "No tickets found for the selected week"
+    "autoAssign": "Assign Automatically",
+    "noTicketsInWeek": "No tickets found for the selected week",
+    "system": "System"
   },
   "category": {
     "title": "Available Categories",
@@ -84,12 +88,21 @@
     "description": "Description",
     "noCategories": "No categories available"
   },
+  "userTicket": {
+    "title": "User Ticket Assignments"
+  },
   "table": {
     "rowsPerPage": "Rows per page:",
     "of": "of",
     "noData": "No data available",
     "sortBy": "Sort by",
-    "filterBy": "Filter by"
+    "filterBy": "Filter by",
+    "addRecord": "Add record",
+    "filterList": "Filter list",
+    "sortedDescending": "sorted descending",
+    "sortedAscending": "sorted ascending",
+    "displayedRows": "{{from}}-{{to}} of {{count}}",
+    "filterDialogTitle": "Filter {{tableTitle}}"
   },
   "form": {
     "required": "This field is required",
@@ -108,13 +121,19 @@
     "forgotPassword": "Forgot Password?",
     "rememberMe": "Remember me",
     "welcomeBack": "Welcome back!",
-    "signIn": "Sign in to continue"
+    "signIn": "Sign in to continue",
+    "welcomeToNetcom": "Welcome to Netcom",
+    "signInMessage": "Sign in with your account",
+    "invalidCredentials": "Invalid credentials",
+    "serverError": "Server error"
   },
   "kanban": {
     "todo": "To Do",
     "inProgress": "In Progress",
     "done": "Done",
-    "backlog": "Backlog"
+    "backlog": "Backlog",
+    "viewDetails": "View Details",
+    "resolved": "Resolved"
   },
   "messages": {
     "deleteConfirm": "Are you sure you want to delete this item?",
@@ -146,10 +165,14 @@
     "timelineModified": "Timeline entry modified!",
     "timelineDeleted": "Timeline entry deleted!",
     "failedToModifyTimeline": "Failed to modify timeline entry",
+    "userTicketModified": "User ticket assignment modified!",
+    "userTicketDeleted": "User ticket assignment deleted!",
+    "failedToModifyUserTicket": "Failed to modify user ticket assignment",
     "filesUploadedSuccessfully": "Files uploaded successfully",
     "errorUploadingFiles": "Error uploading files",
     "attachmentsUploadedSuccessfully": "Attachments uploaded successfully",
-    "attachmentDeleted": "Attachment deleted successfully!"
+    "attachmentDeleted": "Attachment deleted successfully!",
+    "ticketAssignedWithScore": "Ticket assigned successfully with score: {{score}}"
   },
   "fields": {
     "name": "Name",
@@ -158,6 +181,7 @@
     "role": "Role",
     "specialFields": "Special Fields",
     "title": "Title",
+    "ticketTitle": "Ticket Title",
     "description": "Description",
     "status": "Status",
     "category": "Category",
@@ -174,7 +198,12 @@
     "availability": "Availability",
     "workload": "Workload",
     "date": "Date",
-    "resolutionTime2": "Resolution Time"
+    "resolutionTime2": "Resolution Time",
+    "userName": "User Name",
+    "userRole": "User Role",
+    "assignedOn": "Assigned On",
+    "assignedBy": "Assigned By",
+    "user": "User"
   },
   "userDetail": {
     "userNotFound": "User not found",
@@ -193,7 +222,16 @@
     "slaInformation": "SLA Information",
     "responseCompliance": "Response Compliance",
     "resolutionCompliance": "Resolution Compliance",
-    "timeline": "Timeline"
+    "timeline": "Timeline",
+    "assignedUsers": "Assigned Users",
+    "slaRequirements": "SLA Requirements:",
+    "assignedOn": "Assigned On:",
+    "createdBy": "Created By:",
+    "createdAt": "Created At:",
+    "unassigned": "Unassigned",
+    "daysOfResolution": "Days of resolution",
+    "slaResponseTime": "SLA Response Time",
+    "slaResolutionTime": "SLA Resolution Time"
   },
   "categoryDetail": {
     "labels": "Labels",
@@ -206,38 +244,14 @@
     "message": "The page you are looking for might have been removed, had its name changed or is temporarily unavailable",
     "goBack": "Go Back"
   },
-  "table": {
-    "rowsPerPage": "Rows per page:",
-    "of": "of",
-    "noData": "No data available",
-    "sortBy": "Sort by",
-    "filterBy": "Filter by",
-    "addRecord": "Add record",
-    "filterList": "Filter list",
-    "sortedDescending": "sorted descending",
-    "sortedAscending": "sorted ascending",
-    "displayedRows": "{{from}}-{{to}} of {{count}}",
-    "filterDialogTitle": "Filter {{tableTitle}}"
-  },
   "filter": {
     "title": "Filter Table",
     "clearFilters": "Clear Filters",
     "applyFilters": "Apply Filters"
   },
-  "kanban": {
-    "viewDetails": "View Details",
-    "resolved": "Resolved"
-  },
   "imageDialog": {
     "availableImages": "Available Images",
     "noImages": "No images available."
-  },
-  "auth": {
-    "welcomeToNetcom": "Welcome to Netcom",
-    "signInMessage": "Sign in with your account",
-    "signIn": "Sign In",
-    "invalidCredentials": "Invalid credentials",
-    "serverError": "Server error"
   },
   "validation": {
     "onlyAcceptsNumbers": "Only accepts numbers",
@@ -270,11 +284,6 @@
     "resolutionTimeRequired": "Resolution time is required",
     "resolutionTimeMin": "Resolution time must be greater than or equal to 0"
   },
-  "categoryDetail": {
-    "labels": "Labels",
-    "specialties": "Specialties",
-    "slas": "SLAs"
-  },
   "language": {
     "english": "English",
     "spanish": "Español"
@@ -292,18 +301,5 @@
     "expired": "Expired",
     "nearExpiry": "Near Expiry",
     "onTime": "On Time"
-  },
-  "ticketDetail": {
-    "slaRequirements": "SLA Requirements:",
-    "assignedTo": "Assigned To:",
-    "assignedOn": "Assigned On:",
-    "createdBy": "Created By:",
-    "createdAt": "Created At:",
-    "unassigned": "Unassigned",
-    "daysOfResolution": "Days of resolution",
-    "slaResponseTime": "SLA Response Time",
-    "slaResolutionTime": "SLA Resolution Time",
-    "ticketNotFound": "Ticket not found",
-    "timeline": "Timeline"
   }
 }

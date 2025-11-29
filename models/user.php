@@ -107,6 +107,33 @@ class UserModel
             handleException($e);
         }
     }
+    /*Get users by role name */
+    public function getByRoleName($roleName) {
+        try {
+            //sql query with JOIN to get role name
+            $vSql = "SELECT 
+                u.*,
+                r.name as role
+            FROM user u
+            LEFT JOIN role r ON u.role_id = r.id
+            WHERE r.name = '$roleName' AND u.is_active = 1;";
+            
+            //query execution
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            
+            // Get special fields for each user
+            if ($vResultado && is_array($vResultado)) {
+                foreach ($vResultado as &$user) {
+                    $user->special_fields = $this->userSpecialFieldModel->getByUserId($user->id);
+                }
+            }
+            
+            //return the object
+            return $vResultado;
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
     /*Insert */
     public function insert($object) {
         try {
@@ -203,6 +230,38 @@ class UserModel
             
             //return the object
             return $this->get($id);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    /*Get technicians with workload*/
+    public function getTechniciansWorkload() {
+        try {
+            // Count user's assigned tickets excluding those with status 'Resolved' or 'Closed'.
+            // Use a JOIN on status to avoid building dynamic IN(...) lists which can be empty.
+            $vSql = "SELECT 
+                u.*,
+                r.name as role,
+                SUM(CASE WHEN (s.name IS NULL OR s.name NOT IN ('Resolved','Closed')) THEN 1 ELSE 0 END) as workload
+            FROM user u
+            LEFT JOIN role r ON u.role_id = r.id
+            LEFT JOIN user_ticket ut ON u.id = ut.user_id
+            LEFT JOIN ticket t ON ut.ticket_id = t.id
+            LEFT JOIN status s ON t.status_id = s.id
+            WHERE r.name = 'Technician' AND u.is_active = 1
+            GROUP BY u.id;";
+
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+
+            // Get special fields for each user
+            if ($vResultado && is_array($vResultado)) {
+                foreach ($vResultado as &$user) {
+                    $user->special_fields = $this->userSpecialFieldModel->getByUserId($user->id);
+                }
+            }
+
+            return $vResultado;
         } catch (Exception $e) {
             handleException($e);
         }

@@ -13,6 +13,9 @@ class TicketService {
   getByStatus(statusId) {
     return axios.get(BASE_URL + '/getAllTicketsByStatus/' + statusId);
   }
+  getByStatusName(statusName) {
+    return axios.get(BASE_URL + '/getAllTicketsByStatusName/' + statusName);
+  }
   insert(ticket){
     return axios.post(BASE_URL, ticket)
   }

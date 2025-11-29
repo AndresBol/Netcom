@@ -20,6 +20,7 @@ import { View } from "@components/view";
 import { TicketManager } from "@components/managers/ticket";
 import { TimelineManager } from "@components/managers/timeline";
 import ManagerDialog from "@components/manager-dialog";
+import { UserTicketManager } from "@components/managers/user-ticket";
 import { useLoggedUser } from "@components/user/user-provider.jsx";
 import { calculateRemainingTime } from "@utils/sla-manager";
 import { useTranslation } from "react-i18next";
@@ -49,7 +50,10 @@ export function TicketDetail() {
     data: null,
   });
 
-  const [isManagerDialogOpen, setIsManagerDialogOpen] = useState(false);
+  const [managerDialog, setManagerDialog] = useState({
+    model: null,
+    data: null,
+  });
 
   const timelineTableHeadTitles = [
     { label: t("fields.subject"), fieldName: "subject", fieldType: "string" },
@@ -66,23 +70,51 @@ export function TicketDetail() {
     },
   ];
 
+  const assignedUsersTableHeadTitles = [
+    {
+      label: t("fields.userName"),
+      fieldName: "user_name",
+      fieldType: "string",
+    },
+    {
+      label: t("fields.userRole"),
+      fieldName: "user_role",
+      fieldType: "string",
+    },
+    {
+      label: t("fields.assignedOn"),
+      fieldName: "assigned_on",
+      fieldType: "dateTime",
+    },
+    {
+      label: t("fields.assignedBy"),
+      fieldName: "assigned_by_name",
+      fieldType: "string",
+    },
+  ];
+
+  const fetchData = async () => {
+    try {
+      const ticketRes = await TicketService.getById(ticketId);
+      setTicket(ticketRes.data);
+
+      const userTicketRes = await UserTicketService.getByTicketId(ticketId);
+      const processedAssignedUsers = userTicketRes.data.map((user) => ({
+        ...user,
+        assigned_by_name: user.assigned_by_name || t("ticket.system"),
+      }));
+      setAssignedUsers(processedAssignedUsers);
+
+      const timelineRes = await TimelineService.getAllByTicketId(ticketId);
+      setTimeline(timelineRes.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const ticketRes = await TicketService.getById(ticketId);
-        setTicket(ticketRes.data);
-
-        const userTicketRes = await UserTicketService.getByTicketId(ticketId);
-        setAssignedUsers(userTicketRes.data);
-
-        const timelineRes = await TimelineService.getAllByTicketId(ticketId);
-        setTimeline(timelineRes.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, [ticketId]);
 
@@ -150,85 +182,136 @@ export function TicketDetail() {
         dialogTitle={`Ticket #${ticket.id} | ${ticket.title}`}
       />
       <ManagerDialog
-        open={isManagerDialogOpen}
-        onClose={() => setIsManagerDialogOpen(false)}
+        open={managerDialog.model !== null}
+        onClose={() => setManagerDialog({ model: null, data: null })}
       >
-        <TimelineManager
-          ticketId={ticket.id}
-          userId={loggedUser.id}
-          onSaved={(newTimelineEntry) => {
-            setIsManagerDialogOpen(false);
-            setTimeline((prev) => [newTimelineEntry, ...prev]);
-          }}
-        />
+        {managerDialog.model === "timeline" && (
+          <TimelineManager
+            ticketId={ticket.id}
+            userId={loggedUser.id}
+            onSaved={(newTimelineEntry) => {
+              setManagerDialog({ model: null, data: null });
+              setTimeline((prev) => [newTimelineEntry, ...prev]);
+            }}
+          />
+        )}
+        {managerDialog.model === "user-ticket" && (
+          <UserTicketManager
+            record={managerDialog.data}
+            ticketId={ticket.id}
+            onSuccess={() => {
+              setManagerDialog({ model: null, data: null });
+              fetchData();
+            }}
+          />
+        )}
       </ManagerDialog>
-      <TicketManager record={ticket} />
-      <Divider sx={{ my: 2 }} />
-      <Box sx={{ p: 1 }}>
-        <Title3 color="text.secondary" bold>
-          {t("ticketDetail.slaRequirements")}
-        </Title3>
-      </Box>
       <Box
         sx={{
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
-          alignItems: "start",
-          p: 1,
+          alignItems: "stretch",
+          mb: 2,
         }}
       >
-        <Box>
-          <SubTitle2 color="text.secondary" bold>
-            {t("ticketDetail.assignedTo")}
-          </SubTitle2>
-          <Body2>
-            {assignedUsers.filter((u) => u.user_role === "Technician")[0]
-              ?.user_name || t("ticketDetail.unassigned")}
-          </Body2>
-          <SubTitle2 color="text.secondary" bold>
-            {t("ticketDetail.assignedOn")}
-          </SubTitle2>
-          <Body2>
-            {assignedOn
-              ? `${formatDate(assignedOn, "en-US")} ${formatTime(assignedOn, "en-US")}`
-              : "Unassigned"}
-          </Body2>
+        <TicketManager record={ticket} />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "start",
+            alignItems: "stretch",
+            marginTop: 11,
+            gap: 5,
+          }}
+        >
+          <Table
+            data={assignedUsers}
+            headTitles={assignedUsersTableHeadTitles}
+            tableTitle={t("ticketDetail.assignedUsers")}
+            onRowClick={
+              loggedUser?.role === "Administrator"
+                ? (row) => setManagerDialog({ model: "user-ticket", data: row })
+                : undefined
+            }
+            onAddButtonClick={
+              loggedUser?.role === "Administrator"
+                ? () => setManagerDialog({ model: "user-ticket", data: null })
+                : undefined
+            }
+            hasPagination={false}
+            dense={true}
+          />
+          <Box>
+            <Box sx={{ p: 1 }}>
+              <Title3 color="text.secondary" bold>
+                {t("ticketDetail.slaRequirements")}
+              </Title3>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "start",
+                p: 1,
+              }}
+            >
+              <Box>
+                <SubTitle2 color="text.secondary" bold>
+                  {t("ticketDetail.assignedTo")}
+                </SubTitle2>
+                <Body2>
+                  {assignedUsers.filter((u) => u.user_role === "Technician")[0]
+                    ?.user_name || t("ticketDetail.unassigned")}
+                </Body2>
+                <SubTitle2 color="text.secondary" bold>
+                  {t("ticketDetail.assignedOn")}
+                </SubTitle2>
+                <Body2>
+                  {assignedOn
+                    ? `${formatDate(assignedOn, "en-US")} ${formatTime(assignedOn, "en-US")}`
+                    : "Unassigned"}
+                </Body2>
 
-          <SubTitle2 color="text.secondary" bold>
-            {t("ticketDetail.createdBy")}
-          </SubTitle2>
-          <Body2>
-            {assignedUsers.filter((u) => u.user_role === "Client")[0]
-              ?.user_name || t("ticketDetail.unassigned")}
-          </Body2>
-          <SubTitle2 color="text.secondary" bold>
-            {t("ticketDetail.createdAt")}
-          </SubTitle2>
-          <Body2>
-            {formatDate(ticket.created_on, "en-US")}{" "}
-            {formatTime(ticket.created_on, "en-US")}
-          </Body2>
-        </Box>
-        <Box>
-          {slaProps.resolution_days ? (
-            <>
-              <SubTitle2 color="text.secondary" alignment="end" bold>
-                {t("ticketDetail.daysOfResolution")}
-              </SubTitle2>
-              <Body2 alignment="end">{slaProps.resolution_days}</Body2>
-            </>
-          ) : undefined}
-          <SubTitle2 color="text.secondary" alignment="end" bold>
-            {t("ticketDetail.slaResponseTime")}
-          </SubTitle2>
-          <Body2 alignment="end">{slaProps.response_time}</Body2>
-          <Body2 alignment="end">{slaProps.compliance_response}</Body2>
-          <SubTitle2 color="text.secondary" alignment="end" bold>
-            {t("ticketDetail.slaResolutionTime")}
-          </SubTitle2>
-          <Body2 alignment="end">{slaProps.resolution_time}</Body2>
-          <Body2 alignment="end">{slaProps.compliance_resolution}</Body2>
+                <SubTitle2 color="text.secondary" bold>
+                  {t("ticketDetail.createdBy")}
+                </SubTitle2>
+                <Body2>
+                  {assignedUsers.filter((u) => u.user_role === "Client")[0]
+                    ?.user_name || t("ticketDetail.unassigned")}
+                </Body2>
+                <SubTitle2 color="text.secondary" bold>
+                  {t("ticketDetail.createdAt")}
+                </SubTitle2>
+                <Body2>
+                  {formatDate(ticket.created_on, "en-US")}{" "}
+                  {formatTime(ticket.created_on, "en-US")}
+                </Body2>
+              </Box>
+              <Box>
+                {slaProps.resolution_days ? (
+                  <>
+                    <SubTitle2 color="text.secondary" alignment="end" bold>
+                      {t("ticketDetail.daysOfResolution")}
+                    </SubTitle2>
+                    <Body2 alignment="end">{slaProps.resolution_days}</Body2>
+                  </>
+                ) : undefined}
+                <SubTitle2 color="text.secondary" alignment="end" bold>
+                  {t("ticketDetail.slaResponseTime")}
+                </SubTitle2>
+                <Body2 alignment="end">{slaProps.response_time}</Body2>
+                <Body2 alignment="end">{slaProps.compliance_response}</Body2>
+                <SubTitle2 color="text.secondary" alignment="end" bold>
+                  {t("ticketDetail.slaResolutionTime")}
+                </SubTitle2>
+                <Body2 alignment="end">{slaProps.resolution_time}</Body2>
+                <Body2 alignment="end">{slaProps.compliance_resolution}</Body2>
+              </Box>
+            </Box>
+          </Box>
         </Box>
       </Box>
       <Divider sx={{ my: 2 }} />
@@ -245,7 +328,7 @@ export function TicketDetail() {
         }}
         onAddButtonClick={
           loggedUser?.role !== "Client"
-            ? () => setIsManagerDialogOpen(true)
+            ? () => setManagerDialog({ model: "timeline", data: null })
             : undefined
         }
         hasPagination={false}
