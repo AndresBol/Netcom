@@ -76,6 +76,7 @@
     "attachments": "Archivos Adjuntos",
     "comments": "Comentarios",
     "weekCalendar": "Calendario Semanal",
+    "autoAssign": "Asignar Automáticamente",
     "noTicketsInWeek": "No se encontraron tiquetes para la semana seleccionada",
     "system": "Sistema"
   },

@@ -3,6 +3,7 @@ import { View } from "@components/view";
 import { useEffect, useState } from "react";
 import TicketService from "@services/ticket";
 import UserTicketService from "@services/user-ticket";
+import UserService from "@services/user";
 import { Kanban } from "@components/kanban";
 import { Loading } from "@components/loading";
 import { WeekCalendar } from "@components/week-calendar";
@@ -16,7 +17,9 @@ import Switch from "@mui/material/Switch";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { BackButton } from "@components/backbutton";
+import StatusService from "@services/status";
 import { useTranslation } from "react-i18next";
+import AutoModeIcon from "@mui/icons-material/AutoMode";
 
 dayjs.extend(isBetween);
 
@@ -31,33 +34,37 @@ export function TicketIndex() {
   const [value, setValue] = useState(dayjs());
   const [hoveredDay, setHoveredDay] = useState(null);
 
-  useEffect(() => {
-    const loadTickets = async () => {
-      setLoading(true);
-      try {
-        console.log("Fetching tickets for viewType:", viewType);
-        let response;
-        if (loggedUser.role !== "Client" && viewType === "all") {
-          response = await TicketService.getAll();
-        } else if (loggedUser.role === "Admin" && viewType === "pending") {
-          response = await TicketService.getByStatusName("Pending");
-        } else {
-          response = await UserTicketService.getByUserId(loggedUser.id);
-        }
-
-        const data = response?.data ?? [];
-
-        console.log("Tickets fetched:", data);
-
-        setTickets(Array.isArray(data) ? data : []);
-        setFilteredTickets(Array.isArray(data) ? data : []);
-      } catch (error) {
-        setTickets([]);
-        console.error("Error fetching models:", error);
-      } finally {
-        setLoading(false);
+  const loadTickets = async () => {
+    setLoading(true);
+    try {
+      console.log("Fetching tickets for viewType:", viewType);
+      let response;
+      if (loggedUser.role !== "Client" && viewType === "all") {
+        response = await TicketService.getAll();
+      } else if (
+        loggedUser.role === "Administrator" &&
+        viewType === "pending"
+      ) {
+        response = await TicketService.getByStatusName("Pending");
+      } else {
+        response = await UserTicketService.getByUserId(loggedUser.id);
       }
-    };
+
+      const data = response?.data ?? [];
+
+      console.log("Tickets fetched:", data);
+
+      setTickets(Array.isArray(data) ? data : []);
+      setFilteredTickets(Array.isArray(data) ? data : []);
+    } catch (error) {
+      setTickets([]);
+      console.error("Error fetching models:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     setIsWeekView(loggedUser?.role === "Technician" && viewType !== "all");
     loadTickets();
   }, [loggedUser, viewType]);
@@ -83,6 +90,78 @@ export function TicketIndex() {
 
   if (loading) return <Loading />;
 
+  async function autoAssign(tickets) {
+    console.log("Auto-assigning tickets:", tickets);
+    try {
+      const statusResponse = await StatusService.getAll();
+      const statuses = statusResponse?.data || [];
+      const assignedStatus = statuses.find((s) => s.name === "Assigned");
+      const resolvedStatus = statuses.find((s) => s.name === "Resolved");
+      const closedStatus = statuses.find((s) => s.name === "Closed");
+      if (!assignedStatus) {
+        console.error("Assigned status not found");
+        return;
+      }
+      // Fetch technicians with workload
+      const techResponse = await UserService.getTechniciansWorkload();
+      const allTechnicians = techResponse?.data || [];
+      const workload = {};
+      // Sort tickets by score descending (higher priority first)
+      const sortedTickets = [...tickets].sort((a, b) => {
+        const scoreA = Number(a.priority_id) * 1000 - Number(a.response_time);
+        const scoreB = Number(b.priority_id) * 1000 - Number(b.response_time);
+        return scoreB - scoreA;
+      });
+      for (const ticket of sortedTickets) {
+        let users = allTechnicians.filter((user) => {
+          if (!user.special_fields || !ticket.category_id) return false;
+          for (const field of user.special_fields) {
+            if (field.category_id === ticket.category_id) {
+              return true;
+            }
+          }
+          return false;
+        });
+        // Sort users by workload ascending
+        users.sort((a, b) => (a.workload || 0) - (b.workload || 0));
+        console.log(
+          "Available technicians sorted by workload:",
+          users.map((u) => ({ id: u.id, workload: u.workload || 0 }))
+        );
+        if (users.length > 0) {
+          const technician = users[0];
+          await UserTicketService.insert({
+            user_id: technician.id,
+            ticket_id: ticket.id,
+            assigned_by: null,
+          });
+          // Update ticket status to Assigned
+          await TicketService.update({
+            ...ticket,
+            status_id: assignedStatus.id,
+          });
+          // Update workload
+          workload[technician.id] = (workload[technician.id] || 0) + 1;
+          console.log(
+            "Assigned ticket",
+            ticket.id,
+            "to technician",
+            technician.id,
+            "workload now",
+            workload[technician.id]
+          );
+        } else {
+          console.log("No available technicians for ticket", ticket.id);
+        }
+      }
+      // Optionally, reload tickets or show a message
+      await loadTickets();
+      console.log("Auto-assignment completed");
+    } catch (error) {
+      console.error("Error in autoAssign:", error.response?.data || error);
+    }
+  }
+
   return (
     <View styles={styles.MainView}>
       <Box
@@ -93,7 +172,27 @@ export function TicketIndex() {
           alignItems: "center",
         }}
       >
-        <Title1>{t("ticket.title")}</Title1>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 3,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Title1>{t("ticket.title")}</Title1>
+          {loggedUser.role === "Administrator" && viewType === "pending" && (
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<AutoModeIcon />}
+              onClick={async () => await autoAssign(filteredTickets)}
+            >
+              {t("ticket.autoAssign")}
+            </Button>
+          )}
+        </Box>
         <Box
           sx={{
             display: "flex",

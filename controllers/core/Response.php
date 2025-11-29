@@ -13,7 +13,7 @@ class Response
     public function toJSON($response = [],$message="")
     {
         //Verificar respuesta
-        if (isset($response) && !empty($response)) {
+        if (isset($response) && $response !== null && $response !== false) {
             $json = $response;
         } else {
             $this->status =400;

@@ -103,12 +103,12 @@ class UserTicketModel
     /*Insert a ticket for a user */
     public function insert($object) {
         try {
-            $userId = $object->user_id ?? null;
-            $ticketId = $object->ticket_id ?? null;
-            $assignedBy = $object->assigned_by ?? null;
+            $userId = isset($object->user_id) ? (int)$object->user_id : null;
+            $ticketId = isset($object->ticket_id) ? (int)$object->ticket_id : null;
+            $assignedBy = isset($object->assigned_by) ? $object->assigned_by : null;
             
-            if ($userId === null || $userId === '' || $ticketId === null || $ticketId === '' || $assignedBy === null || $assignedBy === '') {
-                throw new Exception("User ID, Ticket ID, and Assigned By cannot be null or empty");
+            if ($userId === null || $userId === '' || $ticketId === null || $ticketId === '') {
+                throw new Exception("User ID and Ticket ID cannot be null or empty");
             }
             
             // Check if already exists and is inactive
@@ -116,16 +116,19 @@ class UserTicketModel
                         WHERE user_id = $userId AND ticket_id = $ticketId;";
             $existing = $this->enlace->ExecuteSQL($checkSql);
             
+            // Prepare assigned_by value for SQL (use NULL when not provided)
+            $assignedByValue = (is_numeric($assignedBy) && $assignedBy !== null) ? (int)$assignedBy : 'NULL';
+
             if ($existing && count($existing) > 0) {
                 // Reactivate existing record and update assignment info
-                $vSql = "UPDATE user_ticket SET is_active = 1, assigned_on = NOW(), assigned_by = $assignedBy 
+                $vSql = "UPDATE user_ticket SET is_active = 1, assigned_on = NOW(), assigned_by = $assignedByValue 
                         WHERE user_id = $userId AND ticket_id = $ticketId;";
                 $this->enlace->executeSQL_DML($vSql);
                 return $this->get($existing[0]->id);
             } else {
                 // Insert new record
                 $vSql = "INSERT INTO user_ticket (user_id, ticket_id, assigned_on, assigned_by, is_active) 
-                        VALUES ($userId, $ticketId, NOW(), $assignedBy, 1);";
+                        VALUES ($userId, $ticketId, NOW(), $assignedByValue, 1);";
                 $vResultado = $this->enlace->executeSQL_DML_last($vSql);
                 return $this->get($vResultado);
             }

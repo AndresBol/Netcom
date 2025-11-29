@@ -59,8 +59,8 @@ class user_ticket
             $inputJson = $request->getJSON();
 
             // Validate required fields
-            if (!isset($inputJson->user_id) || !isset($inputJson->ticket_id) || !isset($inputJson->assigned_by)) {
-                throw new Exception("Missing required fields: user_id, ticket_id, assigned_by");
+            if (!isset($inputJson->user_id) || !isset($inputJson->ticket_id)) {
+                throw new Exception("Missing required fields: user_id, ticket_id");
             }
 
             $userTicket = new UserTicketModel();

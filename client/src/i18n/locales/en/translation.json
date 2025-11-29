@@ -76,6 +76,7 @@
     "attachments": "Attachments",
     "comments": "Comments",
     "weekCalendar": "Week Calendar",
+    "autoAssign": "Assign Automatically",
     "noTicketsInWeek": "No tickets found for the selected week",
     "system": "System"
   },

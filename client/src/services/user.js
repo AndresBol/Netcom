@@ -36,6 +36,14 @@ login(email, password) {
     return axios.get(BASE_URL + "/getUserByEmail/" + email);
   }
 
+  getByRoleName(roleName) {
+    return axios.get(BASE_URL + "/getByRoleName/" + roleName);
+  }
+
+  getTechniciansWorkload() {
+    return axios.get(BASE_URL + "/getTechniciansWorkload");
+  }
+
   insert(user) {
     return axios.post(BASE_URL, user);
   }
