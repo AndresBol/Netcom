@@ -15,7 +15,7 @@ import ManagerDialog from "@components/manager-dialog";
 import { SpecialtyManager } from "@components/managers/specialty";
 import { SLAManager } from "@components/managers/sla";
 import { LabelManager } from "@components/managers/label";
-import { useLoggedUser } from "@contexts/UserContext";
+import { useLoggedUser } from "@components/user/user-provider.jsx";
 import { useTranslation } from "react-i18next";
 
 export function CategoryDetail() {

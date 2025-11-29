@@ -1,5 +1,5 @@
 import React from "react";
-import { useLoggedUser } from "@contexts/UserContext";
+import { useLoggedUser } from "@components/user/user-provider.jsx";
 import { View } from "@components/view";
 import { Box } from "@mui/material";
 import { Title1, Title2, Title3 } from "@components/typography";

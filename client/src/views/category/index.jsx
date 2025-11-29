@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Table from "@components/table";
 import { Title1 } from "@components/typography";
 import { BackButton } from "@components/backbutton";
-import { useLoggedUser } from "@contexts/UserContext";
+import { useLoggedUser } from "@components/user/user-provider.jsx";
 import { useTranslation } from "react-i18next";
 
 export function CategoryIndex() {

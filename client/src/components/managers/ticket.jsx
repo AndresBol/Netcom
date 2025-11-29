@@ -12,10 +12,10 @@ import CategoryService from "@services/category";
 import PriorityService from "@services/priority";
 import TicketLabelService from "@services/ticket-label";
 import StatusService from "@services/status";
-import { useLoggedUser } from "@contexts/UserContext";
+import { useLoggedUser } from "@components/user/user-provider.jsx";
 import TimelineService from "@services/timeline";
 import { useTranslation } from "react-i18next";
-import { FileUploader } from "@components/FileUploader";
+import { FileUploader } from "@components/file-uploader";
 import AttachmentService from "@services/ticket-attachment";
 
 export function TicketManager({ record }) {

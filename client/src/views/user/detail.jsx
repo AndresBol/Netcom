@@ -70,7 +70,7 @@ export function UserDetail() {
   return (
     <View styles={{ marginBottom: 10 }}>
       <UserManager record={user} />
-      {user.role_name === "Technician" && (
+      {user.role === "Technician" && (
         <>
           <Divider sx={{ my: 3 }} />
           <Title1>{t("userDetail.workInformation")}</Title1>

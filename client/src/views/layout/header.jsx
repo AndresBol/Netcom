@@ -6,9 +6,9 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import HomeIcon from "@mui/icons-material/Home";
 import Button from "@mui/material/Button";
-import { useLoggedUser } from "@contexts/UserContext";
+import { useLoggedUser } from "@components/user/user-provider";
 import UserService from "@services/user";
-import LoginDialog from "@views/auth/lodingDialog";
+import LoginDialog from "@components/user/login-dialog.jsx";
 import LanguageSelector from "@components/language-selector";
 import { useTranslation } from "react-i18next";
 
@@ -17,8 +17,9 @@ export default function Header() {
   const [openLogin, setOpenLogin] = React.useState(false);
   const { t } = useTranslation();
 
-  const handleLogin = () => setOpenLogin(true);
+  const role = loggedUser?.role;
 
+  const handleLogin = () => setOpenLogin(true);
   const handleClose = () => setOpenLogin(false);
 
   const handleLogout = async () => {
@@ -32,7 +33,6 @@ export default function Header() {
     }
   };
 
-  console.log("Usuario logeado:", loggedUser);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -45,76 +45,62 @@ export default function Header() {
             gap: 2,
           }}
         >
+    
           <Box
             sx={{
               display: "flex",
               flexDirection: "row",
-              justifyContent: "start",
               alignItems: "center",
               gap: 5,
               flexGrow: 1,
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "start",
-                alignItems: "center",
-              }}
+            <IconButton
+              size="large"
+              edge="start"
+              color="secondary"
+              aria-label="home"
+              href="/"
             >
-              <IconButton
-                size="large"
-                edge="start"
-                color="secondary.main"
-                aria-label="menu"
-                href="/"
-              >
-                <HomeIcon />
-              </IconButton>
-              <Typography variant="h6" color="secondary.main">
-                {t("header.home")}
-              </Typography>
-            </Box>
+              <HomeIcon />
+            </IconButton>
 
-            {loggedUser?.role && (
+            <Typography variant="h6" color="secondary.main">
+              {t("header.home")}
+            </Typography>
+
+         
+            {loggedUser && (
               <>
-                {(loggedUser.role === "Client" ||
-                  loggedUser.role === "Technician") && (
-                  <Button
-                    href="/ticket/index/by-user"
-                    color="secondary.main"
-                    variant="text"
-                  >
+            
+                {role === "Client" && (
+                  <Button href="/ticket/index/by-user" color="secondary" variant="text">
                     {t("header.myTickets")}
                   </Button>
                 )}
 
-                {(loggedUser.role === "Administrator" ||
-                  loggedUser.role === "Technician") && (
-                  <Button
-                    href="/ticket/index/all"
-                    color="secondary.main"
-                    variant="text"
-                  >
-                    {t("header.allTickets")}
-                  </Button>
+            
+                {role === "Technician" && (
+                  <>
+                    <Button href="/ticket/index/by-user" color="secondary" variant="text">
+                      {t("header.myTickets")}
+                    </Button>
+                    <Button href="/ticket/index/all" color="secondary" variant="text">
+                      {t("header.allTickets")}
+                    </Button>
+                  </>
                 )}
 
-                {loggedUser.role === "Administrator" && (
+              
+                {role === "Administrator" && (
                   <>
-                    <Button
-                      href="/user/index"
-                      color="secondary.main"
-                      variant="text"
-                    >
+                    <Button href="/ticket/index/all" color="secondary" variant="text">
+                      {t("header.allTickets")}
+                    </Button>
+                    <Button href="/user/index" color="secondary" variant="text">
                       {t("header.users")}
                     </Button>
-                    <Button
-                      href="/category/index"
-                      color="secondary.main"
-                      variant="text"
-                    >
+                    <Button href="/category/index" color="secondary" variant="text">
                       {t("header.categories")}
                     </Button>
                   </>
@@ -122,15 +108,18 @@ export default function Header() {
               </>
             )}
           </Box>
-          <LanguageSelector />
-          {loggedUser ? (
-            <>
-              <Typography variant="body1">👤 {loggedUser.name}</Typography>
 
+
+          <LanguageSelector />
+
+        
+          {loggedUser ? (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography variant="body1">👤 {loggedUser.name}</Typography>
               <Button color="inherit" onClick={handleLogout}>
                 {t("header.logout")}
               </Button>
-            </>
+            </Box>
           ) : (
             <Button color="inherit" onClick={handleLogin}>
               {t("header.login")}

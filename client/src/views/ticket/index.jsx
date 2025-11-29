@@ -7,7 +7,7 @@ import { Kanban } from "@components/kanban";
 import { Loading } from "@components/loading";
 import { WeekCalendar } from "@components/week-calendar";
 import { useParams } from "react-router-dom";
-import { useLoggedUser } from "@contexts/UserContext";
+import { useLoggedUser } from "@components/user/user-provider.jsx";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 dayjs.extend(isBetween);
 
 export function TicketIndex() {
-  const { viewType } = useParams();
+  const { viewType = "all" } = useParams();
   const { loggedUser } = useLoggedUser();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
@@ -37,15 +37,18 @@ export function TicketIndex() {
       try {
         console.log("Fetching tickets for viewType:", viewType);
         let response;
-        if (viewType === "all") {
+        if (loggedUser.role !== "Client" && viewType === "all") {
           response = await TicketService.getAll();
         } else {
           response = await UserTicketService.getByUserId(loggedUser.id);
         }
 
-        console.log("Tickets fetched:", response.data);
-        setTickets(response.data);
-        setFilteredTickets(response.data);
+        const data = response?.data ?? [];
+
+        console.log("Tickets fetched:", data);
+
+        setTickets(Array.isArray(data) ? data : []);
+        setFilteredTickets(Array.isArray(data) ? data : []);
       } catch (error) {
         setTickets([]);
         console.error("Error fetching models:", error);
@@ -53,11 +56,10 @@ export function TicketIndex() {
         setLoading(false);
       }
     };
-    setIsWeekView(loggedUser?.role_name === "Technician" && viewType !== "all");
+    setIsWeekView(loggedUser?.role === "Technician" && viewType !== "all");
     loadTickets();
   }, [loggedUser, viewType]);
 
-  // Filter tickets when week selection changes or week view is toggled
   useEffect(() => {
     if (isWeekView && value) {
       const weekStart = value.startOf("week");
@@ -73,7 +75,6 @@ export function TicketIndex() {
       setFilteredTickets(filtered);
       console.log("Filtered tickets for week:", filtered);
     } else {
-      // If week view is off, show all tickets
       setFilteredTickets(tickets);
     }
   }, [value, isWeekView, tickets]);
@@ -119,7 +120,7 @@ export function TicketIndex() {
           }}
         >
           <Title2>{t("ticket.noTickets")}</Title2>
-          {loggedUser?.role_name === "Client" && (
+          {loggedUser?.role === "Client" && (
             <Box
               sx={{
                 display: "flex",

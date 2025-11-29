@@ -15,7 +15,7 @@ class UserModel
             //sql query with JOIN to get role name
 			$vSql = "SELECT 
                 u.*,
-                r.name as role_name
+                r.name as role
             FROM user u
             LEFT JOIN role r ON u.role_id = r.id
             WHERE u.is_active = 1;";
@@ -61,7 +61,7 @@ class UserModel
             //sql query with JOIN to get role name
 			$vSql = "SELECT 
                 u.*,
-                r.name as role_name
+                r.name as role
             FROM user u
             LEFT JOIN role r ON u.role_id = r.id
             WHERE u.id = $id;";
@@ -87,7 +87,7 @@ class UserModel
             //sql query with JOIN to get role name
             $vSql = "SELECT 
                 u.*,
-                r.name as role_name
+                r.name as role
             FROM user u
             LEFT JOIN role r ON u.role_id = r.id
             WHERE u.email = '$email' AND u.is_active = 1;";

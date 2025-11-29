@@ -7,7 +7,7 @@ import AttachmentService from "@services/ticket-attachment";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FileUploader } from "@components/FileUploader";
+import { FileUploader } from "@components/file-uploader";
 
 export function TimelineManager({ record, ticketId, userId, onSaved }) {
   const [isUploading, setUploading] = useState(false);
