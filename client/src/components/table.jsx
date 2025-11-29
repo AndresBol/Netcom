@@ -362,7 +362,7 @@ export default function Table({
   }, [order, orderBy, page, rowsPerPage, filteredData]);
 
   return (
-    <>
+    <Box>
       <FilterDialog
         open={filterDialogOpen}
         onClose={() => setFilterDialogOpen(false)}
@@ -439,6 +439,6 @@ export default function Table({
           }
         />
       )}
-    </>
+    </Box>
   );
 }

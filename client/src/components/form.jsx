@@ -40,7 +40,7 @@ function formControl(field, fieldConfig, errors, isEditing) {
       break;
     case "rating":
       control = (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mb: 2 }}>
           <Typography variant="subtitle1" color="text.secondary">
             {fieldConfig.label}
           </Typography>

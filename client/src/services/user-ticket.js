@@ -2,6 +2,10 @@ import axios from 'axios';
 const BASE_URL = "http://localhost:81/netcom/user_ticket";
 
 class UserTicketService {
+  getAll() {
+    return axios.get(BASE_URL);
+  }
+
   getById(id) {
     return axios.get(BASE_URL + '/' + id);
   }

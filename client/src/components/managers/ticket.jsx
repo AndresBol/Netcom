@@ -121,11 +121,13 @@ export function TicketManager({ record }) {
             label: t("fields.rating"),
             fieldName: "rating",
             fieldType: "rating",
+            readonly: true,
           },
           {
             label: "Comments",
             fieldName: "comment",
             fieldType: "multiline",
+            readonly: true,
           },
         ]
       : []),

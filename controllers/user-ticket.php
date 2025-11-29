@@ -1,6 +1,19 @@
 <?php
 class user_ticket
 {
+    public function index()
+    {
+        try {
+            $response = new Response();
+            $userTicket = new UserTicketModel();
+            $result = $userTicket->all();
+            //Give an response
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
     public function get($id)
     {
         try {

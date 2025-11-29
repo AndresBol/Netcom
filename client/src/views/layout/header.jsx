@@ -54,19 +54,27 @@ export default function Header() {
               flexGrow: 1,
             }}
           >
-            <IconButton
-              size="large"
-              edge="start"
-              color="secondary"
-              aria-label="home"
-              href="/"
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
             >
-              <HomeIcon />
-            </IconButton>
+              <IconButton
+                size="large"
+                edge="start"
+                color="secondary"
+                aria-label="home"
+                href="/"
+              >
+                <HomeIcon />
+              </IconButton>
 
-            <Typography variant="h6" color="secondary.main">
-              {t("header.home")}
-            </Typography>
+              <Typography variant="h6" color="secondary.main">
+                {t("header.home")}
+              </Typography>
+            </Box>
 
             {loggedUser && (
               <>

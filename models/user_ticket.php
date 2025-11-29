@@ -7,6 +7,32 @@ class UserTicketModel
         $this->enlace = new MySqlConnect();
     }
     
+    /*List all user tickets */
+    public function all(){
+        try {
+            $vSql = "SELECT 
+                ut.id,
+                ut.user_id,
+                ut.ticket_id,
+                ut.assigned_on,
+                ut.assigned_by,
+                u.name as user_name,
+                t.title as ticket_title,
+                assigned_user.name as assigned_by_name
+            FROM user_ticket ut
+            LEFT JOIN user u ON ut.user_id = u.id
+            LEFT JOIN ticket t ON ut.ticket_id = t.id
+            LEFT JOIN user assigned_user ON ut.assigned_by = assigned_user.id
+            WHERE ut.is_active = 1;";
+            
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado ? $vResultado : [];
+        } catch (Exception $e) {
+            handleException($e);
+            return [];
+        }
+    }
+
     /*Get all tickets for a user */
     public function getByUserId($userId) {
         try {

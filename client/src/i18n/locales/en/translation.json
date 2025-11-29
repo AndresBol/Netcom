@@ -76,7 +76,8 @@
     "attachments": "Attachments",
     "comments": "Comments",
     "weekCalendar": "Week Calendar",
-    "noTicketsInWeek": "No tickets found for the selected week"
+    "noTicketsInWeek": "No tickets found for the selected week",
+    "system": "System"
   },
   "category": {
     "title": "Available Categories",
@@ -85,6 +86,9 @@
     "name": "Name",
     "description": "Description",
     "noCategories": "No categories available"
+  },
+  "userTicket": {
+    "title": "User Ticket Assignments"
   },
   "table": {
     "rowsPerPage": "Rows per page:",
@@ -160,10 +164,14 @@
     "timelineModified": "Timeline entry modified!",
     "timelineDeleted": "Timeline entry deleted!",
     "failedToModifyTimeline": "Failed to modify timeline entry",
+    "userTicketModified": "User ticket assignment modified!",
+    "userTicketDeleted": "User ticket assignment deleted!",
+    "failedToModifyUserTicket": "Failed to modify user ticket assignment",
     "filesUploadedSuccessfully": "Files uploaded successfully",
     "errorUploadingFiles": "Error uploading files",
     "attachmentsUploadedSuccessfully": "Attachments uploaded successfully",
-    "attachmentDeleted": "Attachment deleted successfully!"
+    "attachmentDeleted": "Attachment deleted successfully!",
+    "ticketAssignedWithScore": "Ticket assigned successfully with score: {{score}}"
   },
   "fields": {
     "name": "Name",
@@ -172,6 +180,7 @@
     "role": "Role",
     "specialFields": "Special Fields",
     "title": "Title",
+    "ticketTitle": "Ticket Title",
     "description": "Description",
     "status": "Status",
     "category": "Category",
@@ -188,7 +197,12 @@
     "availability": "Availability",
     "workload": "Workload",
     "date": "Date",
-    "resolutionTime2": "Resolution Time"
+    "resolutionTime2": "Resolution Time",
+    "userName": "User Name",
+    "userRole": "User Role",
+    "assignedOn": "Assigned On",
+    "assignedBy": "Assigned By",
+    "user": "User"
   },
   "userDetail": {
     "userNotFound": "User not found",
@@ -208,6 +222,7 @@
     "responseCompliance": "Response Compliance",
     "resolutionCompliance": "Resolution Compliance",
     "timeline": "Timeline",
+    "assignedUsers": "Assigned Users",
     "slaRequirements": "SLA Requirements:",
     "assignedOn": "Assigned On:",
     "createdBy": "Created By:",
