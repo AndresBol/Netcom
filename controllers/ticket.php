@@ -59,6 +59,17 @@ class ticket
             handleException($e);
         }
     }
+    public function getAllTicketsByStatusName($statusName) {
+        try {
+            $response = new Response();
+            $ticket = new TicketModel();
+            $result = $ticket->getAllTicketsByStatusName($statusName);
+            //Give an response
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
     public function post()
     {
         try {

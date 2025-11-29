@@ -45,7 +45,6 @@ export default function Header() {
             gap: 2,
           }}
         >
-    
           <Box
             sx={{
               display: "flex",
@@ -69,38 +68,61 @@ export default function Header() {
               {t("header.home")}
             </Typography>
 
-         
             {loggedUser && (
               <>
-            
                 {role === "Client" && (
-                  <Button href="/ticket/index/by-user" color="secondary" variant="text">
+                  <Button
+                    href="/ticket/index/by-user"
+                    color="secondary"
+                    variant="text"
+                  >
                     {t("header.myTickets")}
                   </Button>
                 )}
 
-            
                 {role === "Technician" && (
                   <>
-                    <Button href="/ticket/index/by-user" color="secondary" variant="text">
+                    <Button
+                      href="/ticket/index/by-user"
+                      color="secondary"
+                      variant="text"
+                    >
                       {t("header.myTickets")}
                     </Button>
-                    <Button href="/ticket/index/all" color="secondary" variant="text">
+                    <Button
+                      href="/ticket/index/all"
+                      color="secondary"
+                      variant="text"
+                    >
                       {t("header.allTickets")}
                     </Button>
                   </>
                 )}
 
-              
                 {role === "Administrator" && (
                   <>
-                    <Button href="/ticket/index/all" color="secondary" variant="text">
+                    <Button
+                      href="/ticket/index/all"
+                      color="secondary"
+                      variant="text"
+                    >
                       {t("header.allTickets")}
+                    </Button>
+                    <Button
+                      href="/ticket/index/pending"
+                      color="secondary"
+                      variant="text"
+                    >
+                      {t("header.pendingTickets")}
                     </Button>
                     <Button href="/user/index" color="secondary" variant="text">
                       {t("header.users")}
                     </Button>
-                    <Button href="/category/index" color="secondary" variant="text">
+                    <Button
+                      href="/category/index"
+                      color="secondary"
+                      variant="text"
+                    >
                       {t("header.categories")}
                     </Button>
                   </>
@@ -109,10 +131,8 @@ export default function Header() {
             )}
           </Box>
 
-
           <LanguageSelector />
 
-        
           {loggedUser ? (
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Typography variant="body1">👤 {loggedUser.name}</Typography>

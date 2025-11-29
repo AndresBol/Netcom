@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 dayjs.extend(isBetween);
 
 export function TicketIndex() {
-  const { viewType = "all" } = useParams();
+  const { viewType } = useParams();
   const { loggedUser } = useLoggedUser();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
@@ -39,6 +39,8 @@ export function TicketIndex() {
         let response;
         if (loggedUser.role !== "Client" && viewType === "all") {
           response = await TicketService.getAll();
+        } else if (loggedUser.role === "Admin" && viewType === "pending") {
+          response = await TicketService.getByStatusName("Pending");
         } else {
           response = await UserTicketService.getByUserId(loggedUser.id);
         }
