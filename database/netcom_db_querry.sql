@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS priority;
 DROP TABLE IF EXISTS status;
 DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS role;
+DROP TABLE IF EXISTS notification;
 DROP TABLE IF EXISTS user;
 
 -- Create role table
@@ -33,6 +34,17 @@ CREATE TABLE `user` (
     is_active TINYINT(1) NOT NULL DEFAULT 1,
     CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES role(id)
         ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- Create notification table
+CREATE TABLE notification (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    body TEXT NULL,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    CONSTRAINT fk_notification_user FOREIGN KEY (user_id) REFERENCES `user`(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- Create category table
