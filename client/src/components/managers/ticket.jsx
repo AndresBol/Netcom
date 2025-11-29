@@ -77,22 +77,21 @@ export function TicketManager({ record }) {
 
   const formData = [
     {
+      label: t("fields.status"),
+      fieldName: "status_id",
+      fieldType: "stagebar",
+      data: statuses.sort((a, b) => a.id - b.id),
+      readonly: true,
+    },
+    {
       label: t("fields.title"),
       fieldName: "title",
       fieldType: "string",
     },
-
     {
       label: t("fields.description"),
       fieldName: "description",
       fieldType: "string",
-    },
-    {
-      label: t("fields.status"),
-      fieldName: "status_id",
-      fieldType: "one2many",
-      data: statuses,
-      readonly: loggedUser?.role === "Client",
     },
     {
       label: t("fields.category"),

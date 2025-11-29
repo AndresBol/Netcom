@@ -7,6 +7,8 @@ import { Rating, Typography } from "@mui/material";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import React from "react";
 
 function formControl(field, fieldConfig, errors, isEditing) {
   let control;
@@ -60,6 +62,36 @@ function formControl(field, fieldConfig, errors, isEditing) {
             </Typography>
           )}
         </Box>
+      );
+      break;
+    case "stagebar":
+      const [alignment, setAlignment] = React.useState(
+        field.value || fieldConfig.data[0]?.id || null
+      );
+      const handleChange = (event, newAlignment) => {
+        setAlignment(newAlignment);
+      };
+      control = (
+        <ToggleButtonGroup
+          field={field}
+          color="primary"
+          value={alignment}
+          exclusive
+          onChange={handleChange}
+          aria-label="Platform"
+          sx={styles.StageBar}
+        >
+          {fieldConfig.data &&
+            fieldConfig.data.map((item) => (
+              <ToggleButton
+                key={item.id}
+                value={item.id}
+                disabled={!isEditing || fieldConfig.readonly}
+              >
+                {item.name}
+              </ToggleButton>
+            ))}
+        </ToggleButtonGroup>
       );
       break;
     case "one2many":
@@ -175,5 +207,12 @@ const styles = {
   },
   FormInput: {
     width: "100%",
+  },
+  StageBar: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "stretch",
+    justifyContent: "center",
+    marginBottom: 5,
   },
 };
