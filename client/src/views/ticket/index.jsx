@@ -20,6 +20,7 @@ import { BackButton } from "@components/backbutton";
 import StatusService from "@services/status";
 import { useTranslation } from "react-i18next";
 import AutoModeIcon from "@mui/icons-material/AutoMode";
+import toast from "react-hot-toast";
 
 dayjs.extend(isBetween);
 
@@ -142,13 +143,14 @@ export function TicketIndex() {
           });
           // Update workload
           workload[technician.id] = (workload[technician.id] || 0) + 1;
-          console.log(
-            "Assigned ticket",
-            ticket.id,
-            "to technician",
-            technician.id,
-            "workload now",
-            workload[technician.id]
+          const score =
+            Number(ticket.priority_id) * 1000 - Number(ticket.response_time);
+          toast.success(
+            t("messages.ticketAutoAssigned", {
+              ticketId: ticket.id,
+              technicianId: technician.id,
+              score,
+            })
           );
         } else {
           console.log("No available technicians for ticket", ticket.id);

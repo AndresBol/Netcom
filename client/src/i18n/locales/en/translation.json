@@ -172,7 +172,8 @@
     "errorUploadingFiles": "Error uploading files",
     "attachmentsUploadedSuccessfully": "Attachments uploaded successfully",
     "attachmentDeleted": "Attachment deleted successfully!",
-    "ticketAssignedWithScore": "Ticket assigned successfully with score: {{score}}"
+    "ticketAssignedWithScore": "Ticket assigned successfully with score: {{score}}",
+    "ticketAutoAssigned": "Ticket {{ticketId}} assigned to technician {{technicianId}} with score {{score}}"
   },
   "fields": {
     "name": "Name",
