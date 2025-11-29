@@ -29,13 +29,14 @@
   "header": {
     "home": "Inicio",
     "users": "Usuarios",
-    "tickets": "Tickets",
+    "tickets": "Tiquetes",
     "categories": "Categorías",
     "login": "Iniciar Sesión",
     "logout": "Cerrar Sesión",
     "profile": "Perfil",
-    "myTickets": "Mis Tickets",
-    "allTickets": "Todos los Tickets"
+    "myTickets": "Mis Tiquetes",
+    "allTickets": "Todos los Tiquetes",
+    "pendingTickets": "Tiquetes Pendientes"
   },
   "home": {
     "welcome": "¡Bienvenido {{name}}!",
@@ -56,11 +57,12 @@
     "noUsers": "No hay usuarios disponibles"
   },
   "ticket": {
-    "title": "Tickets Disponibles",
+    "title": "Tiquetes Disponibles",
     "newTicket": "Nuevo Ticket",
     "ticketDetails": "Detalles del Ticket",
-    "myTickets": "Mis Tickets",
-    "allTickets": "Todos los Tickets",
+    "myTickets": "Mis Tiquetes",
+    "allTickets": "Todos los Tiquetes",
+    "pendingTickets": "Tiquetes Pendientes",
     "noTickets": "No tienes tickets registrados",
     "createTicket": "Crear un nuevo ticket",
     "status": "Estado",
@@ -74,7 +76,7 @@
     "attachments": "Archivos Adjuntos",
     "comments": "Comentarios",
     "weekCalendar": "Calendario Semanal",
-    "noTicketsInWeek": "No se encontraron tickets para la semana seleccionada"
+    "noTicketsInWeek": "No se encontraron tiquetes para la semana seleccionada"
   },
   "category": {
     "title": "Categorías Disponibles",
@@ -89,7 +91,13 @@
     "of": "de",
     "noData": "No hay datos disponibles",
     "sortBy": "Ordenar por",
-    "filterBy": "Filtrar por"
+    "filterBy": "Filtrar por",
+    "addRecord": "Agregar registro",
+    "filterList": "Filtrar lista",
+    "sortedDescending": "ordenado descendente",
+    "sortedAscending": "ordenado ascendente",
+    "displayedRows": "{{from}}-{{to}} de {{count}}",
+    "filterDialogTitle": "Filtrar {{tableTitle}}"
   },
   "form": {
     "required": "Este campo es requerido",
@@ -108,13 +116,19 @@
     "forgotPassword": "¿Olvidaste tu contraseña?",
     "rememberMe": "Recuérdame",
     "welcomeBack": "¡Bienvenido de nuevo!",
-    "signIn": "Inicia sesión para continuar"
+    "signIn": "Inicia sesión para continuar",
+    "welcomeToNetcom": "Bienvenido a Netcom",
+    "signInMessage": "Inicia sesión con tu cuenta",
+    "invalidCredentials": "Credenciales inválidas",
+    "serverError": "Error del servidor"
   },
   "kanban": {
     "todo": "Por Hacer",
     "inProgress": "En Progreso",
     "done": "Completado",
-    "backlog": "Pendiente"
+    "backlog": "Pendiente",
+    "viewDetails": "Ver Detalles",
+    "resolved": "Resuelto"
   },
   "messages": {
     "deleteConfirm": "¿Está seguro de que desea eliminar este elemento?",
@@ -193,7 +207,15 @@
     "slaInformation": "Información de SLA",
     "responseCompliance": "Cumplimiento de Respuesta",
     "resolutionCompliance": "Cumplimiento de Resolución",
-    "timeline": "Línea de tiempo"
+    "timeline": "Línea de tiempo",
+    "slaRequirements": "Requisitos SLA:",
+    "assignedOn": "Asignado el:",
+    "createdBy": "Creado por:",
+    "createdAt": "Creado el:",
+    "unassigned": "Sin asignar",
+    "daysOfResolution": "Días de resolución",
+    "slaResponseTime": "Tiempo de respuesta SLA",
+    "slaResolutionTime": "Tiempo de resolución SLA"
   },
   "categoryDetail": {
     "labels": "Etiquetas",
@@ -206,38 +228,14 @@
     "message": "La página que está buscando podría haber sido eliminada, cambio su nombre o no está disponible temporalmente",
     "goBack": "Regresar"
   },
-  "table": {
-    "rowsPerPage": "Filas por página:",
-    "of": "de",
-    "noData": "No hay datos disponibles",
-    "sortBy": "Ordenar por",
-    "filterBy": "Filtrar por",
-    "addRecord": "Agregar registro",
-    "filterList": "Filtrar lista",
-    "sortedDescending": "ordenado descendente",
-    "sortedAscending": "ordenado ascendente",
-    "displayedRows": "{{from}}-{{to}} de {{count}}",
-    "filterDialogTitle": "Filtrar {{tableTitle}}"
-  },
   "filter": {
     "title": "Filtrar Tabla",
     "clearFilters": "Limpiar Filtros",
     "applyFilters": "Aplicar Filtros"
   },
-  "kanban": {
-    "viewDetails": "Ver Detalles",
-    "resolved": "Resuelto"
-  },
   "imageDialog": {
     "availableImages": "Imágenes Disponibles",
     "noImages": "No hay imágenes disponibles."
-  },
-  "auth": {
-    "welcomeToNetcom": "Bienvenido a Netcom",
-    "signInMessage": "Inicia sesión con tu cuenta",
-    "signIn": "Iniciar Sesión",
-    "invalidCredentials": "Credenciales inválidas",
-    "serverError": "Error del servidor"
   },
   "validation": {
     "onlyAcceptsNumbers": "Solo acepta números",
@@ -270,11 +268,6 @@
     "resolutionTimeRequired": "El tiempo de resolución es requerido",
     "resolutionTimeMin": "El tiempo de resolución debe ser mayor o igual a 0"
   },
-  "categoryDetail": {
-    "labels": "Etiquetas",
-    "specialties": "Especialidades",
-    "slas": "SLAs"
-  },
   "language": {
     "english": "Inglés",
     "spanish": "Español"
@@ -292,18 +285,5 @@
     "expired": "Expirado",
     "nearExpiry": "Cerca de Expirar",
     "onTime": "A Tiempo"
-  },
-  "ticketDetail": {
-    "slaRequirements": "Requisitos SLA:",
-    "assignedTo": "Asignado a:",
-    "assignedOn": "Asignado el:",
-    "createdBy": "Creado por:",
-    "createdAt": "Creado el:",
-    "unassigned": "Sin asignar",
-    "daysOfResolution": "Días de resolución",
-    "slaResponseTime": "Tiempo de respuesta SLA",
-    "slaResolutionTime": "Tiempo de resolución SLA",
-    "ticketNotFound": "Ticket no encontrado",
-    "timeline": "Línea de tiempo"
   }
 }
