@@ -32,9 +32,10 @@ export function UserManager({ record }) {
   // Update currentUser when record prop changes
   useEffect(() => {
     setCurrentUser(record);
+    setShowSpecialFields(record && record.role_name === "Technician");
   }, [record]);
 
-  // Watch for role changes to show/hide special fields
+  // Watch for role changes to show/hide special fields and run initial check
   useEffect(() => {
     if (!formInstance || !roles.length) return;
 
@@ -55,6 +56,20 @@ export function UserManager({ record }) {
 
       setShowSpecialFields(role.name === "Technician");
     });
+
+    // Run the initial check immediately after setting up the watch
+    const currentValue = formInstance.getValues();
+    const selectedRoleId = toNumericId(currentValue.role_id);
+    if (!selectedRoleId) {
+      setShowSpecialFields(false);
+    } else {
+      const role = roles.find((r) => toNumericId(r.id) === selectedRoleId);
+      if (!role) {
+        setShowSpecialFields(false);
+      } else {
+        setShowSpecialFields(role.name === "Technician");
+      }
+    }
 
     return () => subscription.unsubscribe();
   }, [formInstance, roles]);
