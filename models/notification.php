@@ -1,5 +1,14 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/Exception.php';
+require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/SMTP.php';
+
+require_once __DIR__ . '/user.php';
+
 class NotificationModel
 {
     public $enlace;
@@ -53,6 +62,54 @@ class NotificationModel
                      );";
 
             $vResultado = $this->enlace->executeSQL_DML($vSql);
+
+            if ($vResultado) {
+
+                $userModel = new UserModel();
+
+                $user = $userModel->get($object->user_id);
+
+                if ($user && isset($user->email)) {
+
+                    $mail = new PHPMailer(true);
+
+                    try {
+
+                        $mail->isSMTP();
+
+                        $mail->Host = 'smtp.gmail.com';
+
+                        $mail->SMTPAuth = true;
+
+                        $mail->Username = 'bikerstrikersa@gmail.com';
+
+                        $mail->Password = 'pgtt jyqd siff vfbh';
+
+                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+
+                        $mail->Port = 587;
+
+                        $mail->setFrom('bikerstrikersa@gmail.com', 'Netcom');
+
+                        $mail->addAddress($user->email);
+
+                        $mail->isHTML(false);
+
+                        $mail->Subject = $object->subject;
+
+                        $mail->Body = $object->body;
+
+                        $mail->send();
+
+                    } catch (Exception $e) {
+
+                        error_log("Email send failed: " . $mail->ErrorInfo);
+
+                    }
+
+                }
+
+            }
 
             return $vResultado;
         } catch (Exception $e) {
