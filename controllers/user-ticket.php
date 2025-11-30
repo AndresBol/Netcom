@@ -59,12 +59,31 @@ class user_ticket
             $inputJson = $request->getJSON();
 
             // Validate required fields
-            if (!isset($inputJson->user_id) || !isset($inputJson->ticket_id)) {
-                throw new Exception("Missing required fields: user_id, ticket_id");
+            if (!isset($inputJson->user_id) || !isset($inputJson->ticket_id) || !isset($inputJson->assigned_by)) {
+                throw new Exception("Missing required fields: user_id, ticket_id, assigned_by");
             }
 
             $userTicket = new UserTicketModel();
             $result = $userTicket->insert($inputJson);
+
+            // Insert timeline entry if assigned_by is provided
+            if (isset($inputJson->assigned_by) && $inputJson->assigned_by) {
+                $userModel = new UserModel();
+                $assignedUser = $userModel->get($inputJson->user_id);
+                if (!$assignedUser) {
+                    throw new Exception("Assigned user not found");
+                }
+
+                $timelineModel = new TimelineModel();
+                $timelineData = (object) [
+                    'ticket_id' => $inputJson->ticket_id,
+                    'user_id' => $inputJson->assigned_by,
+                    'subject' => 'Ticket assignation',
+                    'description' => 'Ticket assignated to ' . $assignedUser->name
+                ];
+                $timelineModel->insert($timelineData);
+            }
+
             //Give an response
             $response->toJSON($result);
         } catch (Exception $e) {

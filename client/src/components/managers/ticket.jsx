@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import { FileUploader } from "@components/file-uploader";
 import AttachmentService from "@services/ticket-attachment";
 
-export function TicketManager({ record }) {
+export function TicketManager({ record, onAfterSubmit }) {
   const [loading, setLoading] = useState(false);
   const [isUploading, setUploading] = useState(false);
   const [currentTicket, setCurrentTicket] = useState(record);
@@ -206,6 +206,9 @@ export function TicketManager({ record }) {
       toast.error(t("messages.failedToModifyTicket"));
     } finally {
       setUploading(false);
+      if (onAfterSubmit) {
+        onAfterSubmit();
+      }
     }
   };
 
