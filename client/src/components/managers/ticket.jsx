@@ -171,11 +171,6 @@ export function TicketManager({ record, onAfterSubmit }) {
       if (response?.data) {
         setCurrentTicket(response.data);
 
-        if (files.length > 0) {
-          await AttachmentService.uploadFiles(response.data.id, files);
-          toast.success(t("messages.attachmentsUploadedSuccessfully"));
-        }
-
         if (isNewTicket && loggedUser) {
           await UserTicketService.insert({
             user_id: loggedUser.id,
@@ -194,9 +189,22 @@ export function TicketManager({ record, onAfterSubmit }) {
 
           if (files.length > 0) {
             await AttachmentService.uploadFiles(timelineId, files);
+            toast.success(t("messages.attachmentsUploadedSuccessfully"));
           }
 
           navigate(`/ticket/${response.data.id}`);
+        } else if (currentTicket && files.length > 0) {
+          const timelineResponse = await TimelineService.insert({
+            ticket_id: currentTicket.id,
+            user_id: loggedUser.id,
+            subject: "Ticket updated",
+            description: `Ticket updated by ${loggedUser.name}`,
+          });
+
+          const timelineId = timelineResponse.data.id;
+
+          await AttachmentService.uploadFiles(timelineId, files);
+          toast.success(t("messages.attachmentsUploadedSuccessfully"));
         }
       }
 
