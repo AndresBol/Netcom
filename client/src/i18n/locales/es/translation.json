@@ -287,7 +287,9 @@
     "responseTimeRequired": "El tiempo de respuesta es requerido",
     "responseTimeMin": "El tiempo de respuesta debe ser mayor o igual a 0",
     "resolutionTimeRequired": "El tiempo de resolución es requerido",
-    "resolutionTimeMin": "El tiempo de resolución debe ser mayor o igual a 0"
+    "resolutionTimeMin": "El tiempo de resolución debe ser mayor o igual a 0",
+    "atLeastOneImage": "Debe seleccionar al menos una imagen",
+    "cannotRemoveLastImage": "Debe subir al menos una imagen"
   },
   "language": {
     "english": "Inglés",

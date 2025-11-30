@@ -1,7 +1,7 @@
 import { Box, Button, IconButton } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export function FileUploader({
@@ -10,29 +10,53 @@ export function FileUploader({
   previews,
   setPreviews,
   label,
+  minFiles = 1,
 }) {
   const fileInputRef = useRef(null);
+  const [error, setError] = useState("");
   const { t } = useTranslation();
 
-  const handleFileSelect = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setFiles(selectedFiles);
+const handleFileSelect = (e) => {
+  const selectedFiles = Array.from(e.target.files);
 
-    const imagePreviews = selectedFiles.map((file) =>
-      file.type.startsWith("image/") ? URL.createObjectURL(file) : null
-    );
+  if (selectedFiles.length === 0) {
+    if (files.length < minFiles) {
+      setError(t("validation.atLeastOneImage"));
+    }
+    return;
+  }
 
-    setPreviews(imagePreviews);
-  };
+  if (selectedFiles.length < minFiles) {
+    setError(t("validation.atLeastOneImage"));
+    return;
+  }
+
+  setError("");
+  setFiles(selectedFiles);
+
+  const imagePreviews = selectedFiles.map((file) =>
+    file.type.startsWith("image/") ? URL.createObjectURL(file) : null
+  );
+
+  setPreviews(imagePreviews);
+};
+
 
   const handleRemoveFile = (index) => {
+    if (files.length <= minFiles) {
+      setError(t("validation.cannotRemoveLastImage"));
+      return;
+    }
+
+    setError("");
+
     setFiles(files.filter((_, i) => i !== index));
     setPreviews(previews.filter((_, i) => i !== index));
   };
 
   return (
     <Box>
-      {/* Hidden input */}
+
       <input
         type="file"
         multiple
@@ -41,7 +65,6 @@ export function FileUploader({
         onChange={handleFileSelect}
       />
 
-      {/* Button to open selector */}
       <Button
         variant="outlined"
         startIcon={<CloudUploadIcon />}
@@ -50,7 +73,14 @@ export function FileUploader({
         {label || t("common.uploadFiles")}
       </Button>
 
-      {/* Previews */}
+   
+      {error && (
+        <Box sx={{ color: "red", fontSize: 14, mt: 1 }}>
+          {error}
+        </Box>
+      )}
+
+   
       {files.length > 0 && (
         <Box
           mt={2}

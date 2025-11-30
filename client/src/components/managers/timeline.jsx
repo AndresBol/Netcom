@@ -76,6 +76,13 @@ export function TimelineManager({ record, ticketId, userId, onSaved }) {
   }
 
   const onSubmit = async (DataForm) => {
+    if (files.length === 0) {
+      setUploading(true);
+      toast.error(t("validation.atLeastOneImage"));
+      setUploading(false);
+      return;
+    }
+
     setUploading(true);
 
     try {

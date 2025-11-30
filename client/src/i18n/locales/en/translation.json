@@ -287,7 +287,9 @@
     "responseTimeRequired": "Response time is required",
     "responseTimeMin": "Response time must be greater than or equal to 0",
     "resolutionTimeRequired": "Resolution time is required",
-    "resolutionTimeMin": "Resolution time must be greater than or equal to 0"
+    "resolutionTimeMin": "Resolution time must be greater than or equal to 0",
+    "atLeastOneImage": "You must upload at least one image.",
+    "cannotRemoveLastImage": "You must keep at least one image."
   },
   "language": {
     "english": "English",
