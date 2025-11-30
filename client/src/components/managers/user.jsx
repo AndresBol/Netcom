@@ -19,7 +19,6 @@ export function UserManager({ record }) {
   const [currentUser, setCurrentUser] = React.useState(record);
   const [formInstance, setFormInstance] = React.useState(null);
   const [showSpecialFields, setShowSpecialFields] = React.useState(false);
-  const [showAvailability, setShowAvailability] = React.useState(false);
   const { t } = useTranslation();
 
   const navigate = useNavigate();
@@ -33,12 +32,10 @@ export function UserManager({ record }) {
   // Update currentUser when record prop changes
   useEffect(() => {
     setCurrentUser(record);
-    const isTechnician = record && record.role_name === "Technician";
-    setShowSpecialFields(isTechnician);
-    setShowAvailability(isTechnician);
+    setShowSpecialFields(record && record.role_name === "Technician");
   }, [record]);
 
-  // Watch for role changes to show/hide special fields and availability
+  // Watch for role changes to show/hide special fields and run initial check
   useEffect(() => {
     if (!formInstance || !roles.length) return;
 
@@ -48,20 +45,16 @@ export function UserManager({ record }) {
       const selectedRoleId = toNumericId(value.role_id);
       if (!selectedRoleId) {
         setShowSpecialFields(false);
-        setShowAvailability(false);
         return;
       }
 
       const role = roles.find((r) => toNumericId(r.id) === selectedRoleId);
       if (!role) {
         setShowSpecialFields(false);
-        setShowAvailability(false);
         return;
       }
 
-      const isTechnician = role.name === "Technician";
-      setShowSpecialFields(isTechnician);
-      setShowAvailability(isTechnician);
+      setShowSpecialFields(role.name === "Technician");
     });
 
     // Run the initial check immediately after setting up the watch
@@ -69,16 +62,12 @@ export function UserManager({ record }) {
     const selectedRoleId = toNumericId(currentValue.role_id);
     if (!selectedRoleId) {
       setShowSpecialFields(false);
-      setShowAvailability(false);
     } else {
       const role = roles.find((r) => toNumericId(r.id) === selectedRoleId);
       if (!role) {
         setShowSpecialFields(false);
-        setShowAvailability(false);
       } else {
-        const isTechnician = role.name === "Technician";
-        setShowSpecialFields(isTechnician);
-        setShowAvailability(isTechnician);
+        setShowSpecialFields(role.name === "Technician");
       }
     }
 
@@ -107,22 +96,6 @@ export function UserManager({ record }) {
       fieldType: "one2many",
       data: roles,
     },
-    ...(showAvailability
-      ? [
-          {
-            label: "Availability",
-            fieldName: "availability",
-            fieldType: "one2many",
-            data: [
-              { id: "Available", name: "Available" },
-              { id: "Busy", name: "Busy" },
-              { id: "Overload", name: "Overload" },
-              { id: "Vacation", name: "Vacation" },
-              { id: "MedicalLeave", name: "Medical Leave" },
-            ],
-          },
-        ]
-      : []),
     ...(showSpecialFields
       ? [
           {

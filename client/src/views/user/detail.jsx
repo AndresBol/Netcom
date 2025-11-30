@@ -18,47 +18,42 @@ export function UserDetail() {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
 
-  const fetchUser = async () => {
+  useEffect(() => {
     if (!userId) return;
-    setLoading(true);
 
-    try {
-      let workload = 0;
+    const fetchUser = async () => {
+      setLoading(true);
 
       try {
-        const userTicketsRes = await UserTicketService.getByUserId(userId);
-        const tickets = userTicketsRes.data || [];
-        workload = tickets.length;
-      } catch (error) {
-        console.error("Error fetching user tickets:", error);
-      }
+        let workload = 0;
 
-      const res = await UserService.getById(userId);
+        try {
+          const userTicketsRes = await UserTicketService.getByUserId(userId);
+          const tickets = userTicketsRes.data || [];
+          workload = tickets.length;
+        } catch (error) {
+          console.error("Error fetching user detail:", error);
+        }
 
-     
-      let availability = res.data.availability;
-      if (!availability) {
-        availability =
+        const availability =
           workload === 0
-            ? "Available"
+            ? t("userDetail.available")
             : workload <= 3
-            ? "Busy"
-            : "Overload";
+              ? t("userDetail.busy")
+              : t("userDetail.overloaded");
+        const res = await UserService.getById(userId);
+        setUser({
+          ...res.data,
+          workload,
+          availability,
+        });
+      } catch (error) {
+        console.error("Error fetching user detail:", error);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      setUser({
-        ...res.data,
-        workload,
-        availability,
-      });
-    } catch (error) {
-      console.error("Error fetching user detail:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
     fetchUser();
   }, [userId]);
 
@@ -74,9 +69,7 @@ export function UserDetail() {
 
   return (
     <View styles={{ marginBottom: 10 }}>
-    
-      <UserManager record={user} onUpdated={fetchUser} />
-
+      <UserManager record={user} />
       {user.role === "Technician" && (
         <>
           <Divider sx={{ my: 3 }} />
