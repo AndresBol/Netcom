@@ -30,7 +30,7 @@ class TicketModel
 			$vResultado = $this->enlace->ExecuteSQL ($vSql);
 				
 			//return the object
-			return $vResultado;
+			return $vResultado ?? [];
 		} catch (Exception $e) {
             handleException($e);
         }
@@ -59,7 +59,7 @@ class TicketModel
             //query execution
 			$vResultado = $this->enlace->ExecuteSQL ( $vSql);
 			//return the object
-			return $vResultado[0];
+			return $vResultado ? $vResultado[0] : null;
 		} catch (Exception $e) {
             handleException($e);
         }
@@ -86,7 +86,7 @@ class TicketModel
             //query execution
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             //return the object
-            return $vResultado;
+            return $vResultado ?? [];
         } catch (Exception $e) {
             handleException($e);
         }
@@ -113,7 +113,7 @@ class TicketModel
             //query execution
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             //return the object
-            return $vResultado;
+            return $vResultado ?? [];
         } catch (Exception $e) {
             handleException($e);
         }
@@ -140,7 +140,7 @@ class TicketModel
             //query execution
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             //return the object
-            return $vResultado;
+            return $vResultado ?? [];
         } catch (Exception $e) {
             handleException($e);
         }
@@ -168,7 +168,7 @@ class TicketModel
             //query execution
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             //return the object
-            return $vResultado;
+            return $vResultado ?? [];
         } catch (Exception $e) {
             handleException($e);
         }
