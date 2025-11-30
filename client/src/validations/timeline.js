@@ -22,6 +22,7 @@ export const timelineSchema = (t) => yup.object({
   description: yup
     .string()
     .max(1000, t('validation.descriptionMaxLength')),
+  updateStatus: yup.boolean().nullable(),
 });
 
 export const useTimelineForm = (timeline) => {
@@ -33,6 +34,7 @@ export const useTimelineForm = (timeline) => {
       'user_id': timeline ? timeline.user_id : 1,
       'subject': timeline ? timeline.subject : '',
       'description': timeline ? timeline.description : '',
+      'updateStatus': false,
     },
     resolver: yupResolver(timelineSchema(t)),
     values: timeline ? {
@@ -41,6 +43,7 @@ export const useTimelineForm = (timeline) => {
       'user_id': timeline.user_id,
       'subject': timeline.subject,
       'description': timeline.description,
+      'updateStatus': false,
     } : undefined,
   });
 };

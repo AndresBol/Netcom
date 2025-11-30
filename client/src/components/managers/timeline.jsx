@@ -4,6 +4,8 @@ import { useTimelineForm } from "@validations/timeline";
 import { useEffect, useState } from "react";
 import TimelineService from "@services/timeline";
 import AttachmentService from "@services/ticket-attachment";
+import TicketService from "@services/ticket";
+import StatusService from "@services/status";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -14,6 +16,8 @@ export function TimelineManager({ record, ticketId, userId, onSaved }) {
   const [currentTimeline, setCurrentTimeline] = useState(record);
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [currentTicket, setCurrentTicket] = useState(null);
+  const [nextStatus, setNextStatus] = useState(null);
   const { t } = useTranslation();
 
   const navigate = useNavigate();
@@ -21,7 +25,8 @@ export function TimelineManager({ record, ticketId, userId, onSaved }) {
   useEffect(() => {
     setCurrentTimeline(record);
     if (record?.id) loadAttachments(record.id);
-  }, [record]);
+    if (ticketId) fetchTicket();
+  }, [record, ticketId]);
 
   const loadAttachments = async (timelineId) => {
     try {
@@ -29,6 +34,27 @@ export function TimelineManager({ record, ticketId, userId, onSaved }) {
       setAttachments(res.data || []);
     } catch (err) {
       console.error("Error loading attachments:", err);
+    }
+  };
+
+  const fetchTicket = async () => {
+    try {
+      const res = await TicketService.getById(ticketId);
+      setCurrentTicket(res.data);
+      const statusRes = await StatusService.getAll();
+      const statuses = statusRes.data;
+      const currentStatusId = res.data.status_id;
+      const sortedStatuses = statuses.sort((a, b) => a.id - b.id);
+      const currentIndex = sortedStatuses.findIndex(
+        (s) => s.id === currentStatusId
+      );
+      if (currentIndex >= 0 && currentIndex < sortedStatuses.length - 1) {
+        setNextStatus(sortedStatuses[currentIndex + 1]);
+      } else {
+        setNextStatus(null);
+      }
+    } catch (err) {
+      console.error("Error fetching ticket:", err);
     }
   };
 
@@ -40,6 +66,14 @@ export function TimelineManager({ record, ticketId, userId, onSaved }) {
       fieldType: "string",
     },
   ];
+
+  if (nextStatus) {
+    formData.push({
+      label: t("messages.updateStatusTo", { status: nextStatus.name }),
+      fieldName: "updateStatus",
+      fieldType: "checkbox",
+    });
+  }
 
   const onSubmit = async (DataForm) => {
     setUploading(true);
@@ -69,6 +103,17 @@ export function TimelineManager({ record, ticketId, userId, onSaved }) {
       const fullEntry = fullEntryRes.data;
 
       if (onSaved) onSaved(fullEntry);
+
+      if (DataForm.updateStatus && nextStatus) {
+        try {
+          const updatedTicket = { ...currentTicket, status_id: nextStatus.id };
+          await TicketService.update(updatedTicket);
+          toast.success(t("messages.statusUpdated"));
+        } catch (err) {
+          console.error("Error updating status:", err);
+          toast.error(t("messages.failedToUpdateStatus"));
+        }
+      }
 
       toast.success(t("messages.timelineModified"));
     } catch (error) {

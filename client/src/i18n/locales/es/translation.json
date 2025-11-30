@@ -173,7 +173,10 @@
     "attachmentDeleted": "¡Archivo adjunto eliminado exitosamente!",
     "attachmentsUploadedSuccessfully": "Adjuntos cargados exitosamente",
     "ticketAssignedWithScore": "¡Ticket asignado exitosamente con puntaje: {{score}}!",
-    "ticketAutoAssigned": "Ticket {{ticketId}} asignado a técnico {{technicianId}} con puntaje {{score}}"
+    "ticketAutoAssigned": "Ticket {{ticketId}} asignado a técnico {{technicianId}} con puntaje {{score}}",
+    "updateStatusTo": "Actualizar estado a {{status}}?",
+    "statusUpdated": "Estado actualizado exitosamente",
+    "failedToUpdateStatus": "Error al actualizar el estado"
   },
   "fields": {
     "name": "Nombre",

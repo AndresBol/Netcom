@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
 import React from "react";
 
 function formControl(field, fieldConfig, errors, isEditing) {
@@ -65,19 +66,13 @@ function formControl(field, fieldConfig, errors, isEditing) {
       );
       break;
     case "stagebar":
-      const [alignment, setAlignment] = React.useState(
-        field.value || fieldConfig.data[0]?.id || null
-      );
-      const handleChange = (event, newAlignment) => {
-        setAlignment(newAlignment);
-      };
       control = (
         <ToggleButtonGroup
           field={field}
           color="primary"
-          value={alignment}
+          value={field.value || fieldConfig.data[0]?.id || null}
           exclusive
-          onChange={handleChange}
+          onChange={(event, newAlignment) => field.onChange(newAlignment)}
           aria-label="Platform"
           sx={styles.StageBar}
         >
@@ -110,6 +105,24 @@ function formControl(field, fieldConfig, errors, isEditing) {
               : " "
           }
         />
+      );
+      break;
+    case "checkbox":
+      control = (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+          <Checkbox
+            {...field}
+            checked={field.value || false}
+            onChange={(e) => field.onChange(e.target.checked)}
+            disabled={!isEditing || fieldConfig.readonly}
+          />
+          <Typography variant="body1">{fieldConfig.label}</Typography>
+          {errors[fieldConfig.fieldName] && (
+            <Typography variant="caption" color="error">
+              {errors[fieldConfig.fieldName].message}
+            </Typography>
+          )}
+        </Box>
       );
       break;
     default:

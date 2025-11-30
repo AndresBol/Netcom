@@ -180,7 +180,7 @@ export function TicketManager({ record }) {
           await UserTicketService.insert({
             user_id: loggedUser.id,
             ticket_id: response.data.id,
-            assigned_by: loggedUser.id,
+            assigned_by: null,
           });
 
           const timelineResponse = await TimelineService.insert({
@@ -225,6 +225,7 @@ export function TicketManager({ record }) {
   return (
     <Box>
       <Form
+        key={currentTicket?.status_id}
         formData={formData}
         record={currentTicket}
         isUploading={isUploading}

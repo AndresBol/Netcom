@@ -58,6 +58,11 @@ export function TicketDetail() {
   const timelineTableHeadTitles = [
     { label: t("fields.subject"), fieldName: "subject", fieldType: "string" },
     {
+      label: t("fields.user"),
+      fieldName: "user_name",
+      fieldType: "string",
+    },
+    {
       label: t("fields.description"),
       fieldName: "description",
       fieldType: "string",
@@ -111,6 +116,15 @@ export function TicketDetail() {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchTicket = async () => {
+    try {
+      const ticketRes = await TicketService.getById(ticketId);
+      setTicket(ticketRes.data);
+    } catch (error) {
+      console.error("Error fetching ticket:", error);
     }
   };
 
@@ -189,9 +203,10 @@ export function TicketDetail() {
           <TimelineManager
             ticketId={ticket.id}
             userId={loggedUser.id}
-            onSaved={(newTimelineEntry) => {
+            onSaved={async (newTimelineEntry) => {
               setManagerDialog({ model: null, data: null });
               setTimeline((prev) => [newTimelineEntry, ...prev]);
+              await fetchTicket();
             }}
           />
         )}
@@ -327,7 +342,7 @@ export function TicketDetail() {
           });
         }}
         onAddButtonClick={
-          loggedUser?.role !== "Client"
+          loggedUser?.role !== "Client" && ticket.status_name !== "Pending"
             ? () => setManagerDialog({ model: "timeline", data: null })
             : undefined
         }
