@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import { FileUploader } from "@components/file-uploader";
 import AttachmentService from "@services/ticket-attachment";
 
-export function TicketManager({ record }) {
+export function TicketManager({ record, onAfterSubmit }) {
   const [loading, setLoading] = useState(false);
   const [isUploading, setUploading] = useState(false);
   const [currentTicket, setCurrentTicket] = useState(record);
@@ -77,22 +77,21 @@ export function TicketManager({ record }) {
 
   const formData = [
     {
+      label: t("fields.status"),
+      fieldName: "status_id",
+      fieldType: "stagebar",
+      data: statuses.sort((a, b) => a.id - b.id),
+      readonly: true,
+    },
+    {
       label: t("fields.title"),
       fieldName: "title",
       fieldType: "string",
     },
-
     {
       label: t("fields.description"),
       fieldName: "description",
       fieldType: "string",
-    },
-    {
-      label: t("fields.status"),
-      fieldName: "status_id",
-      fieldType: "one2many",
-      data: statuses,
-      readonly: loggedUser?.role === "Client",
     },
     {
       label: t("fields.category"),
@@ -181,7 +180,7 @@ export function TicketManager({ record }) {
           await UserTicketService.insert({
             user_id: loggedUser.id,
             ticket_id: response.data.id,
-            assigned_by: loggedUser.id,
+            assigned_by: null,
           });
 
           const timelineResponse = await TimelineService.insert({
@@ -207,6 +206,9 @@ export function TicketManager({ record }) {
       toast.error(t("messages.failedToModifyTicket"));
     } finally {
       setUploading(false);
+      if (onAfterSubmit) {
+        onAfterSubmit();
+      }
     }
   };
 
@@ -226,6 +228,7 @@ export function TicketManager({ record }) {
   return (
     <Box>
       <Form
+        key={currentTicket?.status_id}
         formData={formData}
         record={currentTicket}
         isUploading={isUploading}

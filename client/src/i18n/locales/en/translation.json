@@ -173,7 +173,11 @@
     "attachmentsUploadedSuccessfully": "Attachments uploaded successfully",
     "attachmentDeleted": "Attachment deleted successfully!",
     "ticketAssignedWithScore": "Ticket assigned successfully with score: {{score}}",
-    "ticketAutoAssigned": "Ticket {{ticketId}} assigned to technician {{technicianId}} with score {{score}}"
+    "ticketAutoAssigned": "Ticket {{ticketId}} assigned to technician {{technicianId}} with score {{score}}",
+    "updateStatusTo": "Update status to {{status}}?",
+    "statusUpdated": "Status updated successfully",
+    "failedToUpdateStatus": "Failed to update status",
+    "ticketStatusUpdated": "Ticket status updated successfully"
   },
   "fields": {
     "name": "Name",

@@ -19,6 +19,11 @@ class UserTicketService {
   }
 
   insert(userTicket) {
+    // Get logged user from localStorage and set assigned_by if not provided
+    const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    if (loggedUser && loggedUser.id && !userTicket.assigned_by) {
+      userTicket.assigned_by = loggedUser.id;
+    }
     return axios.post(BASE_URL, userTicket);
   }
 

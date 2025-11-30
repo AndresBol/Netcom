@@ -20,6 +20,11 @@ class TicketService {
     return axios.post(BASE_URL, ticket)
   }
   update(ticket){
+    // Get logged user from localStorage and set user_id if not provided
+    const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    if (loggedUser && loggedUser.id && !ticket.user_id) {
+      ticket.user_id = loggedUser.id;
+    }
     return axios.put(BASE_URL, ticket)
   }
   delete(id){
