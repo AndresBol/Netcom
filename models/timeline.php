@@ -114,6 +114,8 @@ class TimelineModel
             $vResultado = $this->enlace->executeSQL_DML_last($vSql);
             
             // Send notifications to all users related to the ticket
+            $ticketModel = new TicketModel();
+            $ticket = $ticketModel->get($object->ticket_id);
             $userTicketModel = new UserTicketModel();
             $assignedUsers = $userTicketModel->getByTicketId($object->ticket_id);
             
@@ -122,8 +124,8 @@ class TimelineModel
                 foreach ($assignedUsers as $userTicket) {
                     $notificationModel->insert((object) [
                         'user_id' => $userTicket->user_id,
-                        'subject' => $object->subject,
-                        'body' => $description
+                        'subject' => "Ticket# {$object->ticket_id} | {$ticket->title}",
+                        'body' => "{$object->subject}\n{$description}"
                     ]);
                 }
             }

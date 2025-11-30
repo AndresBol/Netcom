@@ -20,6 +20,7 @@ import { BackButton } from "@components/backbutton";
 import StatusService from "@services/status";
 import { useTranslation } from "react-i18next";
 import AutoModeIcon from "@mui/icons-material/AutoMode";
+import CircularProgress from "@mui/material/CircularProgress";
 import toast from "react-hot-toast";
 
 dayjs.extend(isBetween);
@@ -34,6 +35,7 @@ export function TicketIndex() {
   const [isWeekView, setIsWeekView] = useState(false);
   const [value, setValue] = useState(dayjs());
   const [hoveredDay, setHoveredDay] = useState(null);
+  const [autoAssignLoading, setAutoAssignLoading] = useState(false);
 
   const loadTickets = async () => {
     setLoading(true);
@@ -93,6 +95,7 @@ export function TicketIndex() {
 
   async function autoAssign(tickets) {
     console.log("Auto-assigning tickets:", tickets);
+    setAutoAssignLoading(true);
     try {
       const statusResponse = await StatusService.getAll();
       const statuses = statusResponse?.data || [];
@@ -161,6 +164,8 @@ export function TicketIndex() {
       console.log("Auto-assignment completed");
     } catch (error) {
       console.error("Error in autoAssign:", error.response?.data || error);
+    } finally {
+      setAutoAssignLoading(false);
     }
   }
 
@@ -188,7 +193,8 @@ export function TicketIndex() {
             <Button
               variant="contained"
               size="small"
-              startIcon={<AutoModeIcon />}
+              startIcon={autoAssignLoading ? <CircularProgress size={20} /> : <AutoModeIcon />}
+              disabled={autoAssignLoading}
               onClick={async () => await autoAssign(filteredTickets)}
             >
               {t("ticket.autoAssign")}
