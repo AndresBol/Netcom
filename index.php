@@ -45,6 +45,7 @@ require_once "models/user-special-field.php";
 require_once "models/ticket-attachment.php";
 require_once "models/timeline.php";
 require_once "models/user_ticket.php";
+require_once "models/notification.php";
 
 
 
@@ -61,6 +62,7 @@ require_once "controllers/special-field.php";
 require_once "controllers/timeline.php";
 require_once "controllers/user-ticket.php";
 require_once "controllers/ticket-attachment.php";
+require_once "controllers/notification.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";

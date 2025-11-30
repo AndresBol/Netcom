@@ -42,6 +42,7 @@ CREATE TABLE notification (
     user_id INT NOT NULL,
     subject VARCHAR(255) NOT NULL,
     body TEXT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
     CONSTRAINT fk_notification_user FOREIGN KEY (user_id) REFERENCES `user`(id)
         ON DELETE CASCADE ON UPDATE CASCADE

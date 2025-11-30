@@ -113,6 +113,21 @@ class TimelineModel
             //query execution
             $vResultado = $this->enlace->executeSQL_DML_last($vSql);
             
+            // Send notifications to all users related to the ticket
+            $userTicketModel = new UserTicketModel();
+            $assignedUsers = $userTicketModel->getByTicketId($object->ticket_id);
+            
+            if ($assignedUsers && is_array($assignedUsers)) {
+                $notificationModel = new NotificationModel();
+                foreach ($assignedUsers as $userTicket) {
+                    $notificationModel->insert((object) [
+                        'user_id' => $userTicket->user_id,
+                        'subject' => $object->subject,
+                        'body' => $description
+                    ]);
+                }
+            }
+            
             //return the object
             return $this->get($vResultado);
         } catch (Exception $e) {
