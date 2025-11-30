@@ -151,7 +151,7 @@ export function TicketIndex() {
           toast.success(
             t("messages.ticketAutoAssigned", {
               ticketId: ticket.id,
-              technicianId: technician.id,
+              technicianName: technician.name,
               score,
             })
           );
@@ -193,7 +193,13 @@ export function TicketIndex() {
             <Button
               variant="contained"
               size="small"
-              startIcon={autoAssignLoading ? <CircularProgress size={20} /> : <AutoModeIcon />}
+              startIcon={
+                autoAssignLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <AutoModeIcon />
+                )
+              }
               disabled={autoAssignLoading}
               onClick={async () => await autoAssign(filteredTickets)}
             >
