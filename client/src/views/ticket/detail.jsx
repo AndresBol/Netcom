@@ -206,6 +206,7 @@ export function TicketDetail() {
             onSaved={async (newTimelineEntry) => {
               setManagerDialog({ model: null, data: null });
               await fetchData();
+              await fetchTicket();
             }}
           />
         )}
@@ -229,7 +230,11 @@ export function TicketDetail() {
           mb: 2,
         }}
       >
-        <TicketManager record={ticket} onAfterSubmit={() => fetchData()} />
+        <TicketManager
+          key={ticket?.status_id}
+          record={ticket}
+          onAfterSubmit={() => fetchData()}
+        />
         <Box
           sx={{
             display: "flex",

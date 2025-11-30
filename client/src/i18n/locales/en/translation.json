@@ -176,7 +176,8 @@
     "ticketAutoAssigned": "Ticket {{ticketId}} assigned to technician {{technicianId}} with score {{score}}",
     "updateStatusTo": "Update status to {{status}}?",
     "statusUpdated": "Status updated successfully",
-    "failedToUpdateStatus": "Failed to update status"
+    "failedToUpdateStatus": "Failed to update status",
+    "ticketStatusUpdated": "Ticket status updated successfully"
   },
   "fields": {
     "name": "Name",

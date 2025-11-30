@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import UserTicketService from "@services/user-ticket";
 import UserService from "@services/user";
 import TicketService from "@services/ticket";
+import StatusService from "@services/status";
 import toast from "react-hot-toast";
 import { Loading } from "@components/loading";
 import React from "react";
@@ -46,14 +47,23 @@ export function UserTicketManager({ record, ticketId, userId, onSuccess }) {
   const fetchModels = async () => {
     // Fetch Users
     const userResponse = await UserService.getAll();
-    setUsers(
-      userResponse.data
-        .map((user) => ({
-          ...user,
-          name: `${user.name || ""} | ${user.role || ""}`,
-        }))
-        .sort((b, a) => (a.role || "").localeCompare(b.role || ""))
-    );
+    let filteredUsers = userResponse.data
+      .map((user) => ({
+        ...user,
+        name: `${user.name || ""} | ${user.role || ""}`,
+      }))
+      .sort((b, a) => (a.role || "").localeCompare(b.role || ""));
+
+    // If ticketId is provided, filter out users already assigned to the ticket
+    if (ticketId) {
+      const assignedResponse = await UserTicketService.getByTicketId(ticketId);
+      const assignedUserIds = assignedResponse.data.map((ut) => ut.user_id);
+      filteredUsers = filteredUsers.filter(
+        (user) => !assignedUserIds.includes(user.id)
+      );
+    }
+
+    setUsers(filteredUsers);
 
     // Fetch Tickets
     const ticketResponse = await TicketService.getAll();
@@ -82,6 +92,24 @@ export function UserTicketManager({ record, ticketId, userId, onSuccess }) {
         ticket_id: ticketId || DataForm.ticket_id,
         assigned_by: loggedUser.id,
       };
+
+      // Check if ticket status should be updated
+      const ticket = await TicketService.getById(dataToSend.ticket_id);
+      const user = await UserService.getById(dataToSend.user_id);
+      if (
+        ticket.data.status_name === "Pending" &&
+        user.data.role === "Technician"
+      ) {
+        const statuses = await StatusService.getAll();
+        const assignedStatus = statuses.data.find((s) => s.name === "Assigned");
+        if (assignedStatus) {
+          await TicketService.update({
+            id: ticket.data.id,
+            status_id: assignedStatus.id,
+          });
+          toast.success(t("messages.ticketStatusUpdated"));
+        }
+      }
 
       let response;
       if (currentUserTicket) {
