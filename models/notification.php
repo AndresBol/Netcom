@@ -40,22 +40,18 @@ class NotificationModel
                 throw new Exception("Object cannot be null");
             }
 
-            if (
-                !isset($object->name) ||
-                !isset($object->category_id) || !isset($object->priority_id) ||
-                !isset($object->response_time) || !isset($object->resolution_time)
-            ) {
-                throw new Exception("Missing required fields");
+            if (!isset($object->user_id) || !isset($object->subject) || !isset($object->body)) {
+                throw new Exception("Missing required fields: user_id, subject, body");
             }
-            $vSql = "INSERT INTO notification (user_id, subject, body, is_actice)) 
+            $vSql = "INSERT INTO notification (user_id, subject, body, is_active) 
                      VALUES (
                          '" . $object->user_id . "',
                          '" . $object->subject . "',
-                         " . $object->body . ",
+                         '" . $object->body . "',
                          1
                      );";
 
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            $vResultado = $this->enlace->executeSQL_DML($vSql);
 
             return $vResultado;
         } catch (Exception $e) {

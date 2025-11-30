@@ -45,6 +45,7 @@ require_once "models/user-special-field.php";
 require_once "models/ticket-attachment.php";
 require_once "models/timeline.php";
 require_once "models/user_ticket.php";
+require_once "models/notification.php";
 
 
 
