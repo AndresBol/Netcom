@@ -17,6 +17,7 @@ class NotificationModel
                 n.user_id,
                 n.subject,
                 n.body,
+                n.created_at,
                 n.is_active
             FROM notification n
             WHERE n.is_active = 1;";
@@ -67,6 +68,7 @@ class NotificationModel
                 n.user_id,
                 n.subject,
                 n.body,
+                n.created_at,
                 n.is_active
             FROM notification n
             WHERE n.user_id = $userId AND n.is_active = 1;";
