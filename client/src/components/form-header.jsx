@@ -19,6 +19,7 @@ export function FormHeader({
 }) {
   const { loggedUser } = useLoggedUser();
   const { t } = useTranslation();
+
   return (
     <Box sx={styles.Container}>
       {isEditing ? (
@@ -26,13 +27,15 @@ export function FormHeader({
           <Box sx={styles.ChildContainer}>
             <Button type="submit" variant="contained" startIcon={<SaveIcon />}>
               {isUploading ? (
-                <CircularProgress color="white" size={25} />
+                <CircularProgress color="inherit" size={25} />
               ) : (
-                t("common.save")
+                isNewRecord ? t("common.create") : t("common.save")
               )}
             </Button>
             <Title2>{title}</Title2>
           </Box>
+
+      
           {!isNewRecord && (
             <Box sx={styles.ChildContainer}>
               <Button type="button" color="error" onClick={onDeleteBtnClick}>
@@ -52,7 +55,8 @@ export function FormHeader({
         </>
       ) : (
         <Box sx={styles.ChildContainer}>
-          {loggedUser?.role !== "Client" && (
+        
+          {!isNewRecord && loggedUser?.role !== "Client" && (
             <Button
               type="button"
               variant="contained"

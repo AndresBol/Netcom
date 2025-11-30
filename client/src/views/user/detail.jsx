@@ -18,42 +18,47 @@ export function UserDetail() {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
 
-  useEffect(() => {
+  const fetchUser = async () => {
     if (!userId) return;
+    setLoading(true);
 
-    const fetchUser = async () => {
-      setLoading(true);
+    try {
+      let workload = 0;
 
       try {
-        let workload = 0;
-
-        try {
-          const userTicketsRes = await UserTicketService.getByUserId(userId);
-          const tickets = userTicketsRes.data || [];
-          workload = tickets.length;
-        } catch (error) {
-          console.error("Error fetching user detail:", error);
-        }
-
-        const availability =
-          workload === 0
-            ? t("userDetail.available")
-            : workload <= 3
-              ? t("userDetail.busy")
-              : t("userDetail.overloaded");
-        const res = await UserService.getById(userId);
-        setUser({
-          ...res.data,
-          workload,
-          availability,
-        });
+        const userTicketsRes = await UserTicketService.getByUserId(userId);
+        const tickets = userTicketsRes.data || [];
+        workload = tickets.length;
       } catch (error) {
-        console.error("Error fetching user detail:", error);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching user tickets:", error);
       }
-    };
 
+      const res = await UserService.getById(userId);
+
+     
+      let availability = res.data.availability;
+      if (!availability) {
+        availability =
+          workload === 0
+            ? "Available"
+            : workload <= 3
+            ? "Busy"
+            : "Overload";
+      }
+
+      setUser({
+        ...res.data,
+        workload,
+        availability,
+      });
+    } catch (error) {
+      console.error("Error fetching user detail:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchUser();
   }, [userId]);
 
@@ -69,7 +74,9 @@ export function UserDetail() {
 
   return (
     <View styles={{ marginBottom: 10 }}>
-      <UserManager record={user} />
+    
+      <UserManager record={user} onUpdated={fetchUser} />
+
       {user.role === "Technician" && (
         <>
           <Divider sx={{ my: 3 }} />
