@@ -55,12 +55,23 @@ export function UserTicketManager({ record, ticketId, userId, onSuccess }) {
       .sort((b, a) => (a.role || "").localeCompare(b.role || ""));
 
     // If ticketId is provided, filter out users already assigned to the ticket
+    // and filter technicians by specialty matching ticket's category
     if (ticketId) {
       const assignedResponse = await UserTicketService.getByTicketId(ticketId);
       const assignedUserIds = assignedResponse.data.map((ut) => ut.user_id);
-      filteredUsers = filteredUsers.filter(
-        (user) => !assignedUserIds.includes(user.id)
-      );
+
+      const ticketResponse = await TicketService.getById(ticketId);
+      const ticketCategoryId = ticketResponse.data.category_id;
+
+      filteredUsers = filteredUsers
+        .filter((user) => !assignedUserIds.includes(user.id))
+        .filter(
+          (user) =>
+            user.role !== "Technician" ||
+            user.special_fields.some(
+              (sf) => sf.category_id === ticketCategoryId
+            )
+        );
     }
 
     setUsers(filteredUsers);
