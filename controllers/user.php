@@ -78,6 +78,15 @@ class user
 
                 $jwt = \Firebase\JWT\JWT::encode($payload, Config::get('SECRET_KEY'), 'HS256');
 
+                // Send welcome notification
+                $notificationModel = new NotificationModel();
+                $notificationData = (object)[
+                    'user_id' => $user->id,
+                    'subject' => 'Welcome Back!',
+                    'body' => 'Welcome to Netcom, ' . $user->name . '! You have successfully logged into the application.'
+                ];
+                $notificationModel->insert($notificationData);
+
                 $response->toJSON([
                     "success" => true,
                     "token" => $jwt,
