@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Container,
   Typography,
@@ -27,6 +28,7 @@ import { useLoggedUser } from "@components/user/user-provider.jsx";
 import NotificationService from "@services/notification.js";
 
 export function Footer() {
+  const { t } = useTranslation();
   const { loggedUser } = useLoggedUser();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -56,8 +58,8 @@ export function Footer() {
   useEffect(() => {
     fetchNotifications();
 
-    // Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000);
+    // Poll for new notifications every 5 seconds (instead of 30)
+    const interval = setInterval(fetchNotifications, 5000);
     return () => clearInterval(interval);
   }, [loggedUser]);
 
@@ -125,14 +127,14 @@ export function Footer() {
             </Badge>
           </IconButton>
           <Typography align="center" color="white" variant="subtitle1">
-            ISW-613
+            {t("footer.projectCode")}
           </Typography>
           <Typography align="center" color="secondary.main" variant="body1">
             {`${new Date().getFullYear()}`}
           </Typography>
         </Box>
         <Typography align="center" color="secondary.main" variant="body1">
-          Andrés Bolaños y Josué Calderon | Netcom SA
+          {t("footer.credits")}
         </Typography>
       </Toolbar>
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
@@ -157,12 +159,12 @@ export function Footer() {
             >
               <NotificationsIcon sx={{ fontSize: 28 }} />
               <Typography variant="h5" fontWeight="600">
-                Notifications
+                {t("footer.notifications")}
               </Typography>
             </Box>
             {unreadCount > 0 && (
               <Chip
-                label={`${unreadCount} unread`}
+                label={t("footer.unread", { count: unreadCount })}
                 size="small"
                 sx={{
                   backgroundColor: "rgba(255, 255, 255, 0.2)",
@@ -195,10 +197,10 @@ export function Footer() {
                   color="text.secondary"
                   fontWeight="500"
                 >
-                  No notifications yet
+                  {t("footer.noNotifications")}
                 </Typography>
                 <Typography variant="body2" color="text.disabled">
-                  You're all caught up!
+                  {t("footer.allCaughtUp")}
                 </Typography>
               </Box>
             ) : (
@@ -306,6 +308,11 @@ export function Footer() {
                       </Avatar>
 
                       <ListItemText
+                        sx={{
+                          mr: 0.5,
+                          flex: "1 1 auto",
+                          minWidth: 0,
+                        }}
                         primary={
                           <Box
                             sx={{
@@ -331,6 +338,10 @@ export function Footer() {
                                     ? "#1d5b79"
                                     : "text.primary",
                                 fontSize: "0.95rem",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                maxWidth: "180px",
                               }}
                             >
                               {notification.subject}
@@ -362,10 +373,6 @@ export function Footer() {
                               variant="body2"
                               color="text.secondary"
                               sx={{
-                                display: "-webkit-box",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                                overflow: "hidden",
                                 mb: 0.5,
                                 lineHeight: 1.4,
                               }}
@@ -411,7 +418,7 @@ export function Footer() {
                       {(notification.is_read === false ||
                         notification.is_read === 0 ||
                         notification.is_read === "0") && (
-                        <Tooltip title="Mark as read">
+                        <Tooltip title={t("footer.markAsRead")}>
                           <IconButton
                             size="small"
                             onClick={(e) => handleMarkAsRead(notification, e)}

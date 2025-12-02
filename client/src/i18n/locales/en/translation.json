@@ -322,5 +322,14 @@
   },
   "units": {
     "tickets": "tickets"
+  },
+  "footer": {
+    "notifications": "Notifications",
+    "unread": "{{count}} unread",
+    "noNotifications": "No notifications yet",
+    "allCaughtUp": "You're all caught up!",
+    "markAsRead": "Mark as read",
+    "projectCode": "ISW-613",
+    "credits": "Andrés Bolaños y Josué Calderon | Netcom SA"
   }
 }
