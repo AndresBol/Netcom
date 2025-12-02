@@ -38,6 +38,13 @@ export function TicketIndex() {
   const [autoAssignLoading, setAutoAssignLoading] = useState(false);
 
   const loadTickets = async () => {
+    if (!loggedUser) {
+      setTickets([]);
+      setFilteredTickets([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
       console.log("Fetching tickets for viewType:", viewType);
@@ -68,7 +75,8 @@ export function TicketIndex() {
   };
 
   useEffect(() => {
-    setIsWeekView(loggedUser?.role === "Technician" && viewType !== "all");
+    if (!loggedUser) return;
+    setIsWeekView(loggedUser.role === "Technician" && viewType !== "all");
     loadTickets();
   }, [loggedUser, viewType]);
 
@@ -189,7 +197,7 @@ export function TicketIndex() {
           }}
         >
           <Title1>{t("ticket.title")}</Title1>
-          {loggedUser.role === "Administrator" && viewType === "pending" && (
+          {loggedUser?.role === "Administrator" && viewType === "pending" && (
             <Button
               variant="contained"
               size="small"
