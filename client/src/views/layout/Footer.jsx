@@ -10,6 +10,7 @@ import {
   ListItem,
   ListItemText,
   Divider,
+  Badge,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import MailIcon from "@mui/icons-material/Mail";
@@ -20,24 +21,55 @@ export function Footer() {
   const { loggedUser } = useLoggedUser();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
-  useEffect(() => {
-    if (drawerOpen && loggedUser?.id) {
+  const fetchNotifications = () => {
+    if (loggedUser?.id) {
       NotificationService.getByUserId(loggedUser.id)
         .then((response) => {
           const sortedNotifications = response.data.sort(
-            (a, b) => new Date(b.date) - new Date(a.date)
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
           );
           setNotifications(sortedNotifications);
+
+          // Count unread notifications
+          const unread = sortedNotifications.filter((n) => !n.is_read).length;
+          setUnreadCount(unread);
         })
         .catch((error) => {
           console.error("Error fetching notifications:", error);
         });
     }
-  }, [drawerOpen, loggedUser]);
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+
+    // Poll for new notifications every 30 seconds
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [loggedUser]);
+
+  useEffect(() => {
+    if (drawerOpen && loggedUser?.id) {
+      fetchNotifications();
+    }
+  }, [drawerOpen]);
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
+  };
+
+  const handleNotificationClick = (notification) => {
+    if (!notification.is_read) {
+      NotificationService.markAsRead(notification.id)
+        .then(() => {
+          fetchNotifications();
+        })
+        .catch((error) => {
+          console.error("Error marking notification as read:", error);
+        });
+    }
   };
 
   return (
@@ -72,7 +104,9 @@ export function Footer() {
             aria-label="MailIcon"
             onClick={toggleDrawer}
           >
-            <MailIcon />
+            <Badge badgeContent={unreadCount} color="error">
+              <MailIcon />
+            </Badge>
           </IconButton>
           <Typography align="center" color="white" variant="subtitle1">
             ISW-613
@@ -94,9 +128,23 @@ export function Footer() {
           ) : (
             notifications.map((notification, index) => (
               <React.Fragment key={notification.id || index}>
-                <ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleNotificationClick(notification)}
+                  sx={{
+                    backgroundColor: notification.is_read
+                      ? "transparent"
+                      : "action.hover",
+                    "&:hover": {
+                      backgroundColor: "action.selected",
+                    },
+                  }}
+                >
                   <ListItemText
                     primary={notification.subject}
+                    primaryTypographyProps={{
+                      fontWeight: notification.is_read ? "normal" : "bold",
+                    }}
                     secondary={
                       <>
                         <Typography

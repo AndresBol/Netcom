@@ -17,6 +17,7 @@ class NotificationModel
                 n.subject,
                 n.body,
                 n.created_at,
+                n.is_read,
                 n.is_active
             FROM notification n
             WHERE n.is_active = 1;";
@@ -68,6 +69,7 @@ class NotificationModel
                 n.subject,
                 n.body,
                 n.created_at,
+                n.is_read,
                 n.is_active
             FROM notification n
             WHERE n.user_id = $userId AND n.is_active = 1;";
@@ -77,6 +79,36 @@ class NotificationModel
         } catch (Exception $e) {
             handleException($e);
             return [];
+        }
+    }
+
+    public function markAsRead($notificationId)
+    {
+        try {
+            $vSql = "UPDATE notification 
+                     SET is_read = 1 
+                     WHERE id = $notificationId;";
+
+            $vResultado = $this->enlace->executeSQL_DML($vSql);
+            return $vResultado;
+        } catch (Exception $e) {
+            handleException($e);
+            return false;
+        }
+    }
+
+    public function markAllAsReadByUserId($userId)
+    {
+        try {
+            $vSql = "UPDATE notification 
+                     SET is_read = 1 
+                     WHERE user_id = $userId AND is_active = 1;";
+
+            $vResultado = $this->enlace->executeSQL_DML($vSql);
+            return $vResultado;
+        } catch (Exception $e) {
+            handleException($e);
+            return false;
         }
     }
 

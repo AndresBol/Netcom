@@ -43,4 +43,28 @@ class notification
             handleException($e);
         }
     }
+
+    public function markAsRead($notificationId)
+    {
+        try {
+            $response = new Response();
+            $notification = new NotificationModel();
+            $result = $notification->markAsRead($notificationId);
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function markAllAsRead($userId)
+    {
+        try {
+            $response = new Response();
+            $notification = new NotificationModel();
+            $result = $notification->markAllAsReadByUserId($userId);
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
 }
