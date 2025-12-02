@@ -3,6 +3,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
+export const AVAILABILITY_VALUES = [
+  'Available',
+  'Busy',
+  'Overload',
+  'Vacation',
+  'MedicalLeave',
+];
+
 export const userSchema = (t) => yup.object({
   id: yup
     .number()
@@ -25,6 +33,10 @@ export const userSchema = (t) => yup.object({
     .required(t('validation.passwordRequired'))
     .min(8, t('validation.passwordMinLength'))
     .max(255, t('validation.passwordMaxLength')),
+  availability: yup
+    .string()
+    .oneOf(AVAILABILITY_VALUES)
+    .default('Available'),
   special_field_ids: yup
     .array()
     .of(yup.number())
@@ -40,6 +52,7 @@ export const useUserForm = (user) => {
       'name': user ? user.name : '',
       'email': user ? user.email : '',
       'password': user ? user.password : '',
+      'availability': user ? user.availability : 'Available',
       'special_field_ids': user && user.special_fields ? user.special_fields.map(sf => sf.special_field_id) : [],
     },
     resolver: yupResolver(userSchema(t)),
@@ -49,6 +62,7 @@ export const useUserForm = (user) => {
       'name': user.name,
       'email': user.email,
       'password': user.password,
+      'availability': user.availability,
       'special_field_ids': user.special_fields ? user.special_fields.map(sf => sf.special_field_id) : [],
     } : undefined,
   });

@@ -3,11 +3,22 @@ class UserModel
 {
     public $enlace;
     private $userSpecialFieldModel;
+    private $availabilityStatuses = ['Available','Busy','Overload','Vacation','MedicalLeave'];
     
     public function __construct()
     {
         $this->enlace = new MySqlConnect();
         $this->userSpecialFieldModel = new UserSpecialFieldModel();
+    }
+
+    private function normalizeAvailability($value) {
+        if ($value === null) {
+            return 'Available';
+        }
+
+        return in_array($value, $this->availabilityStatuses, true)
+            ? $value
+            : 'Available';
     }
     /*List */
     public function all(){
@@ -150,10 +161,11 @@ class UserModel
             
             // Hash the password
             $hashedPassword = password_hash($object->password, PASSWORD_DEFAULT);
+            $availability = $this->normalizeAvailability($object->availability ?? null);
 
             //sql query
-            $vSql = "Insert into user (role_id, name, email, password, is_active) 
-                     Values ('$object->role_id', '$object->name', '$object->email', '$hashedPassword', 1);";
+            $vSql = "Insert into user (role_id, name, email, password, is_active, availability) 
+                     Values ('$object->role_id', '$object->name', '$object->email', '$hashedPassword', 1, '$availability');";
             //query execution
             $vResultado = $this->enlace->executeSQL_DML_last( $vSql);
             
@@ -186,6 +198,11 @@ class UserModel
             if (isset($object->password) && !empty($object->password)) {
                 $hashedPassword = password_hash($object->password, PASSWORD_DEFAULT);
                 $vSql .= ", password ='$hashedPassword'";
+            }
+
+            if (isset($object->availability)) {
+                $availability = $this->normalizeAvailability($object->availability);
+                $vSql .= ", availability ='$availability'";
             }
             
             $vSql .= " Where id=$object->id;";

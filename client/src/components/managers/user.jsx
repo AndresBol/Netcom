@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { Form } from "@components/form";
-import { useUserForm } from "@validations/user";
+import { useUserForm, AVAILABILITY_VALUES } from "@validations/user";
 import { useEffect } from "react";
 import RoleService from "@services/role";
 import SpecialFieldService from "@services/special-field";
@@ -32,7 +32,8 @@ export function UserManager({ record }) {
   // Update currentUser when record prop changes
   useEffect(() => {
     setCurrentUser(record);
-    setShowSpecialFields(record && record.role_name === "Technician");
+    const roleName = record?.role_name || record?.role;
+    setShowSpecialFields(roleName === "Technician");
   }, [record]);
 
   // Watch for role changes to show/hide special fields and run initial check
@@ -74,6 +75,15 @@ export function UserManager({ record }) {
     return () => subscription.unsubscribe();
   }, [formInstance, roles]);
 
+  const availabilityOptions = React.useMemo(
+    () =>
+      AVAILABILITY_VALUES.map((value) => ({
+        id: value,
+        name: t(`userAvailability.${value}`, { defaultValue: value }),
+      })),
+    [t]
+  );
+
   const formData = [
     {
       label: t("fields.name"),
@@ -95,6 +105,12 @@ export function UserManager({ record }) {
       fieldName: "role_id",
       fieldType: "one2many",
       data: roles,
+    },
+    {
+      label: t("fields.availability"),
+      fieldName: "availability",
+      fieldType: "one2many",
+      data: availabilityOptions,
     },
     ...(showSpecialFields
       ? [

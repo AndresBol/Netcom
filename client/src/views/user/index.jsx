@@ -17,6 +17,11 @@ export function UserIndex() {
     { label: t("user.name"), fieldName: "name", fieldType: "string" },
     { label: t("user.email"), fieldName: "email", fieldType: "string" },
     { label: t("user.role"), fieldName: "role", fieldType: "string" },
+    {
+      label: t("fields.availability"),
+      fieldName: "availability",
+      fieldType: "string",
+    },
   ];
 
   const { loggedUser } = useLoggedUser();
@@ -24,11 +29,16 @@ export function UserIndex() {
   const navigate = useNavigate();
 
   const fetchModels = async () => {
-    //Fetch Users
     const response = await UserService.getAll();
-    setUsers(response.data);
+    const normalizedUsers = (response.data || []).map((user) => ({
+      ...user,
+      availability: t(`userAvailability.${user.availability}`, {
+        defaultValue: user.availability,
+      }),
+    }));
+    setUsers(normalizedUsers);
 
-    console.log("Users fetched:", response.data);
+    console.log("Users fetched:", normalizedUsers);
   };
 
   useEffect(() => {
@@ -43,7 +53,7 @@ export function UserIndex() {
       }
     };
     loadUsers();
-  }, []);
+  }, [t]);
 
   if (loading) return <Loading />;
 

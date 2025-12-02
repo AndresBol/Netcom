@@ -71,6 +71,7 @@ class user
                     'id' => $user->id,
                     'name' => $user->name,
                     'role' => $user->role,
+                    'availability' => $user->availability ?? 'Available',
                     'iat' => time(),
                     'exp' => time() + 3600
                 ];
@@ -83,7 +84,8 @@ class user
                     "user" => [
                         "id" => $user->id,
                         "name" => $user->name,
-                        "role" => $user->role
+                        "role" => $user->role,
+                        "availability" => $user->availability ?? 'Available'
                     ]
                 ]);
             } else {

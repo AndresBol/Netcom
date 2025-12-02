@@ -35,17 +35,13 @@ export function UserDetail() {
           console.error("Error fetching user detail:", error);
         }
 
-        const availability =
-          workload === 0
-            ? t("userDetail.available")
-            : workload <= 3
-              ? t("userDetail.busy")
-              : t("userDetail.overloaded");
+        const fallbackAvailability =
+          workload === 0 ? "Available" : workload <= 3 ? "Busy" : "Overload";
         const res = await UserService.getById(userId);
         setUser({
           ...res.data,
           workload,
-          availability,
+          availability: res.data?.availability || fallbackAvailability,
         });
       } catch (error) {
         console.error("Error fetching user detail:", error);
@@ -77,7 +73,9 @@ export function UserDetail() {
           <Table
             data={[
               {
-                availability: user.availability,
+                availability: t(`userAvailability.${user.availability}`, {
+                  defaultValue: user.availability,
+                }),
                 workload: t("userDetail.ticketsCount", {
                   count: user.workload,
                 }),
