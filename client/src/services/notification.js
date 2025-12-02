@@ -15,11 +15,11 @@ class NotificationService {
   }
 
   markAsRead(notificationId) {
-    return axios.put(BASE_URL + "/markAsRead/" + notificationId);
+    return axios.post(BASE_URL + "/markAsRead", { notificationId });
   }
 
   markAllAsRead(userId) {
-    return axios.put(BASE_URL + "/markAllAsRead/" + userId);
+    return axios.post(BASE_URL + "/markAllAsRead", { userId });
   }
 }
 

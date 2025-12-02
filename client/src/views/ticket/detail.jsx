@@ -317,8 +317,8 @@ export function TicketDetail() {
                   {t("ticketDetail.createdBy")}
                 </SubTitle2>
                 <Body2>
-                  {assignedUsers.filter((u) => u.user_role === "Client")[0]
-                    ?.user_name || t("ticketDetail.unassigned")}
+                  {assignedUsers.sort((a, b) => a.id - b.id)[0]?.user_name ||
+                    t("ticketDetail.unassigned")}
                 </Body2>
                 <SubTitle2 color="text.secondary" bold>
                   {t("ticketDetail.createdAt")}

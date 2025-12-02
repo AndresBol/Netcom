@@ -14,12 +14,15 @@ import {
   Chip,
   Avatar,
   Paper,
+  Button,
+  Tooltip,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import { useLoggedUser } from "@components/user/user-provider.jsx";
 import NotificationService from "@services/notification.js";
 
@@ -38,8 +41,10 @@ export function Footer() {
           );
           setNotifications(sortedNotifications);
 
-          // Count unread notifications
-          const unread = sortedNotifications.filter((n) => !n.is_read).length;
+          // Count unread notifications (is_read === false or is_read === 0)
+          const unread = sortedNotifications.filter(
+            (n) => n.is_read === false || n.is_read === 0 || n.is_read === "0"
+          ).length;
           setUnreadCount(unread);
         })
         .catch((error) => {
@@ -66,8 +71,13 @@ export function Footer() {
     setDrawerOpen(!drawerOpen);
   };
 
-  const handleNotificationClick = (notification) => {
-    if (!notification.is_read) {
+  const handleMarkAsRead = (notification, event) => {
+    event.stopPropagation();
+    if (
+      notification.is_read === false ||
+      notification.is_read === 0 ||
+      notification.is_read === "0"
+    ) {
       NotificationService.markAsRead(notification.id)
         .then(() => {
           fetchNotifications();
@@ -195,38 +205,55 @@ export function Footer() {
               notifications.map((notification, index) => (
                 <React.Fragment key={notification.id || index}>
                   <Paper
-                    elevation={notification.is_read ? 0 : 2}
+                    elevation={
+                      notification.is_read === false ||
+                      notification.is_read === 0 ||
+                      notification.is_read === "0"
+                        ? 2
+                        : 0
+                    }
                     sx={{
                       mb: 1,
                       borderRadius: 2,
                       overflow: "hidden",
                       transition: "all 0.3s ease",
-                      border: notification.is_read
-                        ? "1px solid rgba(0, 0, 0, 0.08)"
-                        : "2px solid",
-                      borderColor: notification.is_read
-                        ? "divider"
-                        : "primary.main",
-                      backgroundColor: notification.is_read
-                        ? "background.paper"
-                        : "rgba(102, 126, 234, 0.04)",
+                      border:
+                        notification.is_read === false ||
+                        notification.is_read === 0 ||
+                        notification.is_read === "0"
+                          ? "2px solid"
+                          : "1px solid rgba(0, 0, 0, 0.08)",
+                      borderColor:
+                        notification.is_read === false ||
+                        notification.is_read === 0 ||
+                        notification.is_read === "0"
+                          ? "#1d5b79"
+                          : "divider",
+                      backgroundColor:
+                        notification.is_read === false ||
+                        notification.is_read === 0 ||
+                        notification.is_read === "0"
+                          ? "rgba(29, 91, 121, 0.08)"
+                          : "background.paper",
                       "&:hover": {
                         transform: "translateX(4px)",
                         boxShadow: 3,
-                        cursor: "pointer",
                       },
                     }}
-                    onClick={() => handleNotificationClick(notification)}
                   >
                     <ListItem
                       sx={{
                         py: 1.5,
                         px: 2,
                         position: "relative",
+                        display: "flex",
+                        alignItems: "flex-start",
                       }}
                     >
                       {/* Unread indicator dot */}
-                      {!notification.is_read && (
+                      {(notification.is_read === false ||
+                        notification.is_read === 0 ||
+                        notification.is_read === "0") && (
                         <Box
                           sx={{
                             position: "absolute",
@@ -238,7 +265,7 @@ export function Footer() {
                           <FiberManualRecordIcon
                             sx={{
                               fontSize: 12,
-                              color: "primary.main",
+                              color: "#1d5b79",
                               animation: "pulse 2s infinite",
                               "@keyframes pulse": {
                                 "0%, 100%": { opacity: 1 },
@@ -253,18 +280,28 @@ export function Footer() {
                       <Avatar
                         sx={{
                           mr: 1.5,
-                          ml: notification.is_read ? 0 : 2,
-                          bgcolor: notification.is_read
-                            ? "grey.300"
-                            : "primary.main",
+                          ml:
+                            notification.is_read === false ||
+                            notification.is_read === 0 ||
+                            notification.is_read === "0"
+                              ? 2
+                              : 0,
+                          bgcolor:
+                            notification.is_read === false ||
+                            notification.is_read === 0 ||
+                            notification.is_read === "0"
+                              ? "#1d5b79"
+                              : "grey.300",
                           width: 40,
                           height: 40,
                         }}
                       >
-                        {notification.is_read ? (
-                          <CheckCircleOutlineIcon sx={{ fontSize: 20 }} />
-                        ) : (
+                        {notification.is_read === false ||
+                        notification.is_read === 0 ||
+                        notification.is_read === "0" ? (
                           <MailIcon sx={{ fontSize: 20 }} />
+                        ) : (
+                          <CheckCircleOutlineIcon sx={{ fontSize: 20 }} />
                         )}
                       </Avatar>
 
@@ -275,29 +312,40 @@ export function Footer() {
                               display: "flex",
                               alignItems: "center",
                               gap: 1,
+                              flexWrap: "wrap",
                             }}
                           >
                             <Typography
                               variant="subtitle2"
                               sx={{
-                                fontWeight: notification.is_read ? 500 : 700,
-                                color: notification.is_read
-                                  ? "text.primary"
-                                  : "primary.dark",
+                                fontWeight:
+                                  notification.is_read === false ||
+                                  notification.is_read === 0 ||
+                                  notification.is_read === "0"
+                                    ? 700
+                                    : 500,
+                                color:
+                                  notification.is_read === false ||
+                                  notification.is_read === 0 ||
+                                  notification.is_read === "0"
+                                    ? "#1d5b79"
+                                    : "text.primary",
                                 fontSize: "0.95rem",
                               }}
                             >
                               {notification.subject}
                             </Typography>
-                            {!notification.is_read && (
+                            {(notification.is_read === false ||
+                              notification.is_read === 0 ||
+                              notification.is_read === "0") && (
                               <Chip
-                                label="NEW"
+                                label="UNREAD"
                                 size="small"
                                 sx={{
                                   height: 18,
                                   fontSize: "0.65rem",
                                   fontWeight: "700",
-                                  backgroundColor: "primary.main",
+                                  backgroundColor: "#5ac5d7",
                                   color: "white",
                                 }}
                               />
@@ -305,8 +353,12 @@ export function Footer() {
                           </Box>
                         }
                         secondary={
-                          <Box sx={{ mt: 0.5 }}>
+                          <Box
+                            component="span"
+                            sx={{ mt: 0.5, display: "block" }}
+                          >
                             <Typography
+                              component="span"
                               variant="body2"
                               color="text.secondary"
                               sx={{
@@ -321,12 +373,21 @@ export function Footer() {
                               {notification.body}
                             </Typography>
                             <Typography
+                              component="span"
                               variant="caption"
                               sx={{
-                                color: notification.is_read
-                                  ? "text.disabled"
-                                  : "primary.main",
-                                fontWeight: notification.is_read ? 400 : 500,
+                                color:
+                                  notification.is_read === false ||
+                                  notification.is_read === 0 ||
+                                  notification.is_read === "0"
+                                    ? "#1d5b79"
+                                    : "text.disabled",
+                                fontWeight:
+                                  notification.is_read === false ||
+                                  notification.is_read === 0 ||
+                                  notification.is_read === "0"
+                                    ? 500
+                                    : 400,
                                 display: "flex",
                                 alignItems: "center",
                                 gap: 0.5,
@@ -345,6 +406,27 @@ export function Footer() {
                           </Box>
                         }
                       />
+
+                      {/* Mark as Read Button */}
+                      {(notification.is_read === false ||
+                        notification.is_read === 0 ||
+                        notification.is_read === "0") && (
+                        <Tooltip title="Mark as read">
+                          <IconButton
+                            size="small"
+                            onClick={(e) => handleMarkAsRead(notification, e)}
+                            sx={{
+                              ml: 1,
+                              color: "#1d5b79",
+                              "&:hover": {
+                                backgroundColor: "rgba(29, 91, 121, 0.1)",
+                              },
+                            }}
+                          >
+                            <MarkEmailReadIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </ListItem>
                   </Paper>
                 </React.Fragment>
