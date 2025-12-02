@@ -203,6 +203,7 @@
     "availability": "Disponibilidad",
     "workload": "Carga de Trabajo",
     "date": "Fecha",
+    "responseTime2": "Tiempo de Respuesta",
     "resolutionTime2": "Tiempo de Resolución",
     "userName": "Nombre de Usuario",
     "userRole": "Rol de Usuario",
@@ -308,5 +309,8 @@
     "expired": "Expirado",
     "nearExpiry": "Cerca de Expirar",
     "onTime": "A Tiempo"
+  },
+  "units": {
+    "tickets": "tickets"
   }
 }

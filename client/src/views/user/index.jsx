@@ -17,11 +17,6 @@ export function UserIndex() {
     { label: t("user.name"), fieldName: "name", fieldType: "string" },
     { label: t("user.email"), fieldName: "email", fieldType: "string" },
     { label: t("user.role"), fieldName: "role", fieldType: "string" },
-    {
-      label: t("fields.availability"),
-      fieldName: "availability",
-      fieldType: "string",
-    },
   ];
 
   const { loggedUser } = useLoggedUser();

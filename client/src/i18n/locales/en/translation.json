@@ -203,6 +203,7 @@
     "availability": "Availability",
     "workload": "Workload",
     "date": "Date",
+    "responseTime2": "Response Time",
     "resolutionTime2": "Resolution Time",
     "userName": "User Name",
     "userRole": "User Role",
@@ -308,5 +309,8 @@
     "expired": "Expired",
     "nearExpiry": "Near Expiry",
     "onTime": "On Time"
+  },
+  "units": {
+    "tickets": "tickets"
   }
 }

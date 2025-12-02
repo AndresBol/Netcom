@@ -66,40 +66,6 @@ export function UserDetail() {
   return (
     <View styles={{ marginBottom: 10 }}>
       <UserManager record={user} />
-      {user.role === "Technician" && (
-        <>
-          <Divider sx={{ my: 3 }} />
-          <Title1>{t("userDetail.workInformation")}</Title1>
-          <Table
-            data={[
-              {
-                availability: t(`userAvailability.${user.availability}`, {
-                  defaultValue: user.availability,
-                }),
-                workload: t("userDetail.ticketsCount", {
-                  count: user.workload,
-                }),
-              },
-            ]}
-            headTitles={[
-              {
-                label: t("fields.availability"),
-                fieldName: "availability",
-                fieldType: "string",
-              },
-              {
-                label: t("fields.workload"),
-                fieldName: "workload",
-                fieldType: "string",
-              },
-            ]}
-            tableTitle={t("userDetail.currentStatus")}
-            onRowClick={() => {}}
-            hasPagination={false}
-            dense={false}
-          />
-        </>
-      )}
       <BackButton />
     </View>
   );
