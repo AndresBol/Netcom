@@ -104,19 +104,31 @@ export function TicketIndex() {
   async function autoAssign(tickets) {
     console.log("Auto-assigning tickets:", tickets);
     setAutoAssignLoading(true);
+    let assignedCount = 0;
+    let failedCount = 0;
+    const noTechnicianTickets = [];
+
     try {
       const statusResponse = await StatusService.getAll();
       const statuses = statusResponse?.data || [];
       const assignedStatus = statuses.find((s) => s.name === "Assigned");
-      const resolvedStatus = statuses.find((s) => s.name === "Resolved");
-      const closedStatus = statuses.find((s) => s.name === "Closed");
+
       if (!assignedStatus) {
-        console.error("Assigned status not found");
+        toast.error(t("messages.autoAssignNoAssignedStatus"));
+        setAutoAssignLoading(false);
         return;
       }
+
       // Fetch technicians with workload
       const techResponse = await UserService.getTechniciansWorkload();
       const allTechnicians = techResponse?.data || [];
+
+      if (!allTechnicians || allTechnicians.length === 0) {
+        toast.error(t("messages.autoAssignNoTechniciansAvailable"));
+        setAutoAssignLoading(false);
+        return;
+      }
+
       const workload = {};
       // Sort tickets by score descending (higher priority first)
       const sortedTickets = [...tickets].sort((a, b) => {
@@ -124,54 +136,106 @@ export function TicketIndex() {
         const scoreB = Number(b.priority_id) * 1000 - Number(b.response_time);
         return scoreB - scoreA;
       });
+
       for (const ticket of sortedTickets) {
-        let users = allTechnicians.filter((user) => {
-          if (!user.special_fields || !ticket.category_id) return false;
-          for (const field of user.special_fields) {
-            if (field.category_id === ticket.category_id) {
-              return true;
+        try {
+          let users = allTechnicians.filter((user) => {
+            if (!user.special_fields || !ticket.category_id) return false;
+            for (const field of user.special_fields) {
+              if (field.category_id === ticket.category_id) {
+                return true;
+              }
             }
+            return false;
+          });
+
+          // Sort users by workload ascending
+          users.sort((a, b) => (a.workload || 0) - (b.workload || 0));
+
+          if (users.length > 0) {
+            const technician = users[0];
+            await UserTicketService.insert({
+              user_id: technician.id,
+              ticket_id: ticket.id,
+              assigned_by: null,
+            });
+
+            // Update ticket status to Assigned
+            await TicketService.update({
+              ...ticket,
+              status_id: assignedStatus.id,
+            });
+
+            // Update workload
+            workload[technician.id] = (workload[technician.id] || 0) + 1;
+            assignedCount++;
+
+            toast.success(
+              t("messages.ticketAutoAssigned", {
+                ticketId: ticket.id,
+                technicianName: technician.name,
+              })
+            );
+          } else {
+            noTechnicianTickets.push(ticket.id);
+            failedCount++;
           }
-          return false;
-        });
-        // Sort users by workload ascending
-        users.sort((a, b) => (a.workload || 0) - (b.workload || 0));
-        console.log(
-          "Available technicians sorted by workload:",
-          users.map((u) => ({ id: u.id, workload: u.workload || 0 }))
-        );
-        if (users.length > 0) {
-          const technician = users[0];
-          await UserTicketService.insert({
-            user_id: technician.id,
-            ticket_id: ticket.id,
-            assigned_by: null,
-          });
-          // Update ticket status to Assigned
-          await TicketService.update({
-            ...ticket,
-            status_id: assignedStatus.id,
-          });
-          // Update workload
-          workload[technician.id] = (workload[technician.id] || 0) + 1;
-          const score =
-            Number(ticket.priority_id) * 1000 - Number(ticket.response_time);
-          toast.success(
-            t("messages.ticketAutoAssigned", {
-              ticketId: ticket.id,
-              technicianName: technician.name,
-              score,
+        } catch (error) {
+          failedCount++;
+          console.error(
+            `Error assigning ticket ${ticket.id}:`,
+            error.response?.data || error
+          );
+        }
+      }
+
+      // Reload tickets
+      await loadTickets();
+
+      // Show completion message with specific details
+      if (assignedCount === 0 && failedCount > 0) {
+        if (noTechnicianTickets.length > 0) {
+          toast.error(
+            t("messages.autoAssignNoTechniciansForTickets", {
+              tickets: noTechnicianTickets.join(", "),
             })
           );
         } else {
-          console.log("No available technicians for ticket", ticket.id);
+          toast.error(
+            t("messages.autoAssignPartialError") + ` (${failedCount} failed)`
+          );
         }
+      } else if (failedCount > 0) {
+        if (noTechnicianTickets.length > 0) {
+          toast.error(
+            t("messages.autoAssignPartialErrorWithDetails", {
+              assigned: assignedCount,
+              failed: failedCount,
+              tickets: noTechnicianTickets.join(", "),
+            })
+          );
+        } else {
+          toast.error(
+            t("messages.autoAssignPartialError") +
+              ` (${assignedCount} assigned, ${failedCount} failed)`
+          );
+        }
+      } else if (assignedCount > 0) {
+        toast.success(
+          t("messages.autoAssignCompleted") + ` (${assignedCount} assigned)`
+        );
       }
-      // Optionally, reload tickets or show a message
-      await loadTickets();
-      console.log("Auto-assignment completed");
     } catch (error) {
       console.error("Error in autoAssign:", error.response?.data || error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Auto-assignment failed";
+      toast.error(
+        t("messages.autoAssignError", {
+          defaultValue: errorMessage,
+        })
+      );
     } finally {
       setAutoAssignLoading(false);
     }

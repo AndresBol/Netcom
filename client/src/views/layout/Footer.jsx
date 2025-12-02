@@ -132,7 +132,7 @@ export function Footer() {
           </Typography>
         </Box>
         <Typography align="center" color="secondary.main" variant="body1">
-          Netcom SA
+          Andrés Bolaños y Josué Calderon | Netcom SA
         </Typography>
       </Toolbar>
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
