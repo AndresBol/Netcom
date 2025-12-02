@@ -216,10 +216,16 @@ function Row({ data: rowData, t }) {
         )}
         {rowData.headTitles
           .filter((headTitle) => headTitle.fieldType !== "one2many")
-          .map((headTitle, cellIndex) =>
-            headTitle.fieldType === "actionButton" &&
-            rowData.row[headTitle.fieldName].length != 0 ? (
+          .map((headTitle, cellIndex) => {
+            const cellValue = rowData.row?.[headTitle.fieldName];
+            const hasActionContent = Array.isArray(cellValue)
+              ? cellValue.length > 0
+              : Boolean(cellValue);
+
+            return headTitle.fieldType === "actionButton" &&
+              hasActionContent ? (
               <ActionButton
+                key={`action-${headTitle.fieldName}`}
                 label={headTitle.label}
                 onClick={rowData.onActionButtonClick}
               />
@@ -230,14 +236,10 @@ function Row({ data: rowData, t }) {
                 component={cellIndex == 0 ? "th" : "td"}
                 scope={cellIndex == 0 ? "row" : undefined}
               >
-                {formatData(
-                  rowData.row[headTitle.fieldName],
-                  headTitle.fieldType,
-                  t
-                )}
+                {formatData(cellValue, headTitle.fieldType, t)}
               </TableCell>
-            )
-          )}
+            );
+          })}
         {rowData.actionButton && rowData.onActionButtonClick && (
           <ActionButton
             label={rowData.actionButton}
@@ -406,7 +408,9 @@ export default function Table({
                     row,
                     onRowClick: () => onRowClick(row),
                     actionButton,
-                    onActionButtonClick: () => onActionButtonClick(row),
+                    onActionButtonClick: onActionButtonClick
+                      ? () => onActionButtonClick(row)
+                      : undefined,
                   }}
                   t={t}
                 />

@@ -1,10 +1,11 @@
-import { Box } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import { Form } from "@components/form";
-import { useUserForm } from "@validations/user";
+import { useUserForm, AVAILABILITY_VALUES } from "@validations/user";
 import { useEffect } from "react";
 import RoleService from "@services/role";
 import SpecialFieldService from "@services/special-field";
 import UserService from "@services/user";
+import UserTicketService from "@services/user-ticket";
 import toast from "react-hot-toast";
 import { Loading } from "@components/loading";
 import React from "react";
@@ -18,21 +19,38 @@ export function UserManager({ record }) {
   const [specialFields, setSpecialFields] = React.useState([]);
   const [currentUser, setCurrentUser] = React.useState(record);
   const [formInstance, setFormInstance] = React.useState(null);
-  const [showSpecialFields, setShowSpecialFields] = React.useState(false);
+  const [showTechnicianFields, setShowTechnicianFields] = React.useState(false);
+  const [workload, setWorkload] = React.useState(0);
   const { t } = useTranslation();
 
   const navigate = useNavigate();
 
-  const toNumericId = (value) => {
-    if (value === undefined || value === null || value === "") return null;
-    const parsed = Number(value);
-    return Number.isNaN(parsed) ? null : parsed;
+  // Fetch technician workload
+  const fetchTechnicianWorkload = async (userId) => {
+    if (!userId) return;
+    try {
+      const response = await UserTicketService.getTechnicianWorkload(userId);
+      if (response?.data?.workload !== undefined) {
+        setWorkload(response.data.workload);
+      }
+    } catch (error) {
+      console.error("Error fetching technician workload:", error);
+      setWorkload(0);
+    }
   };
 
   // Update currentUser when record prop changes
   useEffect(() => {
     setCurrentUser(record);
-    setShowSpecialFields(record && record.role_name === "Technician");
+    const roleName = record?.role_name || record?.role;
+    const isTechnician = roleName === "Technician";
+    setShowTechnicianFields(isTechnician);
+
+    if (isTechnician && record?.id) {
+      fetchTechnicianWorkload(record.id);
+    } else {
+      setWorkload(0);
+    }
   }, [record]);
 
   // Watch for role changes to show/hide special fields and run initial check
@@ -43,36 +61,55 @@ export function UserManager({ record }) {
       if (name !== "role_id") return;
 
       const selectedRoleId = toNumericId(value.role_id);
-      if (!selectedRoleId) {
-        setShowSpecialFields(false);
-        return;
-      }
+      const role = selectedRoleId
+        ? roles.find((r) => toNumericId(r.id) === selectedRoleId)
+        : null;
+      const isTechnician = role?.name === "Technician";
 
-      const role = roles.find((r) => toNumericId(r.id) === selectedRoleId);
-      if (!role) {
-        setShowSpecialFields(false);
-        return;
+      setShowTechnicianFields(isTechnician);
+      if (isTechnician && currentUser?.id) {
+        fetchTechnicianWorkload(currentUser.id);
+      } else {
+        setWorkload(0);
       }
-
-      setShowSpecialFields(role.name === "Technician");
     });
 
     // Run the initial check immediately after setting up the watch
     const currentValue = formInstance.getValues();
     const selectedRoleId = toNumericId(currentValue.role_id);
-    if (!selectedRoleId) {
-      setShowSpecialFields(false);
+    const role = selectedRoleId
+      ? roles.find((r) => toNumericId(r.id) === selectedRoleId)
+      : null;
+    const isTechnician = role?.name === "Technician";
+
+    setShowTechnicianFields(isTechnician);
+    if (isTechnician && currentUser?.id) {
+      fetchTechnicianWorkload(currentUser.id);
     } else {
-      const role = roles.find((r) => toNumericId(r.id) === selectedRoleId);
-      if (!role) {
-        setShowSpecialFields(false);
-      } else {
-        setShowSpecialFields(role.name === "Technician");
-      }
+      setWorkload(0);
     }
 
     return () => subscription.unsubscribe();
   }, [formInstance, roles]);
+
+  useEffect(() => {
+    if (!formInstance) return;
+    if (!showTechnicianFields) {
+      formInstance.setValue("availability", "Available", {
+        shouldDirty: false,
+        shouldTouch: false,
+      });
+    }
+  }, [showTechnicianFields, formInstance]);
+
+  const availabilityOptions = React.useMemo(
+    () =>
+      AVAILABILITY_VALUES.map((value) => ({
+        id: value,
+        name: t(`userAvailability.${value}`, { defaultValue: value }),
+      })),
+    [t]
+  );
 
   const formData = [
     {
@@ -96,8 +133,14 @@ export function UserManager({ record }) {
       fieldType: "one2many",
       data: roles,
     },
-    ...(showSpecialFields
+    ...(showTechnicianFields
       ? [
+          {
+            label: t("fields.availability"),
+            fieldName: "availability",
+            fieldType: "one2many",
+            data: availabilityOptions,
+          },
           {
             label: t("fields.specialFields"),
             fieldName: "special_field_ids",
@@ -110,11 +153,9 @@ export function UserManager({ record }) {
   ];
 
   const fetchModels = async () => {
-    //Fetch Roles
     const roleResponse = await RoleService.getAll();
     setRoles(roleResponse.data);
 
-    //Fetch Special Fields
     const specialFieldResponse = await SpecialFieldService.getAll();
     setSpecialFields(specialFieldResponse.data);
   };
@@ -156,25 +197,26 @@ export function UserManager({ record }) {
 
   const onDelete = async () => {
     try {
-      //Delete user on DB via API
-      await UserService.delete(currentUser.id)
-        .then((response) => {
-          console.log("User deleted:", response.data);
-          navigate(`/user/index`);
-          toast.success(t("messages.userDeleted"));
-        })
-        .catch((error) => {
-          console.error("Error deleting user:", error);
-        });
+      await UserService.delete(currentUser.id).then((response) => {
+        navigate(`/user/index`);
+        toast.success(t("messages.userDeleted"));
+      });
     } catch (error) {
       console.error("Error deleting user:", error);
+      toast.error(t("messages.failedToDeleteUser"));
     }
   };
 
   if (loading) return <Loading />;
 
+  const toNumericId = (value) => {
+    if (value === undefined || value === null || value === "") return null;
+    const parsed = Number(value);
+    return Number.isNaN(parsed) ? null : parsed;
+  };
+
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       <Form
         formData={formData}
         record={currentUser}
@@ -184,6 +226,18 @@ export function UserManager({ record }) {
         onSubmit={onSubmit}
         onDelete={onDelete}
       />
+      {showTechnicianFields && (
+        <Card>
+          <CardContent>
+            <Typography color="textSecondary" gutterBottom>
+              {t("fields.workload")}
+            </Typography>
+            <Typography variant="h5">
+              {workload} {t("units.tickets")}
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
     </Box>
   );
 }

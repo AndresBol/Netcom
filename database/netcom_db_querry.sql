@@ -32,6 +32,7 @@ CREATE TABLE `user` (
     password VARCHAR(255) NOT NULL,
     last_login_on DATETIME NULL,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
+    availability ENUM('Available','Busy','Overload','Vacation','MedicalLeave') NOT NULL DEFAULT 'Available',
     CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES role(id)
         ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -43,6 +44,7 @@ CREATE TABLE notification (
     subject VARCHAR(255) NOT NULL,
     body TEXT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_read TINYINT(1) NOT NULL DEFAULT 0,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
     CONSTRAINT fk_notification_user FOREIGN KEY (user_id) REFERENCES `user`(id)
         ON DELETE CASCADE ON UPDATE CASCADE

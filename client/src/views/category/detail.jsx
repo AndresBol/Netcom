@@ -97,7 +97,7 @@ export function CategoryDetail() {
         fieldType: "string",
       },
       {
-        label: t("fields.responseTime"),
+        label: t("fields.responseTime2"),
         fieldName: "response_time",
         fieldType: "time",
       },

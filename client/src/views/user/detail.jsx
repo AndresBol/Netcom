@@ -35,17 +35,13 @@ export function UserDetail() {
           console.error("Error fetching user detail:", error);
         }
 
-        const availability =
-          workload === 0
-            ? t("userDetail.available")
-            : workload <= 3
-              ? t("userDetail.busy")
-              : t("userDetail.overloaded");
+        const fallbackAvailability =
+          workload === 0 ? "Available" : workload <= 3 ? "Busy" : "Overload";
         const res = await UserService.getById(userId);
         setUser({
           ...res.data,
           workload,
-          availability,
+          availability: res.data?.availability || fallbackAvailability,
         });
       } catch (error) {
         console.error("Error fetching user detail:", error);
@@ -70,38 +66,6 @@ export function UserDetail() {
   return (
     <View styles={{ marginBottom: 10 }}>
       <UserManager record={user} />
-      {user.role === "Technician" && (
-        <>
-          <Divider sx={{ my: 3 }} />
-          <Title1>{t("userDetail.workInformation")}</Title1>
-          <Table
-            data={[
-              {
-                availability: user.availability,
-                workload: t("userDetail.ticketsCount", {
-                  count: user.workload,
-                }),
-              },
-            ]}
-            headTitles={[
-              {
-                label: t("fields.availability"),
-                fieldName: "availability",
-                fieldType: "string",
-              },
-              {
-                label: t("fields.workload"),
-                fieldName: "workload",
-                fieldType: "string",
-              },
-            ]}
-            tableTitle={t("userDetail.currentStatus")}
-            onRowClick={() => {}}
-            hasPagination={false}
-            dense={false}
-          />
-        </>
-      )}
       <BackButton />
     </View>
   );

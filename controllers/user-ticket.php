@@ -114,4 +114,16 @@ class user_ticket
             handleException($e);
         }
     }
+
+    public function getTechnicianWorkload($userId)
+    {
+        try {
+            $response = new Response();
+            $userTicket = new UserTicketModel();
+            $result = $userTicket->getTechnicianWorkload($userId);
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
 }

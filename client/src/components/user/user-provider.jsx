@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "@contexts/user-context";
-import { jwtDecode } from "jwt-decode"; 
+import { jwtDecode } from "jwt-decode";
 
 export function UserProvider({ children }) {
   const [loggedUser, setLoggedUserState] = useState(() => {
@@ -17,15 +17,14 @@ export function UserProvider({ children }) {
     }
   };
 
-
   useEffect(() => {
-    if (loggedUser?.token) {
-      try {
-        const decoded = jwtDecode(loggedUser.token);
-        console.log("JWT decodificado:", decoded);   
-      } catch (err) {
-        console.error("Error decodificando token:", err);
-      }
+    if (!loggedUser?.token) return;
+
+    try {
+      jwtDecode(loggedUser.token);
+    } catch (err) {
+      console.error("Invalid token detected, clearing session", err);
+      setLoggedUser(null);
     }
   }, [loggedUser]);
 
@@ -38,6 +37,7 @@ export function UserProvider({ children }) {
 
 export function useLoggedUser() {
   const context = useContext(UserContext);
-  if (!context) throw new Error("useLoggedUser debe usarse dentro de UserProvider");
+  if (!context)
+    throw new Error("useLoggedUser debe usarse dentro de UserProvider");
   return context;
 }

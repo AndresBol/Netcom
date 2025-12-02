@@ -28,7 +28,11 @@ import { useTranslation } from "react-i18next";
 export function TicketDetail() {
   const { loggedUser } = useLoggedUser();
   const { id } = useParams();
-  const ticketId = id ? parseInt(id) : 1;
+  const parsedTicketId = Number(id);
+  const ticketId =
+    Number.isInteger(parsedTicketId) && parsedTicketId > 0
+      ? parsedTicketId
+      : null;
   const { t } = useTranslation();
 
   const [ticket, setTicket] = useState(null);
@@ -99,6 +103,10 @@ export function TicketDetail() {
   ];
 
   const fetchData = async () => {
+    if (!ticketId) {
+      setLoading(false);
+      return;
+    }
     try {
       const ticketRes = await TicketService.getById(ticketId);
       setTicket(ticketRes.data);
@@ -120,6 +128,7 @@ export function TicketDetail() {
   };
 
   const fetchTicket = async () => {
+    if (!ticketId) return;
     try {
       const ticketRes = await TicketService.getById(ticketId);
       setTicket(ticketRes.data);
@@ -129,6 +138,10 @@ export function TicketDetail() {
   };
 
   useEffect(() => {
+    if (!ticketId) {
+      setLoading(false);
+      return;
+    }
     fetchData();
   }, [ticketId]);
 
@@ -176,6 +189,12 @@ export function TicketDetail() {
   }, [assignedUsers]);
 
   if (loading) return <Loading />;
+  if (!ticketId)
+    return (
+      <Typography variant="h6" color="error" align="center" sx={{ mt: 4 }}>
+        {t("ticketDetail.ticketNotFound")}
+      </Typography>
+    );
   if (!ticket)
     return (
       <Typography variant="h6" color="error" align="center" sx={{ mt: 4 }}>
@@ -298,8 +317,8 @@ export function TicketDetail() {
                   {t("ticketDetail.createdBy")}
                 </SubTitle2>
                 <Body2>
-                  {assignedUsers.filter((u) => u.user_role === "Client")[0]
-                    ?.user_name || t("ticketDetail.unassigned")}
+                  {assignedUsers.sort((a, b) => a.id - b.id)[0]?.user_name ||
+                    t("ticketDetail.unassigned")}
                 </Body2>
                 <SubTitle2 color="text.secondary" bold>
                   {t("ticketDetail.createdAt")}

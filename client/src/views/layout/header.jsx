@@ -11,6 +11,8 @@ import UserService from "@services/user";
 import LoginDialog from "@components/user/login-dialog.jsx";
 import LanguageSelector from "@components/language-selector";
 import { useTranslation } from "react-i18next";
+import LogoutIcon from "@mui/icons-material/Logout";
+import PersonIcon from "@mui/icons-material/Person";
 
 export default function Header() {
   const { loggedUser, setLoggedUser } = useLoggedUser();
@@ -143,9 +145,10 @@ export default function Header() {
 
           {loggedUser ? (
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Typography variant="body1">👤 {loggedUser.name}</Typography>
+              <PersonIcon />
+              <Typography variant="body1">{loggedUser.name}</Typography>
               <Button color="inherit" onClick={handleLogout}>
-                {t("header.logout")}
+                <LogoutIcon />
               </Button>
             </Box>
           ) : (

@@ -173,7 +173,17 @@
     "attachmentDeleted": "¡Archivo adjunto eliminado exitosamente!",
     "attachmentsUploadedSuccessfully": "Adjuntos cargados exitosamente",
     "ticketAssignedWithScore": "¡Ticket asignado exitosamente con puntaje: {{score}}!",
-    "ticketAutoAssigned": "Ticket {{ticketId}} asignado a técnico {{technicianName}} con puntaje {{score}}",
+    "ticketAutoAssigned": "✓ Tiquete {{ticketId}} asignado a {{technicianName}}",
+    "autoAssignStarted": "🔄 Iniciando asignación automática de tiquetes...",
+    "autoAssignCompleted": "✓ Asignación automática completada exitosamente",
+    "autoAssignNoTechniciansAvailable": "⚠ No hay técnicos disponibles para asignación automática",
+    "autoAssignError": "✗ Asignación automática fallida: {{defaultValue}}",
+    "autoAssignPartialError": "⚠ Asignación automática completada con errores",
+    "autoAssignNoTechniciansForTickets": "⚠ No hay técnicos disponibles para los tiquetes: {{tickets}}",
+    "autoAssignPartialErrorWithDetails": "⚠ {{assigned}} asignados, {{failed}} fallidos. Sin técnicos para los tiquetes: {{tickets}}",
+    "autoAssignFetchStatusError": "Error al obtener estados de tiquetes",
+    "autoAssignFetchTechniciansError": "Error al obtener técnicos disponibles",
+    "autoAssignNoAssignedStatus": "Estado de asignado no encontrado en el sistema",
     "updateStatusTo": "Actualizar estado a {{status}}?",
     "statusUpdated": "Estado actualizado exitosamente",
     "failedToUpdateStatus": "Error al actualizar el estado",
@@ -203,6 +213,7 @@
     "availability": "Disponibilidad",
     "workload": "Carga de Trabajo",
     "date": "Fecha",
+    "responseTime2": "Tiempo de Respuesta",
     "resolutionTime2": "Tiempo de Resolución",
     "userName": "Nombre de Usuario",
     "userRole": "Rol de Usuario",
@@ -308,5 +319,17 @@
     "expired": "Expirado",
     "nearExpiry": "Cerca de Expirar",
     "onTime": "A Tiempo"
+  },
+  "units": {
+    "tickets": "tickets"
+  },
+  "footer": {
+    "notifications": "Notificaciones",
+    "unread": "{{count}} sin leer",
+    "noNotifications": "Sin notificaciones aún",
+    "allCaughtUp": "¡Todo al día!",
+    "markAsRead": "Marcar como leído",
+    "projectCode": "ISW-613",
+    "credits": "Andrés Bolaños y Josué Calderon | Netcom SA"
   }
 }

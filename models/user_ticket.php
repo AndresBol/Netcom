@@ -201,4 +201,24 @@ class UserTicketModel
             return false;
         }
     }
+
+    /*Get workload count for a technician (assigned tickets excluding Resolved/Closed) */
+    public function getTechnicianWorkload($userId) {
+        try {
+            $vSql = "SELECT COUNT(*) as workload
+                    FROM user_ticket ut
+                    INNER JOIN ticket t ON ut.ticket_id = t.id
+                    LEFT JOIN status s ON t.status_id = s.id
+                    WHERE ut.user_id = $userId 
+                    AND ut.is_active = 1 
+                    AND t.is_active = 1
+                    AND (s.name IS NULL OR s.name NOT IN ('Resolved', 'Closed'));";
+            
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado && count($vResultado) > 0 ? $vResultado[0] : (object) ['workload' => 0];
+        } catch (Exception $e) {
+            handleException($e);
+            return (object) ['workload' => 0];
+        }
+    }
 }

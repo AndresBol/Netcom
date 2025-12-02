@@ -34,6 +34,10 @@ class UserTicketService {
   deleteByUserId(userId) {
     return axios.delete(BASE_URL + '/deleteByUserId/' + userId);
   }
+
+  getTechnicianWorkload(userId) {
+    return axios.get(BASE_URL + '/getTechnicianWorkload/' + userId);
+  }
 }
 
 export default new UserTicketService();

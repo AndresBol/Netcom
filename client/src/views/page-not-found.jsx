@@ -17,7 +17,7 @@ export function PageNotFound() {
   return (
     <Container component="main" sx={{ mt: 8, mb: 2 }}>
       <Grid container spacing={2}>
-        <Grid size={4}>
+        <Grid xs={12} md={4}>
           <Box
             component="img"
             sx={{
@@ -29,7 +29,7 @@ export function PageNotFound() {
             src={error}
           />
         </Grid>
-        <Grid size={8}>
+        <Grid xs={12} md={8}>
           <Typography
             component="h1"
             variant="h2"

@@ -11,7 +11,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import UserService from "@services/user";
-import { useLoggedUser } from "@contexts/UserContext";
+import { useLoggedUser } from "@components/user/user-provider.jsx";
 import LockOutlineIcon from "@mui/icons-material/LockOutline";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { useTranslation } from "react-i18next";

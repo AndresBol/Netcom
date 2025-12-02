@@ -24,11 +24,16 @@ export function UserIndex() {
   const navigate = useNavigate();
 
   const fetchModels = async () => {
-    //Fetch Users
     const response = await UserService.getAll();
-    setUsers(response.data);
+    const normalizedUsers = (response.data || []).map((user) => ({
+      ...user,
+      availability: t(`userAvailability.${user.availability}`, {
+        defaultValue: user.availability,
+      }),
+    }));
+    setUsers(normalizedUsers);
 
-    console.log("Users fetched:", response.data);
+    console.log("Users fetched:", normalizedUsers);
   };
 
   useEffect(() => {
@@ -43,7 +48,7 @@ export function UserIndex() {
       }
     };
     loadUsers();
-  }, []);
+  }, [t]);
 
   if (loading) return <Loading />;
 

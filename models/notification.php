@@ -1,12 +1,4 @@
 <?php
-
-require_once __DIR__ . '/../vendor/autoload.php';
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require_once __DIR__ . '/user.php';
-
 class NotificationModel
 {
     public $enlace;
@@ -25,6 +17,7 @@ class NotificationModel
                 n.subject,
                 n.body,
                 n.created_at,
+                n.is_read,
                 n.is_active
             FROM notification n
             WHERE n.is_active = 1;";
@@ -61,54 +54,6 @@ class NotificationModel
 
             $vResultado = $this->enlace->executeSQL_DML($vSql);
 
-            if ($vResultado) {
-
-                $userModel = new UserModel();
-
-                $user = $userModel->get($object->user_id);
-
-                if ($user && isset($user->email)) {
-
-                    $mail = new PHPMailer(true);
-
-                    try {
-
-                        $mail->isSMTP();
-
-                        $mail->Host = 'smtp.gmail.com';
-
-                        $mail->SMTPAuth = true;
-
-                        $mail->Username = 'bikerstrikersa@gmail.com';
-
-                        $mail->Password = 'pgtt jyqd siff vfbh';
-
-                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-
-                        $mail->Port = 587;
-
-                        $mail->setFrom('bikerstrikersa@gmail.com', 'Netcom');
-
-                        $mail->addAddress($user->email);
-
-                        $mail->isHTML(false);
-
-                        $mail->Subject = $object->subject;
-
-                        $mail->Body = $object->body;
-
-                        $mail->send();
-
-                    } catch (Exception $e) {
-
-                        error_log("Email send failed: " . $mail->ErrorInfo);
-
-                    }
-
-                }
-
-            }
-
             return $vResultado;
         } catch (Exception $e) {
             handleException($e);
@@ -124,6 +69,7 @@ class NotificationModel
                 n.subject,
                 n.body,
                 n.created_at,
+                n.is_read,
                 n.is_active
             FROM notification n
             WHERE n.user_id = $userId AND n.is_active = 1;";
@@ -133,6 +79,36 @@ class NotificationModel
         } catch (Exception $e) {
             handleException($e);
             return [];
+        }
+    }
+
+    public function markAsRead($notificationId)
+    {
+        try {
+            $vSql = "UPDATE notification 
+                     SET is_read = 1 
+                     WHERE id = $notificationId;";
+
+            $vResultado = $this->enlace->executeSQL_DML($vSql);
+            return $vResultado;
+        } catch (Exception $e) {
+            handleException($e);
+            return false;
+        }
+    }
+
+    public function markAllAsReadByUserId($userId)
+    {
+        try {
+            $vSql = "UPDATE notification 
+                     SET is_read = 1 
+                     WHERE user_id = $userId AND is_active = 1;";
+
+            $vResultado = $this->enlace->executeSQL_DML($vSql);
+            return $vResultado;
+        } catch (Exception $e) {
+            handleException($e);
+            return false;
         }
     }
 

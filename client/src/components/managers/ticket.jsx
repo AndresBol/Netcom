@@ -223,7 +223,7 @@ export function TicketManager({ record, onAfterSubmit }) {
   const onDelete = async () => {
     try {
       await TicketService.delete(currentTicket.id);
-      navigate(`/ticket/index/by-user`);
+      navigate(`/`);
       toast.success(t("messages.ticketDeleted"));
     } catch (error) {
       console.error("Error deleting ticket:", error);

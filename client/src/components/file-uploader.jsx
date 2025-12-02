@@ -10,44 +10,29 @@ export function FileUploader({
   previews,
   setPreviews,
   label,
-  minFiles = 1,
 }) {
   const fileInputRef = useRef(null);
   const [error, setError] = useState("");
   const { t } = useTranslation();
 
-const handleFileSelect = (e) => {
-  const selectedFiles = Array.from(e.target.files);
+  const handleFileSelect = (e) => {
+    const selectedFiles = Array.from(e.target.files);
 
-  if (selectedFiles.length === 0) {
-    if (files.length < minFiles) {
-      setError(t("validation.atLeastOneImage"));
-    }
-    return;
-  }
-
-  if (selectedFiles.length < minFiles) {
-    setError(t("validation.atLeastOneImage"));
-    return;
-  }
-
-  setError("");
-  setFiles(selectedFiles);
-
-  const imagePreviews = selectedFiles.map((file) =>
-    file.type.startsWith("image/") ? URL.createObjectURL(file) : null
-  );
-
-  setPreviews(imagePreviews);
-};
-
-
-  const handleRemoveFile = (index) => {
-    if (files.length <= minFiles) {
-      setError(t("validation.cannotRemoveLastImage"));
+    if (selectedFiles.length === 0) {
       return;
     }
 
+    setError("");
+    setFiles(selectedFiles);
+
+    const imagePreviews = selectedFiles.map((file) =>
+      file.type.startsWith("image/") ? URL.createObjectURL(file) : null
+    );
+
+    setPreviews(imagePreviews);
+  };
+
+  const handleRemoveFile = (index) => {
     setError("");
 
     setFiles(files.filter((_, i) => i !== index));
@@ -56,7 +41,6 @@ const handleFileSelect = (e) => {
 
   return (
     <Box>
-
       <input
         type="file"
         multiple
@@ -73,14 +57,8 @@ const handleFileSelect = (e) => {
         {label || t("common.uploadFiles")}
       </Button>
 
-   
-      {error && (
-        <Box sx={{ color: "red", fontSize: 14, mt: 1 }}>
-          {error}
-        </Box>
-      )}
+      {error && <Box sx={{ color: "red", fontSize: 14, mt: 1 }}>{error}</Box>}
 
-   
       {files.length > 0 && (
         <Box
           mt={2}
