@@ -67,6 +67,8 @@ class user
 
             if ($user) {
 
+                $user = $userModel->updateLastLogin($user->id) ?: $user;
+
                 $payload = [
                     'id' => $user->id,
                     'name' => $user->name,
@@ -94,13 +96,51 @@ class user
                         "id" => $user->id,
                         "name" => $user->name,
                         "role" => $user->role,
-                        "availability" => $user->availability ?? 'Available'
+                        "availability" => $user->availability ?? 'Available',
+                        "last_login_on" => $user->last_login_on ?? null
                     ]
                 ]);
             } else {
                 $response->toJSON([
                     "success" => false,
                     "message" => "Invalid email or password"
+                ]);
+            }
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function resetPassword()
+    {
+        try {
+            $request = new Request();
+            $response = new Response();
+            $inputJson = $request->getJSON();
+
+            $email = $inputJson->email ?? null;
+            $newPassword = $inputJson->new_password ?? null;
+
+            if (!$email || !$newPassword) {
+                $response->toJSON([
+                    "success" => false,
+                    "message" => "Email and new password are required"
+                ]);
+                return;
+            }
+
+            $userModel = new UserModel();
+            $updatedUser = $userModel->resetPassword($email, $newPassword);
+
+            if ($updatedUser) {
+                $response->toJSON([
+                    "success" => true,
+                    "message" => "Password updated successfully"
+                ]);
+            } else {
+                $response->toJSON([
+                    "success" => false,
+                    "message" => "User not found"
                 ]);
             }
         } catch (Exception $e) {

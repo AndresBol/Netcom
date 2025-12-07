@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
+  DialogTitle,
   Button,
   TextField,
   Box,
@@ -23,6 +24,13 @@ export default function LoginDialog({ open, onClose }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetPassword, setResetPassword] = useState("");
+  const [resetConfirmPassword, setResetConfirmPassword] = useState("");
+  const [resetError, setResetError] = useState("");
+  const [resetSuccess, setResetSuccess] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
 
   const handleLogin = async () => {
     setError("");
@@ -39,6 +47,59 @@ export default function LoginDialog({ open, onClose }) {
       setError(t("auth.serverError"));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openResetDialog = () => {
+    setResetDialogOpen(true);
+    setResetError("");
+    setResetSuccess("");
+  };
+
+  const closeResetDialog = () => {
+    setResetDialogOpen(false);
+    setResetEmail("");
+    setResetPassword("");
+    setResetConfirmPassword("");
+    setResetError("");
+    setResetSuccess("");
+    setResetLoading(false);
+  };
+
+  const handleResetPassword = async () => {
+    setResetError("");
+    setResetSuccess("");
+
+    if (!resetEmail || !resetPassword || !resetConfirmPassword) {
+      setResetError(t("auth.resetPasswordRequired"));
+      return;
+    }
+
+    if (resetPassword !== resetConfirmPassword) {
+      setResetError(t("form.passwordMismatch"));
+      return;
+    }
+
+    setResetLoading(true);
+    try {
+      const response = await UserService.resetPassword(
+        resetEmail,
+        resetPassword
+      );
+      if (response?.data?.success) {
+        setResetSuccess(t("auth.resetPasswordSuccess"));
+        setTimeout(() => {
+          closeResetDialog();
+        }, 1500);
+      } else {
+        setResetError(response?.data?.message || t("auth.resetPasswordError"));
+      }
+    } catch (err) {
+      setResetError(
+        err?.response?.data?.message || t("auth.resetPasswordError")
+      );
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -115,6 +176,11 @@ export default function LoginDialog({ open, onClose }) {
               {error}
             </Typography>
           )}
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button size="small" onClick={openResetDialog}>
+              {t("auth.forgotPassword")}
+            </Button>
+          </Box>
         </Box>
       </DialogContent>
 
@@ -139,6 +205,92 @@ export default function LoginDialog({ open, onClose }) {
           )}
         </Button>
       </DialogActions>
+      <Dialog
+        open={resetDialogOpen}
+        onClose={closeResetDialog}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>{t("auth.resetPassword")}</DialogTitle>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            {t("auth.resetPasswordDescription")}
+          </Typography>
+          <TextField
+            label={t("fields.email")}
+            type="email"
+            value={resetEmail}
+            onChange={(e) => setResetEmail(e.target.value)}
+            fullWidth
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MailOutlineIcon color="action" />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            label={t("auth.newPassword")}
+            type="password"
+            value={resetPassword}
+            onChange={(e) => setResetPassword(e.target.value)}
+            fullWidth
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockOutlineIcon color="action" />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            label={t("auth.confirmNewPassword")}
+            type="password"
+            value={resetConfirmPassword}
+            onChange={(e) => setResetConfirmPassword(e.target.value)}
+            fullWidth
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockOutlineIcon color="action" />
+                </InputAdornment>
+              ),
+            }}
+          />
+          {resetError && (
+            <Typography color="error" variant="body2">
+              {resetError}
+            </Typography>
+          )}
+          {resetSuccess && (
+            <Typography color="success.main" variant="body2">
+              {resetSuccess}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "space-between" }}>
+          <Button onClick={closeResetDialog} color="secondary">
+            {t("common.cancel")}
+          </Button>
+          <Button
+            onClick={handleResetPassword}
+            disabled={resetLoading}
+            variant="contained"
+          >
+            {resetLoading ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              t("auth.resetPassword")
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Dialog>
   );
 }

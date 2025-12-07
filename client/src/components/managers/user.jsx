@@ -174,6 +174,40 @@ export function UserManager({ record }) {
   const onSubmit = async (DataForm) => {
     setUploading(true);
     try {
+      const emailToValidate = (DataForm.email || "").trim();
+      const isCreating = !currentUser;
+      const emailChanged =
+        currentUser &&
+        currentUser.email &&
+        currentUser.email.toLowerCase() !== emailToValidate.toLowerCase();
+
+      if (emailToValidate && (isCreating || emailChanged)) {
+        try {
+          const existingResponse =
+            await UserService.getByEmail(emailToValidate);
+          const existingUser = existingResponse?.data;
+          if (
+            existingUser &&
+            existingUser.id &&
+            (!currentUser || existingUser.id !== currentUser.id)
+          ) {
+            toast.error(t("messages.emailAlreadyExists"));
+            setUploading(false);
+            return;
+          }
+        } catch (validationError) {
+          if (
+            validationError?.response?.status &&
+            validationError.response.status !== 404
+          ) {
+            console.error(
+              "Error validating email uniqueness:",
+              validationError
+            );
+          }
+        }
+      }
+
       let response;
       if (currentUser) {
         response = await UserService.update(DataForm);

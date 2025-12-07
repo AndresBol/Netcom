@@ -36,6 +36,13 @@ login(email, password) {
     return axios.get(BASE_URL + "/getUserByEmail/" + email);
   }
 
+  resetPassword(email, newPassword) {
+    return axios.post(`${BASE_URL}/resetPassword`, {
+      email,
+      new_password: newPassword,
+    });
+  }
+
   getByRoleName(roleName) {
     return axios.get(BASE_URL + "/getByRoleName/" + roleName);
   }
