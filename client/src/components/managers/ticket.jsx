@@ -67,6 +67,24 @@ export function TicketManager({ record, onAfterSubmit }) {
     return () => subscription.unsubscribe();
   }, [formInstance, labels]);
 
+  useEffect(() => {
+    if (!formInstance || currentTicket || !statuses.length) return;
+    const isTechnicianUser =
+      (loggedUser?.role || "").toLowerCase() === "technician";
+    if (!isTechnicianUser) return;
+
+    const assignedStatus = statuses.find(
+      (status) => (status.name || "").toLowerCase() === "assigned"
+    );
+
+    if (!assignedStatus) return;
+
+    formInstance.setValue("status_id", assignedStatus.id, {
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  }, [formInstance, statuses, currentTicket, loggedUser]);
+
   // Current status validation
   const currentStatus = statuses.find(
     (status) => status.id === currentTicket?.status_id
@@ -74,6 +92,13 @@ export function TicketManager({ record, onAfterSubmit }) {
   const isResolvedOrClosed =
     currentStatus &&
     (currentStatus.name === "Resolved" || currentStatus.name === "Closed");
+
+  // Client users can submit feedback once per ticket
+  const isClient = (loggedUser?.role || "").toLowerCase() === "client";
+  const numericRating = Number(currentTicket?.rating);
+  const hasRating = Number.isFinite(numericRating) && numericRating > 0;
+  const hasComment = Boolean(currentTicket?.comment?.trim()?.length);
+  const feedbackLocked = hasRating || hasComment;
 
   const formData = [
     {
@@ -120,13 +145,15 @@ export function TicketManager({ record, onAfterSubmit }) {
             label: t("fields.rating"),
             fieldName: "rating",
             fieldType: "rating",
-            readonly: true,
+            alwaysEditable: true,
+            readonly: !isClient || feedbackLocked,
           },
           {
             label: "Comments",
             fieldName: "comment",
             fieldType: "multiline",
-            readonly: true,
+            alwaysEditable: true,
+            readonly: !isClient || feedbackLocked,
           },
         ]
       : []),
@@ -158,14 +185,28 @@ export function TicketManager({ record, onAfterSubmit }) {
     try {
       let response;
       const isNewTicket = !currentTicket;
+      const isTechnicianUser =
+        (loggedUser?.role || "").toLowerCase() === "technician";
+
+      let submissionData = { ...DataForm };
+
+      if (isNewTicket && isTechnicianUser) {
+        const assignedStatus = statuses.find(
+          (status) => (status.name || "").toLowerCase() === "assigned"
+        );
+
+        if (assignedStatus) {
+          submissionData.status_id = assignedStatus.id;
+        }
+      }
 
       if (currentTicket) {
         response = await TicketService.update({
-          ...DataForm,
+          ...submissionData,
           id: currentTicket.id,
         });
       } else {
-        response = await TicketService.insert(DataForm);
+        response = await TicketService.insert(submissionData);
       }
 
       if (response?.data) {

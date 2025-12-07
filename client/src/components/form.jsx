@@ -12,6 +12,8 @@ import Checkbox from "@mui/material/Checkbox";
 import React from "react";
 
 function formControl(field, fieldConfig, errors, isEditing) {
+  const isFieldEditable = isEditing || fieldConfig.alwaysEditable;
+  const disabled = !isFieldEditable || fieldConfig.readonly;
   let control;
 
   switch (fieldConfig.fieldType) {
@@ -30,7 +32,7 @@ function formControl(field, fieldConfig, errors, isEditing) {
           }
           multiline={fieldConfig.fieldType === "multiline"}
           rows={4}
-          disabled={!isEditing || fieldConfig.readonly}
+          disabled={disabled}
           sx={styles.FormInput}
           error={Boolean(errors[fieldConfig.fieldName])}
           helperText={
@@ -51,7 +53,7 @@ function formControl(field, fieldConfig, errors, isEditing) {
             {...field}
             name={fieldConfig.fieldName}
             size="large"
-            disabled={!isEditing || fieldConfig.readonly}
+            disabled={disabled}
             value={field.value || 0}
             onChange={(event, newValue) => {
               field.onChange(newValue);
@@ -78,11 +80,7 @@ function formControl(field, fieldConfig, errors, isEditing) {
         >
           {fieldConfig.data &&
             fieldConfig.data.map((item) => (
-              <ToggleButton
-                key={item.id}
-                value={item.id}
-                disabled={!isEditing || fieldConfig.readonly}
-              >
+              <ToggleButton key={item.id} value={item.id} disabled={disabled}>
                 {item.name}
               </ToggleButton>
             ))}
@@ -95,7 +93,7 @@ function formControl(field, fieldConfig, errors, isEditing) {
           field={field}
           data={fieldConfig.data || []}
           model={fieldConfig.label}
-          disabled={!isEditing || fieldConfig.readonly}
+          disabled={disabled}
           sx={styles.FormInput}
           multiple={fieldConfig.multipleSelection || false}
           error={Boolean(errors[fieldConfig.fieldName])}
@@ -114,7 +112,7 @@ function formControl(field, fieldConfig, errors, isEditing) {
             {...field}
             checked={field.value || false}
             onChange={(e) => field.onChange(e.target.checked)}
-            disabled={!isEditing || fieldConfig.readonly}
+            disabled={disabled}
           />
           <Typography variant="body1">{fieldConfig.label}</Typography>
           {errors[fieldConfig.fieldName] && (
@@ -160,8 +158,15 @@ export function Form({
     handleSubmit,
     reset,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = formApi;
+
+  const showEditingState = isEditing || isDirty;
+
+  const handleCancel = () => {
+    reset();
+    setIsEditing(false);
+  };
 
   const onError = (errors, e) => {
     console.log(errors, e);
@@ -184,10 +189,11 @@ export function Form({
     <Box sx={styles.Container}>
       <form onSubmit={submitForm} noValidate>
         <FormHeader
-          isEditing={isEditing}
+          isEditing={showEditingState}
           isUploading={isUploading}
           isNewRecord={record ? false : true}
           onEditChange={setIsEditing}
+          onCancel={handleCancel}
           onDeleteBtnClick={async () => {
             await onDelete();
             reset();

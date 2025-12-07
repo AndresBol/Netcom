@@ -47,11 +47,20 @@ export function UserTicketManager({ record, ticketId, userId, onSuccess }) {
   const fetchModels = async () => {
     // Fetch Users
     const userResponse = await UserService.getAll();
-    let filteredUsers = userResponse.data
-      .map((user) => ({
-        ...user,
-        name: `${user.name || ""} | ${user.role || ""}`,
-      }))
+    const mappedUsers = userResponse.data.map((user) => ({
+      ...user,
+      name: `${user.name || ""} | ${user.role || ""}`,
+    }));
+
+    const isAvailable = (availability) =>
+      (availability || "").toLowerCase() === "available";
+
+    const recordUserId = record?.user_id;
+
+    let filteredUsers = mappedUsers
+      .filter((user) =>
+        recordUserId === user.id ? true : isAvailable(user.availability)
+      )
       .sort((b, a) => (a.role || "").localeCompare(b.role || ""));
 
     // If ticketId is provided, filter out users already assigned to the ticket
@@ -64,11 +73,15 @@ export function UserTicketManager({ record, ticketId, userId, onSuccess }) {
       const ticketCategoryId = ticketResponse.data.category_id;
 
       filteredUsers = filteredUsers
-        .filter((user) => !assignedUserIds.includes(user.id))
         .filter(
           (user) =>
+            user.id === recordUserId || !assignedUserIds.includes(user.id)
+        )
+        .filter(
+          (user) =>
+            user.id === recordUserId ||
             user.role !== "Technician" ||
-            user.special_fields.some(
+            (user.special_fields || []).some(
               (sf) => sf.category_id === ticketCategoryId
             )
         );
@@ -107,6 +120,16 @@ export function UserTicketManager({ record, ticketId, userId, onSuccess }) {
       // Check if ticket status should be updated
       const ticket = await TicketService.getById(dataToSend.ticket_id);
       const user = await UserService.getById(dataToSend.user_id);
+      const userAvailability = (user.data?.availability || "").toLowerCase();
+
+      if (userAvailability !== "available") {
+        toast.error(
+          t("messages.userNotAvailableForAssignment", {
+            defaultValue: "Selected user is not available for new tickets",
+          })
+        );
+        return;
+      }
       if (
         ticket.data.status_name === "Pending" &&
         user.data.role === "Technician"

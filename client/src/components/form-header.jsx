@@ -14,6 +14,7 @@ export function FormHeader({
   isUploading,
   isNewRecord,
   onEditChange,
+  onCancel,
   onDeleteBtnClick,
   title,
 }) {
@@ -28,14 +29,15 @@ export function FormHeader({
             <Button type="submit" variant="contained" startIcon={<SaveIcon />}>
               {isUploading ? (
                 <CircularProgress color="inherit" size={25} />
+              ) : isNewRecord ? (
+                t("common.create")
               ) : (
-                isNewRecord ? t("common.create") : t("common.save")
+                t("common.save")
               )}
             </Button>
             <Title2>{title}</Title2>
           </Box>
 
-      
           {!isNewRecord && (
             <Box sx={styles.ChildContainer}>
               <Button type="button" color="error" onClick={onDeleteBtnClick}>
@@ -46,7 +48,13 @@ export function FormHeader({
                 variant="contained"
                 color="grey"
                 startIcon={<CloseIcon />}
-                onClick={() => onEditChange(false)}
+                onClick={() => {
+                  if (onCancel) {
+                    onCancel();
+                  } else if (onEditChange) {
+                    onEditChange(false);
+                  }
+                }}
               >
                 {t("common.cancel")}
               </Button>
@@ -55,7 +63,6 @@ export function FormHeader({
         </>
       ) : (
         <Box sx={styles.ChildContainer}>
-        
           {!isNewRecord && loggedUser?.role !== "Client" && (
             <Button
               type="button"
