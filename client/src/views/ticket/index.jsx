@@ -25,6 +25,8 @@ import toast from "react-hot-toast";
 
 dayjs.extend(isBetween);
 
+const CLOSED_TICKET_STATUSES = new Set(["resolved", "closed"]);
+
 export function TicketIndex() {
   const { viewType } = useParams();
   const { loggedUser } = useLoggedUser();
@@ -36,6 +38,23 @@ export function TicketIndex() {
   const [value, setValue] = useState(dayjs());
   const [hoveredDay, setHoveredDay] = useState(null);
   const [autoAssignLoading, setAutoAssignLoading] = useState(false);
+
+  const userRole = (loggedUser?.role || "").toLowerCase();
+  const isTechnician = userRole === "technician";
+  const isClient = userRole === "client";
+  const isAdmin = userRole === "administrator";
+  const isByUserView = viewType === "by-user";
+
+  const normalizeTickets = (raw) => (Array.isArray(raw) ? raw : []);
+  const dropClosedTicketsForTechnician = (ticketList) => {
+    if (!isTechnician || !isByUserView) return ticketList;
+    return ticketList.filter((ticket) => {
+      const status = (ticket?.status_name || "").toLowerCase();
+      return !CLOSED_TICKET_STATUSES.has(status);
+    });
+  };
+  const prepareTickets = (raw) =>
+    dropClosedTicketsForTechnician(normalizeTickets(raw));
 
   const loadTickets = async () => {
     if (!loggedUser) {
@@ -49,23 +68,19 @@ export function TicketIndex() {
     try {
       console.log("Fetching tickets for viewType:", viewType);
       let response;
-      if (loggedUser.role !== "Client" && viewType === "all") {
+      if (!isClient && viewType === "all") {
         response = await TicketService.getAll();
-      } else if (
-        loggedUser.role === "Administrator" &&
-        viewType === "pending"
-      ) {
+      } else if (isAdmin && viewType === "pending") {
         response = await TicketService.getByStatusName("Pending");
       } else {
         response = await UserTicketService.getByUserId(loggedUser.id);
       }
 
-      const data = response?.data ?? [];
+      const preparedTickets = prepareTickets(response?.data);
+      console.log("Tickets fetched:", preparedTickets);
 
-      console.log("Tickets fetched:", data);
-
-      setTickets(Array.isArray(data) ? data : []);
-      setFilteredTickets(Array.isArray(data) ? data : []);
+      setTickets(preparedTickets);
+      setFilteredTickets(preparedTickets);
     } catch (error) {
       setTickets([]);
       console.error("Error fetching models:", error);
@@ -76,9 +91,9 @@ export function TicketIndex() {
 
   useEffect(() => {
     if (!loggedUser) return;
-    setIsWeekView(loggedUser.role === "Technician" && viewType !== "all");
+    setIsWeekView(isTechnician && viewType !== "all");
     loadTickets();
-  }, [loggedUser, viewType]);
+  }, [isTechnician, loggedUser, viewType]);
 
   useEffect(() => {
     if (isWeekView && value) {
@@ -259,7 +274,7 @@ export function TicketIndex() {
           }}
         >
           <Title1>{t("ticket.title")}</Title1>
-          {loggedUser?.role === "Administrator" && viewType === "pending" && (
+          {isAdmin && viewType === "pending" && (
             <Button
               variant="contained"
               size="small"
@@ -305,7 +320,7 @@ export function TicketIndex() {
           }}
         >
           <Title2>{t("ticket.noTickets")}</Title2>
-          {loggedUser?.role === "Client" && (
+          {isClient && (
             <Box
               sx={{
                 display: "flex",

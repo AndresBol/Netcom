@@ -75,6 +75,13 @@ export function TicketManager({ record, onAfterSubmit }) {
     currentStatus &&
     (currentStatus.name === "Resolved" || currentStatus.name === "Closed");
 
+  // Client users can submit feedback once per ticket
+  const isClient = (loggedUser?.role || "").toLowerCase() === "client";
+  const numericRating = Number(currentTicket?.rating);
+  const hasRating = Number.isFinite(numericRating) && numericRating > 0;
+  const hasComment = Boolean(currentTicket?.comment?.trim()?.length);
+  const feedbackLocked = hasRating || hasComment;
+
   const formData = [
     {
       label: t("fields.status"),
@@ -120,13 +127,15 @@ export function TicketManager({ record, onAfterSubmit }) {
             label: t("fields.rating"),
             fieldName: "rating",
             fieldType: "rating",
-            readonly: true,
+            alwaysEditable: true,
+            readonly: !isClient || feedbackLocked,
           },
           {
             label: "Comments",
             fieldName: "comment",
             fieldType: "multiline",
-            readonly: true,
+            alwaysEditable: true,
+            readonly: !isClient || feedbackLocked,
           },
         ]
       : []),

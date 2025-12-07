@@ -140,7 +140,9 @@ export function TicketDetail() {
   const updateSlaProps = (ticketData, assignedUsersData) => {
     if (assignedUsersData.length === 0 || !ticketData) return;
 
-    const techUser = assignedUsersData.find((u) => u.user_role === "Technician");
+    const techUser = assignedUsersData.find(
+      (u) => u.user_role === "Technician"
+    );
     const assignedOnValue = techUser ? techUser.assigned_on : null;
     setAssignedOn(assignedOnValue);
 
