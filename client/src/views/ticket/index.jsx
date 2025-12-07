@@ -136,7 +136,9 @@ export function TicketIndex() {
 
       // Fetch technicians with workload
       const techResponse = await UserService.getTechniciansWorkload();
-      const allTechnicians = techResponse?.data || [];
+      const allTechnicians = (techResponse?.data || []).filter(
+        (tech) => (tech.availability || "").toLowerCase() === "available"
+      );
 
       if (!allTechnicians || allTechnicians.length === 0) {
         toast.error(t("messages.autoAssignNoTechniciansAvailable"));
