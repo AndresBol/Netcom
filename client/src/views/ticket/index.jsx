@@ -189,10 +189,8 @@ export function TicketIndex() {
         }
       }
 
-      // Reload tickets
       await loadTickets();
 
-      // Show completion message with specific details
       if (assignedCount === 0 && failedCount > 0) {
         if (noTechnicianTickets.length > 0) {
           toast.error(

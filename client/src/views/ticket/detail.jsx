@@ -137,6 +137,49 @@ export function TicketDetail() {
     }
   };
 
+  const updateSlaProps = (ticketData, assignedUsersData) => {
+    if (assignedUsersData.length === 0 || !ticketData) return;
+
+    const techUser = assignedUsersData.find((u) => u.user_role === "Technician");
+    const assignedOnValue = techUser ? techUser.assigned_on : null;
+    setAssignedOn(assignedOnValue);
+
+    let responseSLA = calculateSlaResponse(
+      ticketData.created_on,
+      assignedOnValue,
+      ticketData.response_time,
+      t
+    );
+    if (responseSLA === undefined) {
+      responseSLA = {
+        actualTime: calculateRemainingTime(ticketData.response_time, t),
+      };
+    }
+
+    let resolutionSLA = calculateSlaResolution(
+      ticketData.created_on,
+      ticketData.notified_on,
+      ticketData.resolution_time,
+      t
+    );
+    if (resolutionSLA === undefined) {
+      resolutionSLA = {
+        actualTime: calculateRemainingTime(ticketData.resolution_time, t),
+      };
+    }
+
+    setSlaProps({
+      resolution_days: calculateResolutionDays(
+        ticketData.created_on,
+        ticketData.notified_on
+      ),
+      response_time: responseSLA.actualTime,
+      compliance_response: responseSLA.isCompliant,
+      resolution_time: resolutionSLA.actualTime,
+      compliance_resolution: resolutionSLA.isCompliant,
+    });
+  };
+
   useEffect(() => {
     if (!ticketId) {
       setLoading(false);
@@ -147,46 +190,8 @@ export function TicketDetail() {
 
   useEffect(() => {
     if (assignedUsers.length === 0 || !ticket) return;
-
-    const techUser = assignedUsers.find((u) => u.user_role === "Technician");
-    const assignedOnValue = techUser ? techUser.assigned_on : null;
-    setAssignedOn(assignedOnValue);
-
-    let responseSLA = calculateSlaResponse(
-      ticket.created_on,
-      assignedOnValue,
-      ticket.response_time,
-      t
-    );
-    if (responseSLA === undefined) {
-      responseSLA = {
-        actualTime: calculateRemainingTime(ticket.response_time, t),
-      };
-    }
-
-    let resolutionSLA = calculateSlaResolution(
-      ticket.created_on,
-      ticket.notified_on,
-      ticket.resolution_time,
-      t
-    );
-    if (resolutionSLA === undefined) {
-      resolutionSLA = {
-        actualTime: calculateRemainingTime(ticket.resolution_time, t),
-      };
-    }
-
-    setSlaProps({
-      resolution_days: calculateResolutionDays(
-        ticket.created_on,
-        ticket.notified_on
-      ),
-      response_time: responseSLA.actualTime,
-      compliance_response: responseSLA.isCompliant,
-      resolution_time: resolutionSLA.actualTime,
-      compliance_resolution: resolutionSLA.isCompliant,
-    });
-  }, [assignedUsers]);
+    updateSlaProps(ticket, assignedUsers);
+  }, [assignedUsers, ticket]);
 
   if (loading) return <Loading />;
   if (!ticketId)
@@ -226,6 +231,9 @@ export function TicketDetail() {
               setManagerDialog({ model: null, data: null });
               await fetchData();
               await fetchTicket();
+              // Refresh SLA requirements after timeline submission
+              const ticketRes = await TicketService.getById(ticketId);
+              updateSlaProps(ticketRes.data, assignedUsers);
             }}
           />
         )}

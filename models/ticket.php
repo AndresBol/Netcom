@@ -238,6 +238,14 @@ class TicketModel
             // necessary fields
             if (isset($object->status_id)) {
                 $setFields[] = "status_id ='$object->status_id'";
+                
+                // Check if status is being set to "resolved"
+                $statusModel = new StatusModel();
+                $status = $statusModel->get($object->status_id);
+                if ($status && strtolower($status->name) === 'resolved') {
+                    // Set notified_on to current date if status is resolved
+                    $setFields[] = "notified_on = NOW()";
+                }
             }
             if (isset($object->category_id)) {
                 $setFields[] = "category_id ='$object->category_id'";
@@ -255,10 +263,8 @@ class TicketModel
                 $setFields[] = "description ='$object->description'";
             }
             
-            // Optional fields
-            if (isset($object->notification_status)) {
-                $setFields[] = "notification_status ='$object->notification_status'";
-                $setFields[] = "notified_on = NOW()";
+            if (isset($object->notified_on)) {
+                $setFields[] = "notified_on = '$object->notified_on'";
             }
             if (isset($object->rating)) {
                 $setFields[] = "rating ='$object->rating'";

@@ -92,7 +92,7 @@ CREATE TABLE ticket (
     title VARCHAR(255) NOT NULL,
     description TEXT NULL,
     notification_status VARCHAR(50) NOT NULL,
-    notified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    notified_on DATETIME NULL,
     rating INT NOT NULL,
     comment TEXT NULL,
     created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
