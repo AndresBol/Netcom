@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { BackButton } from "@components/backbutton";
 import { useLoggedUser } from "@components/user/user-provider.jsx";
 import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
 
 export function UserIndex() {
   const [loading, setLoading] = useState(true);
@@ -17,6 +18,11 @@ export function UserIndex() {
     { label: t("user.name"), fieldName: "name", fieldType: "string" },
     { label: t("user.email"), fieldName: "email", fieldType: "string" },
     { label: t("user.role"), fieldName: "role", fieldType: "string" },
+    {
+      label: t("user.lastLogin"),
+      fieldName: "last_login_display",
+      fieldType: "string",
+    },
   ];
 
   const { loggedUser } = useLoggedUser();
@@ -30,6 +36,9 @@ export function UserIndex() {
       availability: t(`userAvailability.${user.availability}`, {
         defaultValue: user.availability,
       }),
+      last_login_display: user.last_login_on
+        ? dayjs(user.last_login_on).format("MMM D, YYYY HH:mm")
+        : t("user.neverLogged"),
     }));
     setUsers(normalizedUsers);
 

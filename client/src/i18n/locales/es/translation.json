@@ -54,7 +54,9 @@
     "role": "Rol",
     "password": "Contraseña",
     "confirmPassword": "Confirmar Contraseña",
-    "noUsers": "No hay usuarios disponibles"
+    "noUsers": "No hay usuarios disponibles",
+    "lastLogin": "Último ingreso",
+    "neverLogged": "Nunca"
   },
   "ticket": {
     "title": "Tiquetes Disponibles",
@@ -125,7 +127,14 @@
     "welcomeToNetcom": "Bienvenido a Netcom",
     "signInMessage": "Inicia sesión con tu cuenta",
     "invalidCredentials": "Credenciales inválidas",
-    "serverError": "Error del servidor"
+    "serverError": "Error del servidor",
+    "resetPassword": "Restablecer contraseña",
+    "resetPasswordDescription": "Ingresa tu correo y una nueva contraseña para recuperar el acceso.",
+    "resetPasswordSuccess": "Contraseña actualizada. Ya puedes iniciar sesión.",
+    "resetPasswordError": "No se pudo restablecer la contraseña. Verifica tu correo.",
+    "resetPasswordRequired": "El correo y la contraseña son obligatorios.",
+    "newPassword": "Nueva Contraseña",
+    "confirmNewPassword": "Confirmar Nueva Contraseña"
   },
   "kanban": {
     "todo": "Por Hacer",
@@ -187,7 +196,8 @@
     "updateStatusTo": "Actualizar estado a {{status}}?",
     "statusUpdated": "Estado actualizado exitosamente",
     "failedToUpdateStatus": "Error al actualizar el estado",
-    "ticketStatusUpdated": "Estado del ticket actualizado exitosamente"
+    "ticketStatusUpdated": "Estado del ticket actualizado exitosamente",
+    "emailAlreadyExists": "El correo ya está registrado"
   },
   "fields": {
     "name": "Nombre",

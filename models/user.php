@@ -234,6 +234,27 @@ class UserModel
             handleException($e);
         }
     }
+
+    public function resetPassword($email, $newPassword) {
+        try {
+            if (!$email || !$newPassword) {
+                throw new Exception("Email and new password are required");
+            }
+
+            $user = $this->getUserByEmail($email);
+            if (!$user) {
+                return null;
+            }
+
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            $vSql = "UPDATE user SET password = '$hashedPassword' WHERE email = '$email' AND is_active = 1;";
+            $this->enlace->executeSQL_DML($vSql);
+
+            return $this->getUserByEmail($email);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
     /*Delete*/
     public function delete($id) {
         try {

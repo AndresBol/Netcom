@@ -45,12 +45,46 @@ export function UserTicketManager({ record, ticketId, userId, onSuccess }) {
   ].filter(Boolean);
 
   const fetchModels = async () => {
-    // Fetch Users
-    const userResponse = await UserService.getAll();
-    const mappedUsers = userResponse.data.map((user) => ({
-      ...user,
-      name: `${user.name || ""} | ${user.role || ""}`,
-    }));
+    const [userResponse, workloadResponse] = await Promise.all([
+      UserService.getAll(),
+      UserService.getTechniciansWorkload(),
+    ]);
+
+    const workloadMap = new Map(
+      (workloadResponse?.data || []).map((tech) => [tech.id, tech.workload])
+    );
+
+    const isTechnician = (role) => (role || "").toLowerCase() === "technician";
+    const formatSpecialties = (user) =>
+      (user.special_fields || [])
+        .map((sf) => sf.special_field_name || sf.category_name || sf.name || "")
+        .filter(Boolean)
+        .join(", ");
+
+    const mappedUsers = (userResponse.data || []).map((user) => {
+      const technicianExtras = [];
+      if (isTechnician(user.role)) {
+        const specialties = formatSpecialties(user);
+        const workloadValue =
+          workloadMap.get(user.id) ?? user.workload ?? undefined;
+
+        if (specialties) {
+          technicianExtras.push(`${t("fields.specialFields")}: ${specialties}`);
+        }
+        if (workloadValue !== undefined) {
+          technicianExtras.push(`${t("fields.workload")}: ${workloadValue}`);
+        }
+      }
+
+      const extraLabel =
+        technicianExtras.length > 0 ? `${technicianExtras.join(" • ")}` : "";
+
+      return {
+        ...user,
+        name: `${user.name || ""} | ${extraLabel ? extraLabel : user.role || ""}`,
+        workload: workloadMap.get(user.id) ?? user.workload ?? null,
+      };
+    });
 
     const isAvailable = (availability) =>
       (availability || "").toLowerCase() === "available";

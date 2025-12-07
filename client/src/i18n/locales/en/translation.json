@@ -54,7 +54,9 @@
     "role": "Role",
     "password": "Password",
     "confirmPassword": "Confirm Password",
-    "noUsers": "No users available"
+    "noUsers": "No users available",
+    "lastLogin": "Last Login",
+    "neverLogged": "Never"
   },
   "ticket": {
     "title": "Available Tickets",
@@ -125,7 +127,14 @@
     "welcomeToNetcom": "Welcome to Netcom",
     "signInMessage": "Sign in with your account",
     "invalidCredentials": "Invalid credentials",
-    "serverError": "Server error"
+    "serverError": "Server error",
+    "resetPassword": "Reset Password",
+    "resetPasswordDescription": "Enter your email and a new password to regain access.",
+    "resetPasswordSuccess": "Password updated successfully. You can now sign in.",
+    "resetPasswordError": "Unable to reset password. Please verify your email.",
+    "resetPasswordRequired": "Email and password fields are required.",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password"
   },
   "kanban": {
     "todo": "To Do",
@@ -187,7 +196,8 @@
     "updateStatusTo": "Update status to {{status}}?",
     "statusUpdated": "Status updated successfully",
     "failedToUpdateStatus": "Failed to update status",
-    "ticketStatusUpdated": "Ticket status updated successfully"
+    "ticketStatusUpdated": "Ticket status updated successfully",
+    "emailAlreadyExists": "Email is already registered"
   },
   "fields": {
     "name": "Name",

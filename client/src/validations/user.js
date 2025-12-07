@@ -11,7 +11,24 @@ export const AVAILABILITY_VALUES = [
   'MedicalLeave',
 ];
 
-export const userSchema = (t) => yup.object({
+const buildPasswordSchema = (t, requirePassword) => {
+  const baseSchema = yup
+    .string()
+    .trim()
+    .min(8, t('validation.passwordMinLength'))
+    .max(255, t('validation.passwordMaxLength'));
+
+  if (requirePassword) {
+    return baseSchema.required(t('validation.passwordRequired'));
+  }
+
+  return baseSchema
+    .nullable()
+    .transform((value) => (value === '' ? undefined : value))
+    .notRequired();
+};
+
+export const userSchema = (t, { requirePassword } = { requirePassword: true }) => yup.object({
   id: yup
     .number()
     .nullable(),
@@ -28,11 +45,7 @@ export const userSchema = (t) => yup.object({
     .email(t('validation.emailValid'))
     .required(t('validation.emailRequired'))
     .max(255, t('validation.emailMaxLength')),
-  password: yup
-    .string()
-    .required(t('validation.passwordRequired'))
-    .min(8, t('validation.passwordMinLength'))
-    .max(255, t('validation.passwordMaxLength')),
+  password: buildPasswordSchema(t, requirePassword),
   availability: yup
     .string()
     .oneOf(AVAILABILITY_VALUES)
@@ -45,23 +58,24 @@ export const userSchema = (t) => yup.object({
 
 export const useUserForm = (user) => {
   const { t } = useTranslation();
+  const requirePassword = !user;
   return useForm({
     defaultValues: {
       'id': user ? user.id : null,
       'role_id': user ? user.role_id : 1,
       'name': user ? user.name : '',
       'email': user ? user.email : '',
-      'password': user ? user.password : '',
+      'password': '',
       'availability': user ? user.availability : 'Available',
       'special_field_ids': user && user.special_fields ? user.special_fields.map(sf => sf.special_field_id) : [],
     },
-    resolver: yupResolver(userSchema(t)),
+    resolver: yupResolver(userSchema(t, { requirePassword })),
     values: user ? {
       'id': user.id,
       'role_id': user.role_id,
       'name': user.name,
       'email': user.email,
-      'password': user.password,
+      'password': '',
       'availability': user.availability,
       'special_field_ids': user.special_fields ? user.special_fields.map(sf => sf.special_field_id) : [],
     } : undefined,
