@@ -87,8 +87,11 @@ class RoutesController
                 $param2 = $routesArray[5] ?? null;
                 if ($controller) {
                     try {
-                        if (class_exists($controller)) {
-                            $response = new $controller();
+                        // Convert controller name from kebab-case to PascalCase
+                        $controllerClass = str_replace('-', '', ucwords($controller, '-'));
+                        
+                        if (class_exists($controllerClass)) {
+                            $response = new $controllerClass();
                             switch ($_SERVER['REQUEST_METHOD']) {
                                 case 'GET':
                                     if ($param1 && $param2) {
@@ -100,8 +103,12 @@ class RoutesController
                                     } elseif (!isset($action)) {
                                         $response->index();
                                     } elseif ($action) {
-                                        if (method_exists($controller, $action)) {
-                                            $response->$action();
+                                        // Convert kebab-case action to camelCase
+                                        $camelCaseAction = str_replace('-', '', ucwords($action, '-'));
+                                        $camelCaseAction = lcfirst($camelCaseAction);
+                                        
+                                        if (method_exists($controllerClass, $camelCaseAction)) {
+                                            $response->$camelCaseAction();
                                         } elseif (count($routesArray) == 3) {
                                             $response->get($action);
                                         } else {
@@ -119,8 +126,12 @@ class RoutesController
 
                                 case 'POST':
                                     if ($action) {
-                                        if (method_exists($controller, $action)) {
-                                            $response->$action();
+                                        // Convert kebab-case action to camelCase
+                                        $camelCaseAction = str_replace('-', '', ucwords($action, '-'));
+                                        $camelCaseAction = lcfirst($camelCaseAction);
+                                        
+                                        if (method_exists($controllerClass, $camelCaseAction)) {
+                                            $response->$camelCaseAction();
                                         } else {
                                             $json = array(
                                                 'status' => 404,
@@ -138,8 +149,12 @@ class RoutesController
                                     if ($param1) {
                                         $response->update($param1);
                                     } elseif ($action) {
-                                        if (method_exists($controller, $action)) {
-                                            $response->$action();
+                                        // Convert kebab-case action to camelCase
+                                        $camelCaseAction = str_replace('-', '', ucwords($action, '-'));
+                                        $camelCaseAction = lcfirst($camelCaseAction);
+                                        
+                                        if (method_exists($controllerClass, $camelCaseAction)) {
+                                            $response->$camelCaseAction();
                                         } else {
                                             $json = array(
                                                 'status' => 404,
@@ -159,14 +174,20 @@ class RoutesController
                                         // Check if action is numeric (likely an ID)
                                         if (is_numeric($action)) {
                                             $response->delete($action);
-                                        } elseif (method_exists($controller, $action)) {
-                                            $response->$action();
                                         } else {
-                                            $json = array(
-                                                'status' => 404,
-                                                'result' => 'Acción no encontrada'
-                                            );
-                                            echo json_encode($json, http_response_code($json["status"]));
+                                            // Convert kebab-case action to camelCase
+                                            $camelCaseAction = str_replace('-', '', ucwords($action, '-'));
+                                            $camelCaseAction = lcfirst($camelCaseAction);
+                                            
+                                            if (method_exists($controllerClass, $camelCaseAction)) {
+                                                $response->$camelCaseAction();
+                                            } else {
+                                                $json = array(
+                                                    'status' => 404,
+                                                    'result' => 'Acción no encontrada'
+                                                );
+                                                echo json_encode($json, http_response_code($json["status"]));
+                                            }
                                         }
                                     } else {
                                         $response->delete();
