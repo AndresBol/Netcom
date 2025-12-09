@@ -11,7 +11,7 @@ import TicketsRatingReport from "@views/graphics/tickets-rating-report.jsx";
 import TicketsSLAResponseReport from "@views/graphics/tickets-sla-response-report.jsx";
 import TicketsSLAResolutionReport from "@views/graphics/tickets-sla-resolution-report.jsx";
 import TicketsTechniciansRankingReport from "@views/graphics/tickets-technicians-ranking-report.jsx";
-import TicketsCategoriesBreachesReport from "@views/graphics/tickets-categories-breaches-report.jsx";
+import CategoryBreachesReport from "@views/graphics/tickets-categories-breaches-report.jsx";
 
 export default function Dashboard() {
   const { loggedUser } = useLoggedUser();
@@ -141,7 +141,7 @@ export default function Dashboard() {
             height: 380,
           }}
         >
-          <TicketsCategoriesBreachesReport />
+          <CategoryBreachesReport />
         </Box>
 
         {/* MORE CHARTS CAN BE ADDED HERE */}

@@ -1,4 +1,9 @@
+import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
+import SlaReportService from "@services/sla-report.js";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,28 +14,81 @@ import {
   Legend
 } from "chart.js";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-export default function TicketsCategoriesBreachesReport() {
+export default function CategoryBreachesReport() {
+  const [dataSet, setDataSet] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    SlaReportService.getCategoryBreaches()
+      .then((res) => {
+        setDataSet(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load category breaches:", err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 300,
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 300,
+          color: "error.main"
+        }}
+      >
+        <p>Failed to load data: {error}</p>
+      </Box>
+    );
+  }
+
+  if (!dataSet || dataSet.length === 0) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 300,
+        }}
+      >
+        <p>No data available</p>
+      </Box>
+    );
+  }
+
+  const labels = dataSet.map((item) => item.category);
+  const values = dataSet.map((item) => item.breaches);
+
   const data = {
-    labels: [
-      "Networking",
-      "Software",
-      "Hardware",
-      "Access Issues",
-      "Email"
-    ], 
+    labels,
     datasets: [
       {
-        label: "SLA Breaches",
-        data: [18, 25, 12, 30, 9], 
+        label: "Breaches",
+        data: values,
         borderWidth: 1
       }
     ]
@@ -40,12 +98,9 @@ export default function TicketsCategoriesBreachesReport() {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: "top"
-      },
       title: {
         display: true,
-        text: "Categories with Most SLA Breaches"
+        text: "Categories With Most SLA Breaches"
       }
     }
   };

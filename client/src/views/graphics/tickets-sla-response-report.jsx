@@ -1,4 +1,9 @@
+import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
+import SlaReportService from "@services/sla-report.js";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,22 +14,40 @@ import {
   Legend
 } from "chart.js";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function TicketsSLAResponseReport() {
+  const [dataSet, setDataSet] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    SlaReportService.getResponseReport().then((res) => {
+      setDataSet(res.data);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 300,
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   const data = {
     labels: ["Within SLA", "SLA Breached"],
     datasets: [
       {
-        label: "Number of Tickets",
-        data: [78, 22], // Example data: 78 OK, 22 breached
+        label: "Tickets",
+        data: [dataSet.within_sla, dataSet.breached_sla],
         borderWidth: 1
       }
     ]
@@ -34,9 +57,6 @@ export default function TicketsSLAResponseReport() {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: "top"
-      },
       title: {
         display: true,
         text: "SLA Response Compliance"
