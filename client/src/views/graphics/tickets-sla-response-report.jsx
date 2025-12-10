@@ -1,9 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Bar } from "react-chartjs-2";
-import SlaReportService from "@services/sla-report.js";
-import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
-
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,6 +9,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import TicketService from "@services/ticket";
+import UserTicketService from "@services/user-ticket";
 
 ChartJS.register(
   CategoryScale,
@@ -23,16 +22,138 @@ ChartJS.register(
   Legend
 );
 
+/**
+ * Calculates if a ticket met the SLA response time.
+ * Response SLA is met if the first technician was assigned within the response_time (in minutes).
+ */
+function isResponseSlaCompliant(createdOn, assignedOn, responseTime) {
+  if (!createdOn || !assignedOn || !responseTime) {
+    return null;
+  }
+
+  const created = new Date(createdOn);
+  const assigned = new Date(assignedOn);
+  const diffMinutes = (assigned - created) / (1000 * 60);
+
+  return diffMinutes <= responseTime;
+}
+
 export default function TicketsSLAResponseReport() {
-  const [dataSet, setDataSet] = useState(null);
+  const [tickets, setTickets] = useState([]);
+  const [userTickets, setUserTickets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    SlaReportService.getResponseReport().then((res) => {
-      setDataSet(res.data);
-      setLoading(false);
-    });
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const [ticketsRes, userTicketsRes] = await Promise.all([
+          TicketService.getAll(),
+          UserTicketService.getAll(),
+        ]);
+
+        setTickets(ticketsRes.data || []);
+        setUserTickets(userTicketsRes.data || []);
+      } catch (err) {
+        console.error("Error fetching SLA response data:", err);
+        setError("Failed to load SLA response data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
+
+  const { chartData, complianceRate } = useMemo(() => {
+    let withinCount = 0;
+    let breachedCount = 0;
+
+    // Create a map of ticket_id -> first assignment date
+    const firstAssignmentMap = new Map();
+
+    userTickets.forEach((ut) => {
+      const ticketId = Number(ut.ticket_id);
+      const assignedOn = ut.assigned_on ? new Date(ut.assigned_on) : null;
+
+      if (!assignedOn) return;
+
+      const existing = firstAssignmentMap.get(ticketId);
+      if (!existing || assignedOn < existing) {
+        firstAssignmentMap.set(ticketId, assignedOn);
+      }
+    });
+
+    // Calculate SLA compliance for each ticket
+    tickets.forEach((ticket) => {
+      const ticketId = Number(ticket.id);
+      const createdOn = ticket.created_on;
+      const responseTime = ticket.response_time;
+      const firstAssignment = firstAssignmentMap.get(ticketId);
+
+      // Only count tickets that have been assigned and have SLA defined
+      if (!firstAssignment || !responseTime) return;
+
+      const isCompliant = isResponseSlaCompliant(
+        createdOn,
+        firstAssignment,
+        responseTime
+      );
+
+      if (isCompliant === true) {
+        withinCount++;
+      } else if (isCompliant === false) {
+        breachedCount++;
+      }
+    });
+
+    const total = withinCount + breachedCount;
+    const rate = total > 0 ? ((withinCount / total) * 100).toFixed(1) : "N/A";
+
+    return {
+      chartData: {
+        labels: ["Within SLA", "SLA Breached"],
+        datasets: [
+          {
+            label: "Tickets",
+            data: [withinCount, breachedCount],
+            backgroundColor: [
+              "rgba(75, 192, 192, 0.6)",
+              "rgba(255, 99, 132, 0.6)",
+            ],
+            borderColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)"],
+            borderWidth: 1,
+          },
+        ],
+      },
+      complianceRate: rate,
+    };
+  }, [tickets, userTickets]);
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: true,
+        text: `SLA Response Compliance: ${complianceRate}%`,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1,
+        },
+      },
+    },
+  };
 
   if (loading) {
     return (
@@ -49,34 +170,29 @@ export default function TicketsSLAResponseReport() {
     );
   }
 
-  const data = {
-    labels: ["Within SLA", "SLA Breached"],
-    datasets: [
-      {
-        label: "Tickets",
-        data: [dataSet.within_sla, dataSet.breached_sla],
-        borderWidth: 1,
-        backgroundColor: "rgb(178, 146, 217)",
-        borderColor: "rgb(178, 146, 217)",
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: true,
-        text: "SLA Response Compliance",
-      },
-    },
-  };
+  if (error) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 275,
+          flexDirection: "column",
+          gap: 1,
+        }}
+      >
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
+  }
 
   return (
-    <div style={{ height: 275 }}>
-      <h2>SLA Response Compliance</h2>
-      <Bar data={data} options={options} />
-    </div>
+    <Box sx={{ height: 275 }}>
+      <Typography variant="h6" component="h2" gutterBottom>
+        SLA Response Compliance
+      </Typography>
+      <Bar data={chartData} options={options} />
+    </Box>
   );
 }

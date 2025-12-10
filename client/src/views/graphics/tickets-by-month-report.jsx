@@ -1,3 +1,4 @@
+import { useState, useEffect, useMemo } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -8,7 +9,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useState, useEffect } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import TicketService from "@services/ticket";
 
@@ -21,66 +21,79 @@ ChartJS.register(
   Legend
 );
 
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 export default function TicketsByMonthReport() {
-  const [chartData, setChartData] = useState(null);
+  const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchAndProcessTickets();
+    const fetchTickets = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await TicketService.getAll();
+        setTickets(response.data || []);
+      } catch (err) {
+        console.error("Error fetching tickets:", err);
+        setError("Failed to load ticket data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTickets();
   }, []);
 
-  const fetchAndProcessTickets = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  const chartData = useMemo(() => {
+    if (!tickets.length) return null;
 
-      const response = await TicketService.getAll();
-      const tickets = response.data || [];
+    // Get the current year for filtering
+    const currentYear = new Date().getFullYear();
 
-     
-      const monthCounts = {
-        10: 0, // October
-        11: 0, // November
-        12: 0, // December
-      };
+    // Initialize counts for all 12 months
+    const monthCounts = Array(12).fill(0);
 
-      const monthLabels = ["October", "November", "December"];
+    // Count tickets per month for the current year
+    tickets.forEach((ticket) => {
+      if (!ticket.created_on) return;
 
-      // Process tickets and count by month
-      tickets.forEach((ticket) => {
-        if (ticket.created_on) {
-          const date = new Date(ticket.created_on);
-          const month = date.getMonth() + 1; // 1 = Jan, 10 = Oct, 11 = Nov, 12 = Dec
+      const date = new Date(ticket.created_on);
+      const ticketYear = date.getFullYear();
+      const month = date.getMonth(); // 0-indexed
 
-          if (monthCounts.hasOwnProperty(month)) {
-            monthCounts[month]++;
-          }
-        }
-      });
+      if (ticketYear === currentYear) {
+        monthCounts[month]++;
+      }
+    });
 
-      // Map data to chart format
-      const data = {
-        labels: monthLabels,
-        datasets: [
-          {
-            label: "Tickets Created",
-            data: [monthCounts[10], monthCounts[11], monthCounts[12]],
-            backgroundColor: "rgba(54, 162, 235, 0.6)",
-            borderColor: "rgba(54, 162, 235, 1)",
-            borderWidth: 1,
-          },
-        ],
-      };
-
-      setChartData(data);
-    } catch (err) {
-      console.error("Error fetching tickets:", err);
-      setError("Failed to load ticket data");
-    } finally {
-      setLoading(false);
-    }
-  };
+    return {
+      labels: MONTH_NAMES,
+      datasets: [
+        {
+          label: "Tickets Created",
+          data: monthCounts,
+          backgroundColor: "rgba(54, 162, 235, 0.6)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 1,
+        },
+      ],
+    };
+  }, [tickets]);
 
   const options = {
     responsive: true,
@@ -91,7 +104,7 @@ export default function TicketsByMonthReport() {
       },
       title: {
         display: true,
-        text: "Tickets Created per Month",
+        text: `Tickets Created per Month (${new Date().getFullYear()})`,
       },
     },
     scales: {
@@ -111,7 +124,7 @@ export default function TicketsByMonthReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height : 275,
+          height: 275,
         }}
       >
         <CircularProgress />
@@ -126,7 +139,7 @@ export default function TicketsByMonthReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height : 275,
+          height: 275,
           flexDirection: "column",
           gap: 1,
         }}
@@ -137,9 +150,11 @@ export default function TicketsByMonthReport() {
   }
 
   return (
-    <div style={{ height: 275 }}>
-      <h2>Monthly Tickets Indicator</h2>
+    <Box sx={{ height: 275 }}>
+      <Typography variant="h6" component="h2" gutterBottom>
+        Monthly Tickets Indicator
+      </Typography>
       {chartData && <Bar data={chartData} options={options} />}
-    </div>
+    </Box>
   );
 }
