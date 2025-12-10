@@ -34,7 +34,7 @@ export default function TicketsSLAResponseReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 300,
+          height : 275,
         }}
       >
         <CircularProgress />
@@ -65,7 +65,7 @@ export default function TicketsSLAResponseReport() {
   };
 
   return (
-    <div style={{ height: 300 }}>
+    <div style={{ height : 275 }}>
       <Bar data={data} options={options} />
     </div>
   );

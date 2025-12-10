@@ -41,7 +41,7 @@ export default function CategoryBreachesReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 300,
+          height : 275,
         }}
       >
         <CircularProgress />
@@ -56,7 +56,7 @@ export default function CategoryBreachesReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 300,
+          height : 275,
           color: "error.main"
         }}
       >
@@ -72,7 +72,7 @@ export default function CategoryBreachesReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 300,
+          height : 275,
         }}
       >
         <p>No data available</p>
@@ -106,7 +106,7 @@ export default function CategoryBreachesReport() {
   };
 
   return (
-    <div style={{ height: 300 }}>
+    <div style={{ height : 275 }}>
       <Bar data={data} options={options} />
     </div>
   );
