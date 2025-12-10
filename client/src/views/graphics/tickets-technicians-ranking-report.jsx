@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import TicketService from "@services/ticket";
 import UserTicketService from "@services/user-ticket";
 import UserService from "@services/user";
@@ -27,6 +28,7 @@ ChartJS.register(
 const RESOLVED_STATUS_IDS = [4, 5]; // 4 = Resolved, 5 = Closed
 
 export default function TicketsTechniciansRankingReport() {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState([]);
   const [userTickets, setUserTickets] = useState([]);
   const [technicians, setTechnicians] = useState([]);
@@ -55,7 +57,7 @@ export default function TicketsTechniciansRankingReport() {
         setTechnicians(techs);
       } catch (err) {
         console.error("Error loading technician ratings:", err);
-        setError("Failed to load technician ratings");
+        setError(t("reports.failedToLoadTechnicianRatings"));
       } finally {
         setLoading(false);
       }
@@ -141,7 +143,7 @@ export default function TicketsTechniciansRankingReport() {
       labels,
       datasets: [
         {
-          label: "Average Rating",
+          label: t("reports.averageRating"),
           data: values,
           backgroundColor: backgroundColors,
           borderColor: backgroundColors.map((c) => c.replace("0.6", "1")),
@@ -154,18 +156,18 @@ export default function TicketsTechniciansRankingReport() {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    indexAxis: "y", // Horizontal bar chart for better readability
+    indexAxis: "y",
     plugins: {
       legend: {
         display: false,
       },
       title: {
         display: true,
-        text: "Technicians Average Rating (from resolved tickets)",
+        text: t("reports.techniciansAverageRating"),
       },
       tooltip: {
         callbacks: {
-          label: (context) => `Average: ${context.raw}/5`,
+          label: (context) => `${t("reports.averageRating")}: ${context.raw}/5`,
         },
       },
     },
@@ -178,13 +180,13 @@ export default function TicketsTechniciansRankingReport() {
         },
         title: {
           display: true,
-          text: "Average Rating (1-5 stars)",
+          text: t("reports.averageRatingStars"),
         },
       },
       y: {
         title: {
           display: true,
-          text: "Technician (# of rated tickets)",
+          text: t("reports.technicianRatedTickets"),
         },
       },
     },
@@ -232,7 +234,7 @@ export default function TicketsTechniciansRankingReport() {
           height: 275,
         }}
       >
-        <Typography>No technician data available</Typography>
+        <Typography>{t("reports.noTechnicianDataAvailable")}</Typography>
       </Box>
     );
   }
@@ -240,7 +242,7 @@ export default function TicketsTechniciansRankingReport() {
   return (
     <Box sx={{ height: 275 }}>
       <Typography variant="h6" component="h2" gutterBottom>
-        Technicians Rating
+        {t("reports.techniciansRating")}
       </Typography>
       <Bar data={chartData} options={options} />
     </Box>

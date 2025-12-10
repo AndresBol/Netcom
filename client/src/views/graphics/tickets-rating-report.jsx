@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import TicketService from "@services/ticket";
 
 ChartJS.register(
@@ -21,7 +22,6 @@ ChartJS.register(
   Legend
 );
 
-const RATING_LABELS = ["1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars"];
 const RATING_COLORS = [
   "rgba(255, 99, 132, 0.6)", // Red for 1 star
   "rgba(255, 159, 64, 0.6)", // Orange for 2 stars
@@ -31,6 +31,7 @@ const RATING_COLORS = [
 ];
 
 export default function TicketsRatingReport() {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -44,7 +45,7 @@ export default function TicketsRatingReport() {
         setTickets(response.data || []);
       } catch (err) {
         console.error("Error fetching ratings:", err);
-        setError("Failed to load rating data");
+        setError(t("reports.failedToLoadRatingData"));
       } finally {
         setLoading(false);
       }
@@ -54,7 +55,6 @@ export default function TicketsRatingReport() {
   }, []);
 
   const { chartData, averageRating, totalRated } = useMemo(() => {
-    // Initialize rating counts (1 to 5 stars)
     const ratingCounts = [0, 0, 0, 0, 0];
     let totalRating = 0;
     let ratedCount = 0;
@@ -71,12 +71,20 @@ export default function TicketsRatingReport() {
     const avgRating =
       ratedCount > 0 ? (totalRating / ratedCount).toFixed(2) : "N/A";
 
+    const ratingLabels = [
+      `1 ${t("reports.star")}`,
+      `2 ${t("reports.stars")}`,
+      `3 ${t("reports.stars")}`,
+      `4 ${t("reports.stars")}`,
+      `5 ${t("reports.stars")}`,
+    ];
+
     return {
       chartData: {
-        labels: RATING_LABELS,
+        labels: ratingLabels,
         datasets: [
           {
-            label: "Number of Tickets",
+            label: t("reports.numberOfTickets"),
             data: ratingCounts,
             backgroundColor: RATING_COLORS,
             borderColor: RATING_COLORS.map((c) => c.replace("0.6", "1")),
@@ -87,7 +95,7 @@ export default function TicketsRatingReport() {
       averageRating: avgRating,
       totalRated: ratedCount,
     };
-  }, [tickets]);
+  }, [tickets, t]);
 
   const options = {
     responsive: true,
@@ -98,7 +106,7 @@ export default function TicketsRatingReport() {
       },
       title: {
         display: true,
-        text: `Ticket Ratings Distribution (Avg: ${averageRating}/5, Total: ${totalRated})`,
+        text: `${t("reports.ticketRatingsDistribution")} (${t("reports.avg")}: ${averageRating}/5, ${t("reports.total")}: ${totalRated})`,
       },
     },
     scales: {
@@ -146,7 +154,7 @@ export default function TicketsRatingReport() {
   return (
     <Box sx={{ height: 275 }}>
       <Typography variant="h6" component="h2" gutterBottom>
-        Ticket Ratings Distribution
+        {t("reports.ticketRatingsDistribution")}
       </Typography>
       <Bar data={chartData} options={options} />
     </Box>

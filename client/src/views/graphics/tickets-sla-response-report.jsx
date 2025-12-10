@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import TicketService from "@services/ticket";
 import UserTicketService from "@services/user-ticket";
 
@@ -39,6 +40,7 @@ function isResponseSlaCompliant(createdOn, assignedOn, responseTime) {
 }
 
 export default function TicketsSLAResponseReport() {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState([]);
   const [userTickets, setUserTickets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,7 @@ export default function TicketsSLAResponseReport() {
         setUserTickets(userTicketsRes.data || []);
       } catch (err) {
         console.error("Error fetching SLA response data:", err);
-        setError("Failed to load SLA response data");
+        setError(t("reports.failedToLoadSlaResponseData"));
       } finally {
         setLoading(false);
       }
@@ -115,10 +117,10 @@ export default function TicketsSLAResponseReport() {
 
     return {
       chartData: {
-        labels: ["Within SLA", "SLA Breached"],
+        labels: [t("reports.withinSla"), t("reports.slaBreached")],
         datasets: [
           {
-            label: "Tickets",
+            label: t("header.tickets"),
             data: [withinCount, breachedCount],
             backgroundColor: [
               "rgba(75, 192, 192, 0.6)",
@@ -142,7 +144,7 @@ export default function TicketsSLAResponseReport() {
       },
       title: {
         display: true,
-        text: `SLA Response Compliance: ${complianceRate}%`,
+        text: `${t("reports.slaResponseCompliance")}: ${complianceRate}%`,
       },
     },
     scales: {
@@ -190,7 +192,7 @@ export default function TicketsSLAResponseReport() {
   return (
     <Box sx={{ height: 275 }}>
       <Typography variant="h6" component="h2" gutterBottom>
-        SLA Response Compliance
+        {t("reports.slaResponseCompliance")}
       </Typography>
       <Bar data={chartData} options={options} />
     </Box>

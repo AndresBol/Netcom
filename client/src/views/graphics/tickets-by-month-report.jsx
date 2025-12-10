@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import TicketService from "@services/ticket";
 
 ChartJS.register(
@@ -21,22 +22,8 @@ ChartJS.register(
   Legend
 );
 
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 export default function TicketsByMonthReport() {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,7 +37,7 @@ export default function TicketsByMonthReport() {
         setTickets(response.data || []);
       } catch (err) {
         console.error("Error fetching tickets:", err);
-        setError("Failed to load ticket data");
+        setError(t("reports.failedToLoadTicketData"));
       } finally {
         setLoading(false);
       }
@@ -62,30 +49,41 @@ export default function TicketsByMonthReport() {
   const chartData = useMemo(() => {
     if (!tickets.length) return null;
 
-    // Get the current year for filtering
     const currentYear = new Date().getFullYear();
-
-    // Initialize counts for all 12 months
     const monthCounts = Array(12).fill(0);
 
-    // Count tickets per month for the current year
     tickets.forEach((ticket) => {
       if (!ticket.created_on) return;
 
       const date = new Date(ticket.created_on);
       const ticketYear = date.getFullYear();
-      const month = date.getMonth(); // 0-indexed
+      const month = date.getMonth();
 
       if (ticketYear === currentYear) {
         monthCounts[month]++;
       }
     });
 
+    const monthLabels = [
+      t("reports.january"),
+      t("reports.february"),
+      t("reports.march"),
+      t("reports.april"),
+      t("reports.may"),
+      t("reports.june"),
+      t("reports.july"),
+      t("reports.august"),
+      t("reports.september"),
+      t("reports.october"),
+      t("reports.november"),
+      t("reports.december"),
+    ];
+
     return {
-      labels: MONTH_NAMES,
+      labels: monthLabels,
       datasets: [
         {
-          label: "Tickets Created",
+          label: t("reports.ticketsCreated"),
           data: monthCounts,
           backgroundColor: "rgba(54, 162, 235, 0.6)",
           borderColor: "rgba(54, 162, 235, 1)",
@@ -93,7 +91,7 @@ export default function TicketsByMonthReport() {
         },
       ],
     };
-  }, [tickets]);
+  }, [tickets, t]);
 
   const options = {
     responsive: true,
@@ -104,7 +102,9 @@ export default function TicketsByMonthReport() {
       },
       title: {
         display: true,
-        text: `Tickets Created per Month (${new Date().getFullYear()})`,
+        text: t("reports.ticketsCreatedPerMonth", {
+          year: new Date().getFullYear(),
+        }),
       },
     },
     scales: {
@@ -152,7 +152,7 @@ export default function TicketsByMonthReport() {
   return (
     <Box sx={{ height: 275 }}>
       <Typography variant="h6" component="h2" gutterBottom>
-        Monthly Tickets Indicator
+        {t("reports.monthlyTickets")}
       </Typography>
       {chartData && <Bar data={chartData} options={options} />}
     </Box>

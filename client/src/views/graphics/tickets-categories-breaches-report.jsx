@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Bar } from "react-chartjs-2";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import TicketService from "@services/ticket";
 import UserTicketService from "@services/user-ticket";
 
@@ -53,6 +54,7 @@ function hasSlaBreach(ticket, firstAssignment) {
 }
 
 export default function CategoryBreachesReport() {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState([]);
   const [userTickets, setUserTickets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -127,7 +129,7 @@ export default function CategoryBreachesReport() {
       labels: sortedData.map((item) => item.category),
       datasets: [
         {
-          label: "SLA Breaches",
+          label: t("reports.slaBreaches"),
           data: sortedData.map((item) => item.breaches),
           backgroundColor: "rgba(255, 99, 132, 0.6)",
           borderColor: "rgba(255, 99, 132, 1)",
@@ -146,7 +148,7 @@ export default function CategoryBreachesReport() {
       },
       title: {
         display: true,
-        text: "Categories With Most SLA Breaches",
+        text: t("reports.categoriesWithMostBreaches"),
       },
     },
     scales: {
@@ -186,7 +188,9 @@ export default function CategoryBreachesReport() {
           gap: 1,
         }}
       >
-        <Typography color="error">Failed to load data: {error}</Typography>
+        <Typography color="error">
+          {t("reports.failedToLoadData")}: {error}
+        </Typography>
       </Box>
     );
   }
@@ -201,7 +205,7 @@ export default function CategoryBreachesReport() {
           height: 275,
         }}
       >
-        <Typography>No breach data available</Typography>
+        <Typography>{t("reports.noBreachDataAvailable")}</Typography>
       </Box>
     );
   }
@@ -209,7 +213,7 @@ export default function CategoryBreachesReport() {
   return (
     <Box sx={{ height: 275 }}>
       <Typography variant="h6" component="h2" gutterBottom>
-        Categories With Most SLA Breaches
+        {t("reports.categoriesWithMostBreaches")}
       </Typography>
       <Bar data={chartData} options={options} />
     </Box>

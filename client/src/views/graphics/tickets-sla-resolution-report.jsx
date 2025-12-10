@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import TicketService from "@services/ticket";
 
 ChartJS.register(
@@ -38,6 +39,7 @@ function isResolutionSlaCompliant(createdOn, notifiedOn, resolutionTime) {
 }
 
 export default function TicketsSLAResolutionReport() {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,7 +53,7 @@ export default function TicketsSLAResolutionReport() {
         setTickets(response.data || []);
       } catch (err) {
         console.error("Error fetching SLA resolution data:", err);
-        setError("Failed to load SLA resolution data");
+        setError(t("reports.failedToLoadSlaResolutionData"));
       } finally {
         setLoading(false);
       }
@@ -90,10 +92,10 @@ export default function TicketsSLAResolutionReport() {
 
     return {
       chartData: {
-        labels: ["Within SLA", "SLA Breached"],
+        labels: [t("reports.withinSla"), t("reports.slaBreached")],
         datasets: [
           {
-            label: "Tickets",
+            label: t("header.tickets"),
             data: [withinCount, breachedCount],
             backgroundColor: [
               "rgba(75, 192, 192, 0.6)",
@@ -117,7 +119,7 @@ export default function TicketsSLAResolutionReport() {
       },
       title: {
         display: true,
-        text: `SLA Resolution Compliance: ${complianceRate}%`,
+        text: `${t("reports.slaResolutionCompliance")}: ${complianceRate}%`,
       },
     },
     scales: {
@@ -165,7 +167,7 @@ export default function TicketsSLAResolutionReport() {
   return (
     <Box sx={{ height: 275 }}>
       <Typography variant="h6" component="h2" gutterBottom>
-        SLA Resolution Compliance
+        {t("reports.slaResolutionCompliance")}
       </Typography>
       <Bar data={chartData} options={options} />
     </Box>
