@@ -111,7 +111,7 @@ export default function TicketsByMonthReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 300,
+          height : 275,
         }}
       >
         <CircularProgress />
@@ -126,7 +126,7 @@ export default function TicketsByMonthReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 300,
+          height : 275,
           flexDirection: "column",
           gap: 1,
         }}
@@ -137,7 +137,7 @@ export default function TicketsByMonthReport() {
   }
 
   return (
-    <div style={{ height: 300 }}>
+    <div style={{ height: 275 }}>
       <h2>Monthly Tickets Indicator</h2>
       {chartData && <Bar data={chartData} options={options} />}
     </div>

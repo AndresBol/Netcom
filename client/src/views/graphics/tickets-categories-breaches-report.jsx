@@ -11,10 +11,17 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function CategoryBreachesReport() {
   const [dataSet, setDataSet] = useState(null);
@@ -41,7 +48,7 @@ export default function CategoryBreachesReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 300,
+          height: 275,
         }}
       >
         <CircularProgress />
@@ -56,8 +63,8 @@ export default function CategoryBreachesReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 300,
-          color: "error.main"
+          height: 275,
+          color: "error.main",
         }}
       >
         <p>Failed to load data: {error}</p>
@@ -72,7 +79,7 @@ export default function CategoryBreachesReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 300,
+          height: 275,
         }}
       >
         <p>No data available</p>
@@ -89,9 +96,11 @@ export default function CategoryBreachesReport() {
       {
         label: "Breaches",
         data: values,
-        borderWidth: 1
-      }
-    ]
+        borderWidth: 1,
+        backgroundColor: "rgba(45, 206, 235, 0.6)",
+        borderColor: "rgba(45, 206, 235, 0.6)",
+      },
+    ],
   };
 
   const options = {
@@ -100,13 +109,14 @@ export default function CategoryBreachesReport() {
     plugins: {
       title: {
         display: true,
-        text: "Categories With Most SLA Breaches"
-      }
-    }
+        text: "Categories With Most SLA Breaches",
+      },
+    },
   };
 
   return (
-    <div style={{ height: 300 }}>
+    <div style={{ height: 275 }}>
+      <h2>Categories With Most SLA Breaches</h2>
       <Bar data={data} options={options} />
     </div>
   );

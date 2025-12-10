@@ -66,7 +66,7 @@ export default function Dashboard() {
           width: "100%",
           maxWidth: 1200,
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(550px, 1fr))",
           gap: 4,
           px: 2,
         }}
