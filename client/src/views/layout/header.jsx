@@ -135,6 +135,13 @@ export default function Header() {
                     >
                       {t("header.categories")}
                     </Button>
+                    <Button
+                      href="/graphics/dashboard"
+                      color="secondary"
+                      variant="text"
+                    >
+                      Reports
+                    </Button>
                   </>
                 )}
               </>

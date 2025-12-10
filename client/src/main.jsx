@@ -16,6 +16,7 @@ import { CategoryDetail } from "./views/category/detail";
 import { NewCategory } from "./views/category/new";
 import { UserProvider } from "@components/user/user-provider";
 import { Auth } from "@components/user/auth";
+import Dashboard from "@views/graphics/dashboard";
 import Logout from "@components/user/logout.jsx";
 import LoginDialog from "@components/user/login-dialog.jsx";
 import Unauthorized from "@components/user/unauthorized.jsx";
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
           { path: "/category/index", element: <CategoryIndex /> },
           { path: "/category/:id", element: <CategoryDetail /> },
           { path: "/category/new", element: <NewCategory /> },
+          {
+            path: "/graphics/dashboard",
+            element: <Dashboard/>,
+          },
         ],
       },
     ],
