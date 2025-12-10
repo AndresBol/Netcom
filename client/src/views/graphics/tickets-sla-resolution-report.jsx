@@ -11,10 +11,17 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function TicketsSLAResolutionReport() {
   const [dataSet, setDataSet] = useState(null);
@@ -34,7 +41,7 @@ export default function TicketsSLAResolutionReport() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height : 275,
+          height: 275,
         }}
       >
         <CircularProgress />
@@ -48,9 +55,11 @@ export default function TicketsSLAResolutionReport() {
       {
         label: "Tickets",
         data: [dataSet.within_sla, dataSet.breached_sla],
-        borderWidth: 1
-      }
-    ]
+        borderWidth: 1,
+        backgroundColor: "rgb(217, 181, 147)",
+        borderColor: "rgb(217, 181, 147)",
+      },
+    ],
   };
 
   const options = {
@@ -59,13 +68,14 @@ export default function TicketsSLAResolutionReport() {
     plugins: {
       title: {
         display: true,
-        text: "SLA Resolution Compliance"
-      }
-    }
+        text: "SLA Resolution Compliance",
+      },
+    },
   };
 
   return (
-    <div style={{ height : 275 }}>
+    <div style={{ height: 275 }}>
+      <h2>SLA Resolution Compliance</h2>
       <Bar data={data} options={options} />
     </div>
   );
