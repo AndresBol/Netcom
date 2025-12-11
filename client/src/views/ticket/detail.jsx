@@ -146,9 +146,24 @@ export function TicketDetail() {
     const assignedOnValue = techUser ? techUser.assigned_on : null;
     setAssignedOn(assignedOnValue);
 
+    const now = new Date();
+    const createdOn = new Date(ticketData.created_on);
+    const elapsedMinutes = (now - createdOn) / (1000 * 60);
+
+    // For Response SLA: Use assignedOnValue if available,
+    // otherwise use current date if SLA is breached to show the breach
+    let responseDate = assignedOnValue;
+    if (
+      !responseDate &&
+      ticketData.response_time &&
+      elapsedMinutes > ticketData.response_time
+    ) {
+      responseDate = now.toISOString();
+    }
+
     let responseSLA = calculateSlaResponse(
       ticketData.created_on,
-      assignedOnValue,
+      responseDate,
       ticketData.response_time,
       t
     );
@@ -158,9 +173,20 @@ export function TicketDetail() {
       };
     }
 
+    // For Resolution SLA: Use notified_on if available,
+    // otherwise use current date if SLA is breached to show the breach
+    let resolutionDate = ticketData.notified_on;
+    if (
+      !resolutionDate &&
+      ticketData.resolution_time &&
+      elapsedMinutes > ticketData.resolution_time
+    ) {
+      resolutionDate = now.toISOString();
+    }
+
     let resolutionSLA = calculateSlaResolution(
       ticketData.created_on,
-      ticketData.notified_on,
+      resolutionDate,
       ticketData.resolution_time,
       t
     );
