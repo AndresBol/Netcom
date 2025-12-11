@@ -24,7 +24,6 @@ ChartJS.register(
   Legend
 );
 
-// Status IDs for resolved/closed tickets
 const RESOLVED_STATUS_IDS = [4, 5]; // 4 = Resolved, 5 = Closed
 
 export default function TicketsTechniciansRankingReport() {
@@ -69,7 +68,6 @@ export default function TicketsTechniciansRankingReport() {
   const chartData = useMemo(() => {
     if (!technicians.length) return null;
 
-    // Get resolved/closed tickets with ratings
     const resolvedTicketsWithRatings = tickets.filter((ticket) => {
       const statusId = Number(ticket.status_id);
       const rating = parseInt(ticket.rating, 10);
@@ -78,19 +76,16 @@ export default function TicketsTechniciansRankingReport() {
       );
     });
 
-    // Create a map of ticket_id -> ticket data for quick lookup
     const ticketMap = new Map();
     resolvedTicketsWithRatings.forEach((ticket) => {
       ticketMap.set(Number(ticket.id), ticket);
     });
 
-    // Calculate average rating per technician
     const technicianRatings = new Map();
     technicians.forEach((tech) => {
       technicianRatings.set(Number(tech.id), { totalRating: 0, count: 0 });
     });
 
-    // Track which tickets have been counted for each technician
     const ticketsTechCounted = new Map();
 
     userTickets.forEach((ut) => {
@@ -102,7 +97,6 @@ export default function TicketsTechniciansRankingReport() {
       const ticket = ticketMap.get(ticketId);
       if (!ticket) return;
 
-      // Prevent double counting
       const countKey = `${techId}-${ticketId}`;
       if (ticketsTechCounted.has(countKey)) return;
       ticketsTechCounted.set(countKey, true);
@@ -113,7 +107,6 @@ export default function TicketsTechniciansRankingReport() {
       techData.count++;
     });
 
-    // Prepare data for chart
     const labels = [];
     const values = [];
     const backgroundColors = [];
@@ -126,7 +119,6 @@ export default function TicketsTechniciansRankingReport() {
       labels.push(`${tech.name} (${data.count})`);
       values.push(parseFloat(avgRating));
 
-      // Color based on rating
       const rating = parseFloat(avgRating);
       if (rating >= 4) {
         backgroundColors.push("rgba(75, 192, 192, 0.6)");

@@ -23,10 +23,6 @@ ChartJS.register(
   Legend
 );
 
-/**
- * Calculates if a ticket met the SLA response time.
- * Response SLA is met if the first technician was assigned within the response_time (in minutes).
- */
 function isResponseSlaCompliant(createdOn, assignedOn, responseTime) {
   if (!createdOn || !assignedOn || !responseTime) {
     return null;
@@ -74,7 +70,6 @@ export default function TicketsSLAResponseReport() {
     let withinCount = 0;
     let breachedCount = 0;
 
-    // Create a map of ticket_id -> first assignment date
     const firstAssignmentMap = new Map();
 
     userTickets.forEach((ut) => {
@@ -89,14 +84,12 @@ export default function TicketsSLAResponseReport() {
       }
     });
 
-    // Calculate SLA compliance for each ticket
     tickets.forEach((ticket) => {
       const ticketId = Number(ticket.id);
       const createdOn = ticket.created_on;
       const responseTime = ticket.response_time;
       const firstAssignment = firstAssignmentMap.get(ticketId);
 
-      // Only count tickets that have been assigned and have SLA defined
       if (!firstAssignment || !responseTime) return;
 
       const isCompliant = isResponseSlaCompliant(

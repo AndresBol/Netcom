@@ -22,10 +22,6 @@ ChartJS.register(
   Legend
 );
 
-/**
- * Calculates if a ticket met the SLA resolution time.
- * Resolution SLA is met if the ticket was resolved (notified_on) within the resolution_time (in minutes).
- */
 function isResolutionSlaCompliant(createdOn, notifiedOn, resolutionTime) {
   if (!createdOn || !notifiedOn || !resolutionTime) {
     return null;
@@ -71,7 +67,6 @@ export default function TicketsSLAResolutionReport() {
       const notifiedOn = ticket.notified_on; // Resolution/closure date
       const resolutionTime = ticket.resolution_time;
 
-      // Only count resolved tickets (those with notified_on date) that have SLA defined
       if (!notifiedOn || !resolutionTime) return;
 
       const isCompliant = isResolutionSlaCompliant(

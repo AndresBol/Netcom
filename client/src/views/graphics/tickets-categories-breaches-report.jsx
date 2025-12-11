@@ -24,13 +24,9 @@ ChartJS.register(
   Legend
 );
 
-/**
- * Checks if a ticket breached either response or resolution SLA
- */
 function hasSlaBreach(ticket, firstAssignment) {
   let breached = false;
 
-  // Check response SLA breach
   if (firstAssignment && ticket.response_time && ticket.created_on) {
     const created = new Date(ticket.created_on);
     const assigned = new Date(firstAssignment);
@@ -85,7 +81,6 @@ export default function CategoryBreachesReport() {
   }, []);
 
   const chartData = useMemo(() => {
-    // Create a map of ticket_id -> first assignment date
     const firstAssignmentMap = new Map();
 
     userTickets.forEach((ut) => {
@@ -100,7 +95,6 @@ export default function CategoryBreachesReport() {
       }
     });
 
-    // Count breaches per category
     const categoryBreaches = new Map();
 
     tickets.forEach((ticket) => {
@@ -116,7 +110,6 @@ export default function CategoryBreachesReport() {
       }
     });
 
-    // Convert to array and sort by breach count
     const sortedData = Array.from(categoryBreaches.entries())
       .map(([category, breaches]) => ({ category, breaches }))
       .sort((a, b) => b.breaches - a.breaches);

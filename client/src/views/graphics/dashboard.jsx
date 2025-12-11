@@ -5,7 +5,6 @@ import { Box } from "@mui/material";
 import { Title1, Title2, Title3 } from "@components/typography";
 import { useTranslation } from "react-i18next";
 
-// IMPORT YOUR CHARTS
 import TicketsByMonthReport from "@views/graphics/tickets-by-month-report.jsx";
 import TicketsRatingReport from "@views/graphics/tickets-rating-report.jsx";
 import TicketsSLAResponseReport from "@views/graphics/tickets-sla-response-report.jsx";
@@ -27,7 +26,6 @@ export default function Dashboard() {
         width: "100%",
       }}
     >
-      {/* HEADER BANNER */}
       <Box
         sx={{
           backgroundImage: "url(/network_banner.jpg)",
@@ -58,7 +56,6 @@ export default function Dashboard() {
         </Box>
       </Box>
 
-      {/* CHARTS SECTION */}
       <Box
         sx={{
           width: "100%",
@@ -69,7 +66,6 @@ export default function Dashboard() {
           px: 2,
         }}
       >
-        {/* CHART 1 */}
         <Box
           sx={{
             backgroundColor: "white",
@@ -82,7 +78,6 @@ export default function Dashboard() {
           <TicketsByMonthReport />
         </Box>
 
-        {/* CHART 2 */}
         <Box
           sx={{
             backgroundColor: "white",
@@ -141,11 +136,8 @@ export default function Dashboard() {
         >
           <CategoryBreachesReport />
         </Box>
-
-        {/* MORE CHARTS CAN BE ADDED HERE */}
       </Box>
 
-      {/* SUBTLE LOGO */}
       <Box
         component="img"
         src={"/netcom-imagotipo.png"}
