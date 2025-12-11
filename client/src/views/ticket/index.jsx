@@ -101,9 +101,15 @@ export function TicketIndex() {
       const weekEnd = value.endOf("week");
 
       const filtered = tickets.filter((ticket) => {
-        if (!ticket.created_on) return false;
+        let ticketDate;
+        if (ticket.assigned_on) {
+          ticketDate = dayjs(ticket.assigned_on);
+        } else if (ticket.created_on) {
+          ticketDate = dayjs(ticket.created_on);
+        } else {
+          return false;
+        }
 
-        const ticketDate = dayjs(ticket.created_on);
         return ticketDate.isBetween(weekStart, weekEnd, null, "[]");
       });
 

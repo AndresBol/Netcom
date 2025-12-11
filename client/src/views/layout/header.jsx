@@ -140,7 +140,7 @@ export default function Header() {
                       color="secondary"
                       variant="text"
                     >
-                      Reports
+                      {t("header.reports")}
                     </Button>
                   </>
                 )}

@@ -36,7 +36,8 @@
     "profile": "Profile",
     "myTickets": "My Tickets",
     "allTickets": "All Tickets",
-    "pendingTickets": "Pending Tickets"
+    "pendingTickets": "Pending Tickets",
+    "reports": "Reports"
   },
   "home": {
     "welcome": "Welcome {{name}}!",
@@ -264,6 +265,11 @@
     "specialties": "Specialties",
     "slas": "SLAs",
     "addNew": "Add New {{item}}"
+  },
+  "dashboard": {
+    "title": "Reports Dashboard",
+    "subtitle": "General System Indicators",
+    "administrativeTitle": "Administrative Dashboard"
   },
   "pageNotFound": {
     "title": "Resource not found",

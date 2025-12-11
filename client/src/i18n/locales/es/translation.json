@@ -36,7 +36,8 @@
     "profile": "Perfil",
     "myTickets": "Mis Tiquetes",
     "allTickets": "Todos los Tiquetes",
-    "pendingTickets": "Tiquetes Pendientes"
+    "pendingTickets": "Tiquetes Pendientes",
+    "reports": "Reportes"
   },
   "home": {
     "welcome": "¡Bienvenido {{name}}!",
@@ -264,6 +265,11 @@
     "specialties": "Especialidades",
     "slas": "SLAs",
     "addNew": "Agregar Nuevo {{item}}"
+  },
+  "dashboard": {
+    "title": "Panel de Reportes",
+    "subtitle": "Indicadores Generales del Sistema",
+    "administrativeTitle": "Panel Administrativo"
   },
   "pageNotFound": {
     "title": "Recurso no encontrado",
