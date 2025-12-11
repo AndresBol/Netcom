@@ -53,10 +53,8 @@ export default function Dashboard() {
         }}
       >
         <Box sx={{ position: "relative", zIndex: 2, py: 4 }}>
-          {loggedUser && (
-            <Title1 color="white">Reports Dashboard - {loggedUser.name}</Title1>
-          )}
-          <Title2 color="white">General System Indicators</Title2>
+          {loggedUser && <Title1 color="white">{t("dashboard.title")}</Title1>}
+          <Title2 color="white">{t("dashboard.subtitle")}</Title2>
         </Box>
       </Box>
 
@@ -160,7 +158,7 @@ export default function Dashboard() {
         }}
       />
 
-      <Title3>Administrative Dashboard</Title3>
+      <Title3>{t("dashboard.administrativeTitle")}</Title3>
     </View>
   );
 }

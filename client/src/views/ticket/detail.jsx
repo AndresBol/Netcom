@@ -112,10 +112,12 @@ export function TicketDetail() {
       setTicket(ticketRes.data);
 
       const userTicketRes = await UserTicketService.getByTicketId(ticketId);
-      const processedAssignedUsers = userTicketRes.data.map((user) => ({
-        ...user,
-        assigned_by_name: user.assigned_by_name || t("ticket.system"),
-      }));
+      const processedAssignedUsers = userTicketRes.data
+        .map((user) => ({
+          ...user,
+          assigned_by_name: user.assigned_by_name || t("ticket.system"),
+        }))
+        .sort((a, b) => new Date(a.assigned_on) - new Date(b.assigned_on));
       setAssignedUsers(processedAssignedUsers);
 
       const timelineRes = await TimelineService.getAllByTicketId(ticketId);

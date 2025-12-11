@@ -40,9 +40,11 @@ export function FormHeader({
 
           {!isNewRecord && (
             <Box sx={styles.ChildContainer}>
-              <Button type="button" color="error" onClick={onDeleteBtnClick}>
-                <DeleteIcon />
-              </Button>
+              {loggedUser?.role !== "Client" && (
+                <Button type="button" color="error" onClick={onDeleteBtnClick}>
+                  <DeleteIcon />
+                </Button>
+              )}
               <Button
                 type="button"
                 variant="contained"
